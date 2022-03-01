@@ -1,7 +1,7 @@
 # Backend directory
 
 
-### Connection to EC2 instance (server)
+## Connection to EC2 instance (server)
 
 You need the authentication file `BECO.pem`. If you don't, please contact @jguaschmarti
 
