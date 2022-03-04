@@ -36,26 +36,30 @@ def getAllRecords(collection):
     return list(response)
 
 
-def getUser(attributes, **query):
+def getUser(attributes=None, **query):
     """
     Return a list of records with `attributes` based on `query`.
     Examples:
+
+        > getUser(age=20)
+        [{all parameters user1}, {...}, ...]
+
         > getUser(['_id', 'email'], username='yikai')
-        > [{'_id': ObjectId('...'), 'email': 'yikai.qiu@upc.edu'}]
+        [{'_id': ObjectId('...'), 'email': 'yikai.qiu@upc.edu'}]
 
         > getUser(['_id'], age=20)
-        > [{'_id', OjectId(1..)}, {'_id', OjectId(2..)}, ...]
+        [{'_id', OjectId(1..)}, {'_id', OjectId(2..)}, ...]
 
     To implement:
         * Ensure that the names of the parameters are well-defined
         * Add a `limit` parameter to limit the size of the output 
-            (already in handler file)
+            (the parameter is already in db_handler.py file)
     """
-    operation = dict([(attr,1) for attr in attributes])
+    operation = dict([(attr,1) for attr in attributes]) if attributes is not None else None
     response = db_handler.queryFind(db_name, db_users, query, operation)
     return list(response)
 
-print(getUser(['_id'], age=20))
+print(getUser(age=20))
 
 
 def getShop(id): 
@@ -78,10 +82,11 @@ def getActive_Promotion(id):
     pass
 
 
-def setUser(): 
+def setUser(username, email, password, phone, gender, age, zip_code, diet, becoins): 
     """
     inserts a user in the table users.
     """
+    # db_handler.queryInsert(db_name, db_users)
     pass
 
 
