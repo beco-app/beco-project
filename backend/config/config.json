@@ -1,0 +1,11 @@
+{
+	"db_username": "",
+	"db_password": "",
+	"db_name": "beco-db",
+	"db_users": "users",
+	"db_shops": "shops",
+	"db_transactions": "transactions",
+	"db_promotions": "promotions",
+	"db_active_promotions": "active_promotions",
+	"db_products": "products"
+}
