@@ -23,47 +23,70 @@ db_handler.hello()
 
 # Setters and Getters
 
-# def getUser(id):
-#     """gets the user as a dictionary from the id of type ObjectId"""
+def getUserIdByUserName(user_name):
+    query = {"username": {"$eq": user_name}}
+    operation = {"_id": 1}
+    response = db_handler.queryFind(db_name, db_users, query, operation=operation, one=True)
+
+    return response
+
+def getAllRecords(collection):
+    query = {}
+    response = db_handler.queryFind(db_name, collection, query)
+    return list(response)
+
+print(getUserIdByUserName('yikai'))
+print(getAllRecords(db_users))
+
+def getUser(id):
+    """gets the user as a dictionary from the id of type ObjectId"""
+    pass
 
 
-# def getShop(id): 
-#     """
-#     gets the shop as a dictionary from the id of type ObjectId
-#     """
+def getShop(id): 
+    """
+    gets the shop as a dictionary from the id of type ObjectId
+    """
+    pass
 
 
-# def getPromotion(id): 
-#     """
-#     gets the promotion as a dictionary from the id of type ObjectId
-#     """
+def getPromotion(id): 
+    """
+    gets the promotion as a dictionary from the id of type ObjectId
+    """
+    pass
 
-# def getActive_Promotion(id): 
-#     """
-#     gets the active promotion as a dictionary from the id of type ObjectId
-#     """
-
-
-# def setUser(...): 
-#     """
-#     inserts a user in the table users.
-#     """
+def getActive_Promotion(id): 
+    """
+    gets the active promotion as a dictionary from the id of type ObjectId
+    """
+    pass
 
 
-# def setShop(...): 
-#     """
-#     inserts a shop in shops
-#     """
+def setUser(): 
+    """
+    inserts a user in the table users.
+    """
+    pass
 
 
-# def setPromotion(...): 
-#     """
-#     inserts a promotion in the table promotion
-#     """
+def setShop(): 
+    """
+    inserts a shop in shops
+    """
+    pass
 
 
-# def setActive_Promotion(...): 
-#     """
-#     inserts an active promotion in the table active_promotion
-#     """
+def setPromotion(): 
+    """
+    inserts a promotion in the table promotion
+    """
+    pass
+
+
+def setActive_Promotion(): 
+    """
+    inserts an active promotion in the table active_promotion
+    """
+    pass
 
