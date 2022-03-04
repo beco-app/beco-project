@@ -105,7 +105,3 @@ def queryAggregate(db_name, collection_name, match, group, sort):
 
 def hello():
 	print("hello")
-
-
-resp = queryFind(db_name, db_users, {})
-print(list(resp))
