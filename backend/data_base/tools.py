@@ -1,6 +1,7 @@
 import pymongo
 import db_handler
 
+print("klk")
 # Setters and Getters
 
 def getUser(id):
