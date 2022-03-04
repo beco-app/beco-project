@@ -1,7 +1,7 @@
 {
 	"db_username": "",
 	"db_password": "",
-	"db_name": "beco-db",
+	"db_name": "beco_db",
 	"db_users": "users",
 	"db_shops": "shops",
 	"db_transactions": "transactions",

@@ -1,6 +1,6 @@
 import pymongo
 from bson.objectid import ObjectId
-import db_handler as db_handler
+import db_handler
 import re
 #import os
 import json
@@ -35,12 +35,27 @@ def getAllRecords(collection):
     response = db_handler.queryFind(db_name, collection, query)
     return list(response)
 
-print(getUserIdByUserName('yikai'))
-print(getAllRecords(db_users))
 
-def getUser(id):
-    """gets the user as a dictionary from the id of type ObjectId"""
-    pass
+def getUser(attributes, **query):
+    """
+    Return a list of records with `attributes` based on `query`.
+    Examples:
+        > getUser(['_id', 'email'], username='yikai')
+        > [{'_id': ObjectId('...'), 'email': 'yikai.qiu@upc.edu'}]
+
+        > getUser(['_id'], age=20)
+        > [{'_id', OjectId(1..)}, {'_id', OjectId(2..)}, ...]
+
+    To implement:
+        * Ensure that the names of the parameters are well-defined
+        * Add a `limit` parameter to limit the size of the output 
+            (already in handler file)
+    """
+    operation = dict([(attr,1) for attr in attributes])
+    response = db_handler.queryFind(db_name, db_users, query, operation)
+    return list(response)
+
+print(getUser(['_id'], age=20))
 
 
 def getShop(id): 
