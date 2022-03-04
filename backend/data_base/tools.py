@@ -1,3 +1,14 @@
+"""
+TO IMPLEMENT:
+    * Ensure that the names of the attributes are well-defined in getters
+    * Check the business rules in setters
+    * Getteres with query that supports >, <, <=, ...
+    * Add a `limit` parameter to limit the size of the output of getters
+        (the parameter is already in db_handler.py file)
+"""
+
+
+from site import getusersitepackages
 import pymongo
 from bson.objectid import ObjectId
 import db_handler
@@ -19,24 +30,35 @@ db_products = config["db_products"]
 
 # Setters and Getters
 
-def getUserIdByUserName(user_name):
-    query = {"username": {"$eq": user_name}}
-    operation = {"_id": 1}
-    response = db_handler.queryFind(db_name, db_users, query, operation=operation, one=True)
+# def getUserIdByUserName(user_name):
+#     query = {"username": {"$eq": user_name}}
+#     operation = {"_id": 1}
+#     response = db_handler.queryFind(db_name, db_users, query, operation=operation, one=True)
 
-    return response
+#     return response
 
-def getAllRecords(collection):
-    query = {}
-    response = db_handler.queryFind(db_name, collection, query)
-    return list(response)
+# def getAllRecords(collection):
+#     query = {}
+#     response = db_handler.queryFind(db_name, collection, query)
+#     return list(response)
 
 
 def getUser(attributes=None, **query):
     """
     Return a list of records with `attributes` based on `query`.
-    Always returns '_id' if possible.
-    Examples:
+    Each of the record from `users` has shape:
+        `_id`, `username`, `email`, `password`, `phone`,
+        `gender`, `age`, `zip_code`, `diet`, `becoins`.
+
+    INPUT:
+        * `attributes`: attributes to catch; all attributes are returned by default
+                        and `_id` is always implicit.
+        * `query`: conditions to search with. See examples below.
+    
+    OUTPUT:
+        * [{'attr':value, ...},...]: list of records that matches `query`.
+
+    EXAMPLES:
         >>> getUser()
         [...all users...]
 
@@ -44,16 +66,12 @@ def getUser(attributes=None, **query):
         [{all parameters user1}, {...}, ...]
 
         >>> getUser(['_id', 'email'], username='yikai')
-        [{'_id': ObjectId('...'), 'email': 'yikai.qiu@upc.edu'}]
+        [{'_id': ObjectId('...'), 'email': '...'}]
 
-        >>> getUser(['email'], age=20)
-        [{'_id': OjectId(1..), 'email':...}, {'_id': OjectId(2..), emial:...}, ...]
+        >>> getUser(['email'], age=20, gender='')
+        [{'_id': OjectId(1..), 'email':...}, {'_id': OjectId(2..), email:...}, ...]
 
-    To implement:
-        * Ensure that the names of the parameters are well-defined
-        * Multifunctional query that supports as >, <, <=, ...
-        * Add a `limit` parameter to limit the size of the output
-            (the parameter is already in db_handler.py file)
+    For more information, see database documentation.
     """
     operation = dict([(attr,1) for attr in attributes]) if attributes is not None else None
     response = db_handler.queryFind(db_name, db_users, query, operation)
@@ -62,15 +80,12 @@ def getUser(attributes=None, **query):
 
 def getShop(attributes=None, **query):
     """
-    Each record of shop has the following attributes:
-        shopname, description, timetable, photo, location, type, product_list, phone
     Return a list of records with `attributes` based on `query`.
-    Examples (see `tools.getUser()`)
-    To implement:
-        * Ensure that the names of the parameters are well-defined
-        * Multifunctional query that supports as >, <, <=, ...
-        * Add a `limit` parameter to limit the size of the output
-            (the parameter is already in db_handler.py file)
+    Each of the record from `shops` has shape:
+        `_id`, `shopname`, `description`, `timetable`, 
+        `photo`, `location`, `type`, `product_list`, `phone`.
+    
+    For more information, see `tools.getUser` and database documentation.
     """
     operation = dict([(attr,1) for attr in attributes]) if attributes is not None else None
     response  = db_handler.queryFind(db_name, db_shops, query, operation)
@@ -79,6 +94,11 @@ def getShop(attributes=None, **query):
 
 def getPromotion(attributes=None, **query): 
     """
+    Return a list of records with `attributes` based on `query`.
+    Each of the record from `promotions` has shape:
+        `_id`, `shop_id`, `description`, `becoins`, `valid_interval`
+    
+    For more information, see `tools.getUser` and database documentation.
     """
     operation = dict([(attr,1) for attr in attributes]) if attributes is not None else None
     response  = db_handler.queryFind(db_name, db_promotions, query, operation)
@@ -86,23 +106,38 @@ def getPromotion(attributes=None, **query):
 
 def getActivePromotion(attributes=None, **query): 
     """
-    gets the active promotion as a dictionary from the id of type ObjectId
+    Return a list of records with `attributes` based on `query`.
+    Each of the record from `promotions` has shape:
+        `_id`, `prom_id`, `user_id`, `valid_until`
+    
+    For more information, see `tools.getUser` and database documentation.
     """
     operation = dict([(attr,1) for attr in attributes]) if attributes is not None else None
     response  = db_handler.queryFind(db_name, db_active_promotions, query, operation)
     return list(response)
-    pass
 
 
 def setUser(username, email, password, phone, gender, age, zip_code, diet, becoins): 
     """
-    Insert a user in the collection users.
-    The arguments are wrote explicitely in the function to avoid typos in the fields.
+    Insert a record of user in the collection `users`.
+
+    The arguments are wrote explicitely in the function to avoid typos when inserting.
     The attribute `_id` cannot be manually set.
-    
-    Returns: a tuple 
-        - (True, ObjectId) if the insertion succeed
-        - (False, None) otherwise
+
+    INPUT:
+        * `username`:   str, unique?
+        * `email`:      str
+        * `password`:   str, encrypted
+        * `phone`:      str, 9 digit
+        * `gender`:     str, 'M' or 'F' (or 'O'->others?)
+        * `age`:        int, positive
+        * `zip_code`:   str, 5 digit
+        * `diet`:       str
+        * `becoins`:    float, positive
+
+    Returns:
+        * (True, ObjectId) if the insertion succeed
+        * (False, None) otherwise
     """
 
     if getUser(['_id'], username=username): # there is only one username per user
@@ -119,7 +154,24 @@ def setUser(username, email, password, phone, gender, age, zip_code, diet, becoi
 
 def setShop(shopname, description, timetable, photo, location, _type, product_list, phone): 
     """
-    inserts a shop in shops
+    Insert a record of shop in the collection `shops`.
+
+    The arguments are wrote explicitely in the function to avoid typos when inserting.
+    The attribute `_id` cannot be manually set.
+
+    INPUT:
+        * `shopname`:       str, unique?
+        * `description`:    str
+        * `timetable`:      {'Mo':[[h,m,h,m],[...]],'Tu':...,...}; 0<=h<=23, 0<=m<=59 int
+        * `photo`:          str
+        * `location`:       [float, float], longitude and latitude
+        * `type`:           str, 'Restaurant', 'FruitsAndVegetables', ...
+        * `product_list`:   list of `product_id`
+        * `phone`:          str, 9 digit
+
+    Returns:
+        * (True, ObjectId) if the insertion succeed
+        * (False, None) otherwise
     """
     
     document = {
@@ -132,7 +184,20 @@ def setShop(shopname, description, timetable, photo, location, _type, product_li
 
 def setPromotion(shopid, description, becoins, valid_interval): 
     """
-    inserts a promotion in the table promotion
+    Insert a record of promotion in the collection `promotions`.
+
+    The arguments are wrote explicitely in the function to avoid typos when inserting.
+    The attribute `_id` cannot be manually set.
+
+    INPUT:
+        * `shop_id`:        ObjectId, should be in collection `shop`
+        * `description`:    str
+        * `becoins`:        int, positive
+        * `valid_interval`: [float, float], 
+
+    Returns:
+        * (True, ObjectId) if the insertion succeed
+        * (False, None) otherwise
     """
     document = {
         'shopid'   : shopid,  'description'   : description, 
@@ -144,7 +209,19 @@ def setPromotion(shopid, description, becoins, valid_interval):
 
 def setActivePromotion(prom_id, user_id, valid_until): 
     """
-    inserts an active promotion in the table active_promotion
+    Insert a record of promotion in the collection `promotions`.
+
+    The arguments are wrote explicitely in the function to avoid typos when inserting.
+    The attribute `_id` cannot be manually set.
+
+    INPUT:
+        * `prom_id`:        ObjectId, should be in collection `promotions`
+        * `user_id`:        ObjectId, should be in collection `users`
+        * `valid_until`:    float, timestamp
+
+    Returns:
+        * (True, ObjectId) if the insertion succeed
+        * (False, None) otherwise
     """
     document = {
         'prom_id': prom_id,  'user_id': user_id, 'valid_until': valid_until
@@ -154,5 +231,5 @@ def setActivePromotion(prom_id, user_id, valid_until):
 
 if __name__ == '__main__':
     # print('main')
-    print(getShop())
+    print(getUser())
     # print(setShop('Perruqueria Casas', '404', '', '', [40.3879, 2.16992], 'Barber', [], '600100290'))
