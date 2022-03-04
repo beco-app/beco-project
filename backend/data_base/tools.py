@@ -84,9 +84,16 @@ def getActive_Promotion(id):
 
 def setUser(username, email, password, phone, gender, age, zip_code, diet, becoins): 
     """
-    inserts a user in the table users.
+    Insert a user in the collection users.
+    The arguments i
     """
-    # db_handler.queryInsert(db_name, db_users)
+    document = {
+        'username': username,  'email': email, 'password': password, 'phone': phone, 
+        'gender'  : gender,      'age': age,   'zip_code': zip_code, 'diet' : diet, 
+        'becoins' : becoins
+    }
+
+    db_handler.queryInsert(db_name, db_users, document, one=True)
     pass
 
 
