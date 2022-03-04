@@ -3,3 +3,4 @@
 *.ipynb_checkpoints*
 *.env*
 *.pem*
+*config*.json
