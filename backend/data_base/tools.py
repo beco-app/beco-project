@@ -84,7 +84,7 @@ def getShop(attributes=None, **query):
     Return a list of records with `attributes` based on `query`.
     Each of the record from `shops` has shape:
         `_id`, `shopname`, `description`, `timetable`, 
-        `photo`, `location`, `type`, `product_list`, `phone`.
+        `photo`, `location`, `adress`, `type`, `product_list`, `phone`.
     
     For more information, see `tools.getUser`,`tools.setShop` and database documentation.
     """
@@ -169,7 +169,8 @@ def setUser(username, email, password, phone, gender, age, zip_code, diet, becoi
     return response.acknowledged, response.inserted_id
 
 
-def setShop(shopname, description, timetable, photo, location, _type, product_list, phone): 
+def setShop(shopname, description, timetable, photo, location, adress, _type, product_list, phone): 
+
     """
     Insert a record of shop in the collection `shops`.
 
@@ -182,6 +183,7 @@ def setShop(shopname, description, timetable, photo, location, _type, product_li
         * `timetable`:      {'Mo':[[h,m,h,m],[...]],'Tu':...,...}; 0<=h<=23, 0<=m<=59 int
         * `photo`:          str
         * `location`:       [float, float], longitude and latitude
+        * `adress`:         str, adress of the shop
         * `type`:           str, 'Restaurant', 'FruitsAndVegetables', ...
         * `product_list`:   list of `product_id`
         * `phone`:          str, 9 digit
@@ -194,7 +196,7 @@ def setShop(shopname, description, timetable, photo, location, _type, product_li
     """
     document = {
         'shopname': shopname,  'description': description, 'timetable': timetable,    'photo': photo, 
-        'location': location,         'type': _type,    'product_list': product_list, 'phone': phone
+        'location': location, 'adress':adress, 'type': _type, 'product_list': product_list, 'phone': phone
     }
     response = db_handler.queryInsert(db_name, db_shops, document, one=True)
     return response.acknowledged, response.inserted_id
