@@ -170,6 +170,7 @@ def setUser(username, email, password, phone, gender, age, zip_code, diet, becoi
 
 
 def setShop(shopname, description, timetable, photo, location, adress, _type, product_list, phone): 
+
     """
     Insert a record of shop in the collection `shops`.
 
