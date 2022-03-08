@@ -11,3 +11,8 @@ Connection command:
 ```
 ssh -i BECO.pem ubuntu@3.145.208.2
 ```
+
+## Connection to remote mongo instance
+
+- **Tunnel**: ``` ssh -i BECO.pem -N -L 27017:localhost:27017 ubuntu@3.145.208.2 ```
+- **Python**: ``` mongo = pymongo.MongoClient(username=db_username, password=db_password)
