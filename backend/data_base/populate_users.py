@@ -14,29 +14,53 @@ from hashlib import pbkdf2_hmac
 #   diet:	  str
 #   becoins:	  double
 
-def next_user():
+def user_gen(n):
+    """
+    Generator of synthetic users. The random seed is set. 
+
+    INPUT: number of users.
+
+    EXAMPLE:
+        >>> users = user_gen(3)
+        >>> next(mygenerator)
+        {'username':'user1',...}
+        >>> next(mygenerator)
+        {'username':'user2',...}
+
+        >>> users = user_gen(5)
+        >>> list(users)
+        [{'username':'user1', ...}, ..., {'username':'user5', ...}]
+    """
+
     def next_username():
+        """Generator of user names"""
         i = 0
         while True:
             i = i + 1
-            yield 'user'+str(i)
+            yield 'user' + str(i)
 
     def hash_password(pwd, salt):
-        return pbkdf2_hmac('sha256', pwd, salt, 10000)
+        """
+        Return the hashed password.
+
+        INPUT. pwd: str; salf: binary
+        OUTPUT. binary.
+        """
+        return pbkdf2_hmac('sha256', pwd.encode('utf-8'), salt, 10000)
 
     random.seed(123456789)
 
     # https://barbend.com/types-of-diets/#PD
-    diets = ['No preference', 'Vegan','Carnivore']
+    diets = ['No preference', 'Vegan', 'Carnivore']
     username_gen = next_username()
 
-    while True:
+    for i in range(n):
         username    = next(username_gen)
         email       = username + '@email.com'
-        password    = hash_password(bin(b'pwd'), 123456789)
-        phone       = '6' + str(random.randrange(0,99_999_999)).zfill(8)
+        password    = hash_password(username, b'123456789')
+        phone       = '8' + str(random.randrange(0,99_999_999)).zfill(8)
         gender      = 'F' if random.uniform(0,1) >= 0.5 else 'M'
-        age         = max(int(random.gauss(mu=20,sigma=5)),10)
+        age         = max(int(random.gauss(mu=20, sigma=5)), 10)
         zip_code    = '080' + str(random.randint(10,42))
         diet        = diets[random.randint(0,len(diets)-1)]
         becoins     = random.randint(0, 1000)
@@ -50,8 +74,7 @@ def next_user():
 
 
 if __name__ == '__main__':
-    user_gen = next_user()
-    for i in range(100):
-        temp = next(user_gen)
-        print(temp)
+    users = user_gen(10)
+    for user in users:
+        print(setUser(**user))
 
