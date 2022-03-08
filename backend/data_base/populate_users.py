@@ -1,6 +1,6 @@
 from tools import *
 import random
-from hashlib import 
+from hashlib import pbkdf2_hmac
 
 ## Definition of users
 ## Each user has attributes:  
@@ -21,8 +21,8 @@ def next_user():
             i = i + 1
             yield 'user'+str(i)
 
-    def hash_password(pwd):
-        return 
+    def hash_password(pwd, salt):
+        return pbkdf2_hmac('sha256', pwd, salt, 10000)
 
     random.seed(123456789)
 
@@ -32,8 +32,8 @@ def next_user():
 
     while True:
         username    = next(username_gen)
-        email       = username+'@email.com'
-        password    = 'pwd'+username
+        email       = username + '@email.com'
+        password    = hash_password(bin(b'pwd'), 123456789)
         phone       = '6' + str(random.randrange(0,99_999_999)).zfill(8)
         gender      = 'F' if random.uniform(0,1) >= 0.5 else 'M'
         age         = max(int(random.gauss(mu=20,sigma=5)),10)
