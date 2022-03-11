@@ -8,13 +8,12 @@ TO IMPLEMENT:
         (the parameter is already in db_handler.py file)
 """
 
-
 from site import getusersitepackages
 import pymongo
 from bson.objectid import ObjectId
 import db_handler
 import re
-#import os
+# import os
 import json
 
 # Globals
@@ -28,6 +27,7 @@ db_transactions = config["db_transactions"]
 db_promotions = config["db_promotions"]
 db_active_promotions = config["db_active_promotions"]
 db_products = config["db_products"]
+
 
 # Setters and Getters
 
@@ -55,7 +55,7 @@ def getUser(attributes=None, **query):
         * `attributes`: attributes to catch; all attributes are returned by default
                         and `_id` is always implicit.
         * `query`: conditions to search with. See examples below.
-    
+
     OUTPUT:
         * [{'attr':value, ...},...]: list of records that matches `query`.
 
@@ -74,7 +74,7 @@ def getUser(attributes=None, **query):
 
     For more information, see `tool.setUser` and database documentation.
     """
-    operation = dict([(attr,True) for attr in attributes]) if attributes is not None else None
+    operation = dict([(attr, True) for attr in attributes]) if attributes is not None else None
     response = db_handler.queryFind(db_name, db_users, query, operation)
     return list(response)
 
@@ -83,38 +83,39 @@ def getShop(attributes=None, **query):
     """
     Return a list of records with `attributes` based on `query`.
     Each of the record from `shops` has shape:
-        `_id`, `shopname`, `description`, `timetable`, 
+        `_id`, `shopname`, `description`, `timetable`,
         `photo`, `location`, `adress`, `type`, `product_list`, `phone`.
-    
+
     For more information, see `tools.getUser`,`tools.setShop` and database documentation.
     """
-    operation = dict([(attr,True) for attr in attributes]) if attributes is not None else None
-    response  = db_handler.queryFind(db_name, db_shops, query, operation)
+    operation = dict([(attr, True) for attr in attributes]) if attributes is not None else None
+    response = db_handler.queryFind(db_name, db_shops, query, operation)
     return list(response)
 
 
-def getPromotion(attributes=None, **query): 
+def getPromotion(attributes=None, **query):
     """
     Return a list of records with `attributes` based on `query`.
     Each of the record from `promotions` has shape:
         `_id`, `shop_id`, `description`, `becoins`, `valid_interval`
-    
+
     For more information, see `tools.getUser`, `tools.setPromotion` and database documentation.
     """
-    operation = dict([(attr,True) for attr in attributes]) if attributes is not None else None
-    response  = db_handler.queryFind(db_name, db_promotions, query, operation)
+    operation = dict([(attr, True) for attr in attributes]) if attributes is not None else None
+    response = db_handler.queryFind(db_name, db_promotions, query, operation)
     return list(response)
 
-def getActivePromotion(attributes=None, **query): 
+
+def getActivePromotion(attributes=None, **query):
     """
     Return a list of records with `attributes` based on `query`.
     Each of the record from `promotions` has shape:
         `_id`, `prom_id`, `user_id`, `valid_until`
-    
+
     For more information, see `tools.getUser` and database documentation.
     """
-    operation = dict([(attr,True) for attr in attributes]) if attributes is not None else None
-    response  = db_handler.queryFind(db_name, db_active_promotions, query, operation)
+    operation = dict([(attr, True) for attr in attributes]) if attributes is not None else None
+    response = db_handler.queryFind(db_name, db_active_promotions, query, operation)
     return list(response)
 
 
@@ -124,15 +125,15 @@ def getTransaction(attributes=None, **query):
     Each of the record from `transactions` has shape:
         `_id`, `shop_id`, `user_id`, `timestamp`,
         `payment`, `becoin_gained`
-    
+
     For more information, see `tools.getUser`, `tools.setTransaction` and database documentation.
     """
-    operation = dict([(attr,1) for attr in attributes]) if attributes is not None else None
-    response  = db_handler.queryFind(db_name, db_transactions, query, operation)
+    operation = dict([(attr, 1) for attr in attributes]) if attributes is not None else None
+    response = db_handler.queryFind(db_name, db_transactions, query, operation)
     return list(response)
 
 
-def setUser(username, email, password, phone, gender, age, zip_code, diet, becoins): 
+def setUser(data):
     """
     Insert a record of user in the collection `users`.
 
@@ -157,20 +158,19 @@ def setUser(username, email, password, phone, gender, age, zip_code, diet, becoi
     See database documentation for more information.
     """
 
-    if getUser(['_id'], username=username): # there is only one username per user
+    if getUser(['_id'], username=data['username']):  # there is only one username per user
         return (False, None)
 
     document = {
-        'username': username,  'email': email, 'password': password, 'phone': phone, 
-        'gender'  : gender,      'age': age,   'zip_code': zip_code, 'diet' : diet, 
-        'becoins' : becoins
+        'username': data["username"], 'email': data["email"], 'password': data["password"], 'phone': data["phone"],
+        'gender': data["gender"], 'age': data["age"], 'zip_code': data["zip_code"], 'diet': data["diet"],
+        'becoins': data["becoins"], "saved_prom" : data["saved_prom"]
     }
     response = db_handler.queryInsert(db_name, db_users, document, one=True)
     return response.acknowledged, response.inserted_id
 
 
-def setShop(shopname, description, timetable, photo, location, adress, _type, product_list, phone): 
-
+def setShop(data):
     """
     Insert a record of shop in the collection `shops`.
 
@@ -195,14 +195,15 @@ def setShop(shopname, description, timetable, photo, location, adress, _type, pr
     See database documentation for more information.
     """
     document = {
-        'shopname': shopname,  'description': description, 'timetable': timetable,    'photo': photo, 
-        'location': location, 'adress':adress, 'type': _type, 'product_list': product_list, 'phone': phone
+        'shopname': data["shopname"], 'description': data["description"], 'timetable': data["timetable"],
+        'photo': data["photo"], 'location': data["location"], 'adress': data["adress"], 'type': data["type"],
+        'product_list': data["product_list"], 'phone': data["phone"]
     }
     response = db_handler.queryInsert(db_name, db_shops, document, one=True)
     return response.acknowledged, response.inserted_id
 
 
-def setPromotion(shopid, description, becoins, valid_interval): 
+def setPromotion(data):
     """
     Insert a record of promotion in the collection `promotions`.
 
@@ -222,14 +223,14 @@ def setPromotion(shopid, description, becoins, valid_interval):
     See database documentation for more information.
     """
     document = {
-        'shopid'   : shopid,  'description'   : description, 
-        'timetable': becoins, 'valid_interval': valid_interval
+        'shopid': data["shopid"], 'description': data["description"],
+        'timetable': data["timetable"], 'valid_interval': data["valid_interval"]
     }
     response = db_handler.queryInsert(db_name, db_promotions, document, one=True)
     return response.acknowledged, response.inserted_id
 
 
-def setActivePromotion(prom_id, user_id, valid_until): 
+def setActivePromotion(data):
     """
     Insert a record of promotion in the collection `promotions`.
 
@@ -248,13 +249,13 @@ def setActivePromotion(prom_id, user_id, valid_until):
     See database documentation for more information.
     """
     document = {
-        'prom_id': prom_id,  'user_id': user_id, 'valid_until': valid_until
+        'prom_id': data["prom_id"], 'user_id': data["user_id"], 'valid_until': data["valid_until"]
     }
     response = db_handler.queryInsert(db_name, db_active_promotions, document, one=True)
     return response.acknowledged, response.inserted_id
 
 
-def setTransaction(shop_id, user_id, timestamp, promotion_used, payment, becoin_gained): 
+def setTransaction(data):
     """
     Insert a record of promotion in the collection `promotions`.
 
@@ -274,11 +275,12 @@ def setTransaction(shop_id, user_id, timestamp, promotion_used, payment, becoin_
         * (False, None) otherwise
     """
     document = {
-        'shop_id':        shop_id,        'user_id': user_id, 'timestamp'    : timestamp, 
-        'promotion_used': promotion_used, 'payment': payment, 'becoin_gained': becoin_gained
+        'shop_id': data["shop_id"], 'user_id': data["user_id"], 'timestamp': data["timestamp"],
+        'promotion_used': data["promotion_used"], 'payment': data["payment"], 'becoin_gained': data["becoin_gained"]
     }
     response = db_handler.queryInsert(db_name, db_transactions, document, one=True)
     return response.acknowledged, response.inserted_id
+
 
 if __name__ == '__main__':
     # print('main')
