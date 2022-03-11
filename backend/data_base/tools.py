@@ -169,8 +169,7 @@ def setUser(username, email, password, phone, gender, age, zip_code, diet, becoi
     return response.acknowledged, response.inserted_id
 
 
-def setShop(shopname, description, timetable, photo, location, adress, _type, product_list, phone): 
-
+def setShop(data):
     """
     Insert a record of shop in the collection `shops`.
 
@@ -195,8 +194,9 @@ def setShop(shopname, description, timetable, photo, location, adress, _type, pr
     See database documentation for more information.
     """
     document = {
-        'shopname': shopname,  'description': description, 'timetable': timetable,    'photo': photo, 
-        'location': location, 'adress':adress, 'type': _type, 'product_list': product_list, 'phone': phone
+        'shopname': data["shopname"],  'description': data["description"], 'timetable': data["timetable"],
+        'photo': data["photo"], 'location': data["location"], 'adress':data["adress"], 'type': data["type"],
+        'product_list': data["product_list"], 'phone': data["phone"]
     }
     response = db_handler.queryInsert(db_name, db_shops, document, one=True)
     return response.acknowledged, response.inserted_id
