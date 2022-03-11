@@ -77,7 +77,7 @@ def user_gen(n):
 
 
 if __name__ == '__main__':
-    users = user_gen(10)
+    users = user_gen(1000)
     for user in users:
         print(setUser(user))
 

@@ -158,7 +158,7 @@ def setUser(data):
     See database documentation for more information.
     """
 
-    if getUser(['_id'], username=username):  # there is only one username per user
+    if getUser(['_id'], username=data['username']):  # there is only one username per user
         return (False, None)
 
     document = {
