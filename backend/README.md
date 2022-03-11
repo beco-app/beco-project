@@ -9,7 +9,7 @@ Make sure you have the correct permissions over the `pem` file. Type `chmod go-r
 
 Connection command:
 ```
-ssh -i BECO.pem ubuntu@3.145.208.2
+ssh -i BECO.pem ubuntu@18.219.12.116
 ```
 
 ## Connection to remote mongo instance
@@ -17,5 +17,5 @@ ssh -i BECO.pem ubuntu@3.145.208.2
 - **Tunnel**: 
 
 ``` 
-ssh -i BECO.pem -N -L 27017:localhost:27017 ubuntu@3.145.208.2  
+ssh -i BECO.pem -N -L 27017:localhost:27017 ubuntu@18.219.12.116
 ```
