@@ -195,13 +195,8 @@ def setShop(data):
     See database documentation for more information.
     """
     document = {
-<<<<<<< HEAD
-        'shopname': data["shopname"], 'description': data["description"], 'timetable': data["timetable"],
-        'photo': data["photo"], 'location': data["location"], 'adress': data["adress"], 'type': data["type"],
-=======
         'shopname': data["shopname"],  'description': data["description"], 'timetable': data["timetable"],
         'photo': data["photo"], 'location': data["location"], 'adress':data["adress"], 'type': data["type"],
->>>>>>> params -> dict
         'product_list': data["product_list"], 'phone': data["phone"]
     }
     response = db_handler.queryInsert(db_name, db_shops, document, one=True)
