@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+//import 'package:firebase_auth/firebase_auth.dart';
 
 class RegisterView extends StatefulWidget {
   const RegisterView({Key? key}) : super(key: key);
@@ -56,7 +57,7 @@ class _RegisterViewState extends State<RegisterView> {
             onPressed: () async{
               final email = _email.text;
               final password = _password.text;
-              // final userCredential = token del marc
+              //FirebaseAuth.instance.createUserWithEmailAndPassword()
             },
             child: const Text ('Register'),
           ),
