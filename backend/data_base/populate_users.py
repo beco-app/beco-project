@@ -53,8 +53,9 @@ def user_gen(n):
     # https://barbend.com/types-of-diets/#PD
     diets = ['No preference', 'Vegan', 'Carnivore']
     username_gen = next_username()
+    proms = getPromotion()
 
-    for i in range(n):
+    for _ in range(n):
         username    = next(username_gen)
         email       = username + '@email.com'
         password    = hash_password(username, b'123456789')
@@ -64,10 +65,12 @@ def user_gen(n):
         zip_code    = '080' + str(random.randint(10,42))
         diet        = diets[random.randint(0,len(diets)-1)]
         becoins     = random.randint(0, 1000)
+        saved_prom  = random.choices(proms, k=random.randint(0,len(proms))) if len(proms) else []
 
         user = {
             'username':username, 'email':email, 'password':password, 'phone':phone,
-            'gender':gender,     'age':age,     'zip_code':zip_code, 'diet':diet, 'becoins':becoins
+            'gender':gender,     'age':age,     'zip_code':zip_code, 'diet':diet, 'becoins':becoins,
+            'saved_prom':saved_prom
         }
 
         yield user 
@@ -76,5 +79,5 @@ def user_gen(n):
 if __name__ == '__main__':
     users = user_gen(10)
     for user in users:
-        print(setUser(**user))
+        print(setUser(user))
 
