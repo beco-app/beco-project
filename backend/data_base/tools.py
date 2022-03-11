@@ -194,9 +194,9 @@ def setShop(data):
     See database documentation for more information.
     """
     document = {
-        'shopname': data["shopname"],  'description': data["description"], 'timetable': data["timetable"],
-        'photo': data["photo"], 'location': data["location"], 'adress':data["adress"], 'type': data["type"],
-        'product_list': data["product_list"], 'phone': data["phone"]
+        'shopname': data["shopname"],  'description': data["description"], 'timetable': data["timetable"], 'web': data["web"],
+        'photo': data["photo"], 'location': data["location"], 'adress':data["adress"], 'district': data["district"],
+        'neighbourhood': data["neighbourhood"], 'type': data["type"], 'product_list': data["product_list"], 'phone': data["phone"]
     }
     response = db_handler.queryInsert(db_name, db_shops, document, one=True)
     return response.acknowledged, response.inserted_id
