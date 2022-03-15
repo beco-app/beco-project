@@ -24,3 +24,11 @@ ssh -i BECO.pem ubuntu@18.219.12.116
 ``` 
 ssh -i BECO.pem -N -L 27017:localhost:27017 ubuntu@18.219.12.116
 ```
+
+
+## Restart connection to mongo
+
+```
+sudo systemctl stop mongod
+sudo systemctl start mongod
+```
