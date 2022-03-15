@@ -13,6 +13,7 @@ def sensors_api_query(token, lat1, lng1, lat2, lng2):
     return json.loads(file.text) # ara res és un json (diccionari de diccionaris)
 
 def api_response_parsing(response):
+    print('prova')
     pass
 
 def update_all_stations():
