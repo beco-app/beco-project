@@ -223,7 +223,7 @@ def setPromotion(data):
     See database documentation for more information.
     """
     document = {
-        'shopid': data["shopid"], 'description': data["description"],
+        'shop_id': data["shop_id"], 'description': data["description"],
         'timetable': data["timetable"], 'valid_interval': data["valid_interval"]
     }
     response = db_handler.queryInsert(db_name, db_promotions, document, one=True)
