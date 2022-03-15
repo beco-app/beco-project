@@ -12,12 +12,16 @@ def sensors_api_query(token, lat1, lng1, lat2, lng2):
     file = requests.get(link)
     return json.loads(file.text) # ara res és un json (diccionari de diccionaris)
 
+def api_response_parsing(response):
+    pass
+
 def update_all_stations():
     with open('./bounding_boxes.json') as json_file:
         bounding_boxes = json.load(json_file)
 
     for bb in tqdm(bounding_boxes):
         print(sensors_api_query(token, bb['lat1'], bb['lng1'], bb['lat2'], bb['lng2']))
+        api_response_parsing(sensors_api_query(token, bb['lat1'], bb['lng1'], bb['lat2'], bb['lng2']))
 
 
 def main():
