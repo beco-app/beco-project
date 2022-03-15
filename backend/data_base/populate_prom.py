@@ -1,6 +1,6 @@
 from tools import *
 import random
-from datetime import timedelta,date,datetime
+from datetime import timedelta,date
 import time
 
 
@@ -23,6 +23,9 @@ def prom_gen(n):
     """
 
     shops = getShop()
+    
+    assert len(shops) > 0
+
     for shop in random.choices(shops, k=n):
         shop_id = shop['_id']
         description = "This is a discount."
