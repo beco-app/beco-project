@@ -224,7 +224,7 @@ def setPromotion(data):
     """
     document = {
         'shop_id': data["shop_id"], 'description': data["description"],
-        'timetable': data["timetable"], 'valid_interval': data["valid_interval"]
+        'becoins': data["becoins"], 'valid_interval': data["valid_interval"]
     }
     response = db_handler.queryInsert(db_name, db_promotions, document, one=True)
     return response.acknowledged, response.inserted_id
