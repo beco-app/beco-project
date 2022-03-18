@@ -76,8 +76,11 @@ def user_gen(n):
         yield user 
 
 
-if __name__ == '__main__':
-    users = user_gen(1000)
+def populate_users(n):
+    users = user_gen(n)
     for user in users:
         print(setUser(user))
+
+if __name__ == '__main__':
+    populate_users(1000)
 

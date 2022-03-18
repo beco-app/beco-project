@@ -84,6 +84,28 @@ def _get(collection, attributes=None, **query):
     return list(response)
 
 
+def _get(collection, attributes, **query):
+    """
+    Base function for getters.
+
+    Input:
+        * `collection`: string, the name of the collection
+        * `attributes`: the attributes to catch; `_id` is always given
+        * `query`: conditions to search with.
+
+    Output:
+        * [{'attr':value, ...},...]: list of records that matches `query`.
+    """
+    operation = dict([(attr, True) for attr in attributes]) if attributes is not None else None
+    response = db_handler.queryFind(db_name, collection, query, operation)
+    return list(response)
+
+def _attrs_in(attributes, collection):
+    """
+    Return if all attributes are well defined in the collection
+    """
+    return all([key in collection_attributes[collection] for key in attributes])
+
 
 def getUser(attributes=None, **query):
     """
