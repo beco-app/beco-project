@@ -25,7 +25,11 @@ def active_prom_gen(n):
         }
         yield active_prom
 
-if __name__ == '__main__':
-    active_proms = active_prom_gen(10)
+
+def populate_active_prom(n):
+    active_proms = active_prom_gen(n)
     for ap in active_proms:
         print(setActivePromotion(ap))
+
+if __name__ == '__main__':
+    populate_active_prom(10)
