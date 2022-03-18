@@ -52,7 +52,14 @@ collection_attributes = {
 }
 
 
-def _get(collection, attributes, **query):
+def _attrs_in(attributes, collection):
+    """
+    Return if all attributes are well defined in the collection
+    """
+    return all([key in collection_attributes[collection] for key in attributes])
+
+
+def _get(collection, attributes=None, **query):
     """
     Base function for getters.
 
@@ -64,15 +71,18 @@ def _get(collection, attributes, **query):
     Output:
         * [{'attr':value, ...},...]: list of records that matches `query`.
     """
+
+    if isinstance(attributes, str):
+        attributes = [attributes]
+    
+    assert _attrs_in(attributes, collection) if attributes is not None else True
+    assert _attrs_in(query.keys(), collection)
+    
     operation = dict([(attr, True) for attr in attributes]) if attributes is not None else None
     response = db_handler.queryFind(db_name, collection, query, operation)
+
     return list(response)
 
-def _attrs_in(attributes, collection):
-    """
-    Return if all attributes are well defined in the collection
-    """
-    return all([key in collection_attributes[collection] for key in attributes])
 
 
 def getUser(attributes=None, **query):
@@ -109,15 +119,8 @@ def getUser(attributes=None, **query):
 
     For more information, see `tool.setUser` and database documentation.
     """
-
-    if isinstance(attributes, str):
-        attributes = [attributes]
-    
-    assert _attrs_in(attributes, db_users) if attributes is not None else True
-    assert _attrs_in(query.keys(), db_users)
     return _get(db_users, attributes, **query)
     
-
 
 def getShop(attributes=None, **query):
     """
@@ -128,11 +131,6 @@ def getShop(attributes=None, **query):
 
     For more information, see `tools.getUser`,`tools.setShop` and database documentation.
     """
-    if isinstance(attributes, str):
-        attributes = [attributes]
-    
-    assert _attrs_in(attributes, db_shops) if attributes is not None else True
-    assert _attrs_in(query.keys(), db_shops)
     return _get(db_shops, attributes, **query)
 
 
@@ -144,9 +142,7 @@ def getPromotion(attributes=None, **query):
 
     For more information, see `tools.getUser`, `tools.setPromotion` and database documentation.
     """
-    operation = dict([(attr, True) for attr in attributes]) if attributes is not None else None
-    response = db_handler.queryFind(db_name, db_promotions, query, operation)
-    return list(response)
+    return _get(db_promotions, attributes, **query)
 
 
 def getActivePromotion(attributes=None, **query):
@@ -157,9 +153,7 @@ def getActivePromotion(attributes=None, **query):
 
     For more information, see `tools.getUser` and database documentation.
     """
-    operation = dict([(attr, True) for attr in attributes]) if attributes is not None else None
-    response = db_handler.queryFind(db_name, db_active_promotions, query, operation)
-    return list(response)
+    return _get(db_active_promotions, attributes, **query)
 
 
 def getTransaction(attributes=None, **query):
@@ -171,9 +165,7 @@ def getTransaction(attributes=None, **query):
 
     For more information, see `tools.getUser`, `tools.setTransaction` and database documentation.
     """
-    operation = dict([(attr, 1) for attr in attributes]) if attributes is not None else None
-    response = db_handler.queryFind(db_name, db_transactions, query, operation)
-    return list(response)
+    return _get(db_transactions, attributes, **query)
 
 
 def setUser(data):
@@ -184,8 +176,8 @@ def setUser(data):
     The attribute `_id` cannot be manually set.
 
     INPUT:
-        * `username`:   str, unique?
-        * `email`:      str
+        * `username`:   str, unique
+        * `email`:      str, unique
         * `password`:   str, encrypted
         * `phone`:      str, 9 digit
         * `gender`:     str, 'M' or 'F' (or 'O'->others?)
@@ -194,14 +186,21 @@ def setUser(data):
         * `diet`:       str
         * `becoins`:    float, positive
 
-    Returns:
+    OUTPUT:
         * (True, ObjectId) if the insertion succeed
         * (False, None) otherwise
+
+    EXAMPLES:
+        >>> setUser( {'username':'user1', 'email':'user1@mail.com', ..., 'becoins'=0} )
+        (True, ObjectId(...))
+        >>> setUser( {'username':'user1', 'email':'user1@mail.com', ..., 'becoins'=0} )
 
     See database documentation for more information.
     """
 
     if getUser(['_id'], username=data['username']):  # there is only one username per user
+        return (False, None)
+    if getUser(['_id'], email=data['email']):
         return (False, None)
 
     document = {
@@ -324,56 +323,83 @@ def setTransaction(data):
     response = db_handler.queryInsert(db_name, db_transactions, document, one=True)
     return response.acknowledged, response.inserted_id
 
-def _update(collection, _id, **setters):
+def _update(collection, _id, **updates):
     """
-    Base function to update a single document with given _id.
+    Base function to update a single document with given `_id` and `collection`.
     Only resets values.
 
-    Input:
+    INPUT:
         * `collection`: string, the name of the collection
         * `_id`: ObjectId of the document to update
         * `**setters`: values to set
     
-    Output:
+    OUTPUT:
         * matches_count: the number of matched instances
         * modified_count: the number of modified instances.
         In a normal run, these values should be (1,1)
     """
+
+    assert '_id' not in updates.keys()
+    assert _attrs_in(updates.keys(), collection)
+
     query = {'_id':_id}
-    operation = {'$set': setters}
+    operation = {'$set': updates}
     result = db_handler.queryUpdate(db_name, collection, query, operation, one=True)
     return result.matched_count, result.modified_count
 
 def updateUser(_id, **updates):
     """
-    Updates a single `user` given its _id.
+    Updates a single `user` given its `_id`.
+
+    INPUT:
+        * `_id`: ObjectId that identifies the user
+        * `updates`: the values of the parameters to be set
+
+    OUTPUT:
+        * matches_count: the number of matched instances
+        * modified_count: the number of modified instances.
 
     Examples:
         >>> updateUser(getUser()[0]['_id], username='newname')
         1,1
         >>> user1 = getUser()[0]
         >>> updateUser(user1['_id], becoins=user1['becoins']-100)
+        1,1
+        >>> updateUser(user1['_id'], _id=1)
+        <assertionError>
     """
-    # assert all([key in ['username', ] for key in updates])
+
+    ## this is O(number of users) !!!!!!!!!!!!!!!!!!!!
+    if 'username' in updates:
+        usernames = [user['username'] for user in getUser('username')]
+        assert updates['username'] not in usernames
+    if 'email' in updates:
+        emails = [user['email'] for user in getUser('email')]
+        assert updates['email'] not in emails
+
     return _update(db_users, _id, **updates)
 
 def updateShop(_id, **updates):
     """
+    See `updateUser()`.
     """
     return _update(db_shops, _id, **updates)
 
 def updatePromotion(_id, **updates):
     """
+    See `updateUser()`.
     """
     return _update(db_promotions, _id, **updates)
 
 def updateActivePromotion(_id, **updates):
     """
+    See `updateUser()`.
     """
     return _update(db_active_promotions, _id, **updates)
 
 def updateTransaction(_id, **updates):
     """
+    See `updateUser()`.
     """
     return _update(db_transactions, _id, **updates)
 
