@@ -30,7 +30,6 @@ db_promotions = config["db_promotions"]
 db_active_promotions = config["db_active_promotions"]
 db_products = config["db_products"]
 
-
 collection_attributes = {
     db_users: [
         '_id','username','email', 'password', 'phone','gender',
@@ -52,19 +51,6 @@ collection_attributes = {
     ]
 }
 
-# Setters and Getters
-
-# def getUserIdByUserName(user_name):
-#     query = {"username": {"$eq": user_name}}
-#     operation = {"_id": 1}
-#     response = db_handler.queryFind(db_name, db_users, query, operation=operation, one=True)
-
-#     return response
-
-# def getAllRecords(collection):
-#     query = {}
-#     response = db_handler.queryFind(db_name, collection, query)
-#     return list(response)
 
 def _get(collection, attributes, **query):
     """
@@ -368,8 +354,7 @@ def updateUser(_id, **updates):
         >>> user1 = getUser()[0]
         >>> updateUser(user1['_id], becoins=user1['becoins']-100)
     """
-
-    assert all([key in ['username', ] for key in updates])
+    # assert all([key in ['username', ] for key in updates])
     return _update(db_users, _id, **updates)
 
 def updateShop(_id, **updates):
