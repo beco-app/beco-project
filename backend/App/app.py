@@ -80,13 +80,13 @@ def token():
 @app.route('/api/register_user')
 def register_user():
     """
-        Register new user to the database, which also has been previously added to firest
+        Register new user to the database, which also has been previously added to firestore
     """
     username = request.form.get('username')
     becoins = 0
     try:
         # Afegir 
-        return {'message': 'Error'}, 400
+        return {'message': 'Success'}, 400
     except:
         return {'message': 'Error'}, 400
 
@@ -109,6 +109,23 @@ def recommended_shops(username):
 @app.route('/nearest_shops/<username>/<lat>/<long>/<distance>')
 def recommended_shops(username, lat, long, distance):
     return 0
+
+
+# Add BECOINS
+@app.route('/api/add_becoins')
+def add_becoins():
+    """
+        Adds becoins to a user's account
+        The amount and the user is passed in the data content of the request
+        TODO: Add some security by requiring a token or something
+    """
+    user = request.form.get('username')
+    becoins = request.form.get('becoins')
+    try:
+        # updateUser(username=user, becoins=becoins)
+        return 0
+    except:
+        return {'message': 'Error'}, 404
 
 
 if __name__ == '__main__':
