@@ -40,9 +40,13 @@ def prom_gen(n):
 
         yield prom
 
-if __name__ == '__main__':
-    proms = prom_gen(100)
+
+def populate_prom(n):
+    proms = prom_gen(n)
     for prom in proms:
         print(setPromotion(prom))
         # print(f'   shop:{getShop(_id=prom["shop_id"])}')
         # print('-'*100)
+
+if __name__ == '__main__':
+    populate_prom(100)
