@@ -40,13 +40,13 @@ def check_token(f):
 def hello_world():
     return 'Hello from Flask!'
 
-#Api route to get users
+# Api route to get users
 @app.route('/api/userinfo')
 @check_token
 def userinfo():
     return {'data': users}, 200
 
-#Api route to sign up a new user
+# Api route to sign up a new user
 @app.route('/api/signup')
 def signup():
     email = request.form.get('email')
@@ -63,7 +63,7 @@ def signup():
     except:
         return {'message': 'Invalid email or password'},400
 
-#Api route to get a new token for a valid user
+# Api route to get a new token for a valid user
 @app.route('/api/token')
 def token():
     email = request.form.get('email')
@@ -75,9 +75,41 @@ def token():
     except:
         return {'message': 'There was an error logging in'},400
 
-@app.route('/dbfetch_test')
-def getfromDB():
-    return str(tools.getUser()[0])
+
+# Write user to database
+@app.route('/api/register_user')
+def register_user():
+    """
+        Register new user to the database, which also has been previously added to firest
+    """
+    username = request.form.get('username')
+    becoins = 0
+    try:
+        # Afegir 
+        return {'message': 'Error'}, 400
+    except:
+        return {'message': 'Error'}, 400
+
+
+# Get info from username
+@app.route('/user_info/<username>')
+def get_user(username):
+    usr = tools.getUser(username=username)
+    if not usr:
+        return {'message': 'User not found'}, 404
+    else:
+        return str(usr)
+
+# Get recommended shops
+@app.route('/recommended/<username>')
+def recommended_shops(username):
+    return 0
+
+# Get nearest shops
+@app.route('/nearest_shops/<username>/<lat>/<long>/<distance>')
+def recommended_shops(username, lat, long, distance):
+    return 0
+
 
 if __name__ == '__main__':
     app.run(debug=True)
