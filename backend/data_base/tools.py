@@ -58,7 +58,6 @@ def _attrs_in(attributes, collection):
     """
     return all([key in collection_attributes[collection] for key in attributes])
 
-
 def _get(collection, attributes=None, **query):
     """
     Base function for getters.
@@ -82,30 +81,6 @@ def _get(collection, attributes=None, **query):
     response = db_handler.queryFind(db_name, collection, query, operation)
 
     return list(response)
-
-
-def _get(collection, attributes, **query):
-    """
-    Base function for getters.
-
-    Input:
-        * `collection`: string, the name of the collection
-        * `attributes`: the attributes to catch; `_id` is always given
-        * `query`: conditions to search with.
-
-    Output:
-        * [{'attr':value, ...},...]: list of records that matches `query`.
-    """
-    operation = dict([(attr, True) for attr in attributes]) if attributes is not None else None
-    response = db_handler.queryFind(db_name, collection, query, operation)
-    return list(response)
-
-def _attrs_in(attributes, collection):
-    """
-    Return if all attributes are well defined in the collection
-    """
-    return all([key in collection_attributes[collection] for key in attributes])
-
 
 def getUser(attributes=None, **query):
     """
@@ -143,7 +118,6 @@ def getUser(attributes=None, **query):
     """
     return _get(db_users, attributes, **query)
     
-
 def getShop(attributes=None, **query):
     """
     Return a list of records with `attributes` based on `query`.
@@ -155,7 +129,6 @@ def getShop(attributes=None, **query):
     """
     return _get(db_shops, attributes, **query)
 
-
 def getPromotion(attributes=None, **query):
     """
     Return a list of records with `attributes` based on `query`.
@@ -165,7 +138,6 @@ def getPromotion(attributes=None, **query):
     For more information, see `tools.getUser`, `tools.setPromotion` and database documentation.
     """
     return _get(db_promotions, attributes, **query)
-
 
 def getActivePromotion(attributes=None, **query):
     """
@@ -177,7 +149,6 @@ def getActivePromotion(attributes=None, **query):
     """
     return _get(db_active_promotions, attributes, **query)
 
-
 def getTransaction(attributes=None, **query):
     """
     Return a list of records with `attributes` based on `query`.
@@ -188,7 +159,6 @@ def getTransaction(attributes=None, **query):
     For more information, see `tools.getUser`, `tools.setTransaction` and database documentation.
     """
     return _get(db_transactions, attributes, **query)
-
 
 def setUser(data):
     """
@@ -233,7 +203,6 @@ def setUser(data):
     response = db_handler.queryInsert(db_name, db_users, document, one=True)
     return response.acknowledged, response.inserted_id
 
-
 def setShop(data):
     """
     Insert a record of shop in the collection `shops`.
@@ -266,7 +235,6 @@ def setShop(data):
     response = db_handler.queryInsert(db_name, db_shops, document, one=True)
     return response.acknowledged, response.inserted_id
 
-
 def setPromotion(data):
     """
     Insert a record of promotion in the collection `promotions`.
@@ -293,7 +261,6 @@ def setPromotion(data):
     response = db_handler.queryInsert(db_name, db_promotions, document, one=True)
     return response.acknowledged, response.inserted_id
 
-
 def setActivePromotion(data):
     """
     Insert a record of promotion in the collection `promotions`.
@@ -317,7 +284,6 @@ def setActivePromotion(data):
     }
     response = db_handler.queryInsert(db_name, db_active_promotions, document, one=True)
     return response.acknowledged, response.inserted_id
-
 
 def setTransaction(data):
     """
@@ -429,4 +395,4 @@ def updateTransaction(_id, **updates):
 if __name__ == '__main__':
     # print('main')
     print(getUser())
-    # print(setShop('Perruqueria Casas', '404', '', '', [40.3879, 2.16992], 'Barber', [], '600100290'))
+    
