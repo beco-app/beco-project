@@ -1,7 +1,9 @@
 """
+IMPLEMENTED:
+    * Ensure that the names of the attributes are well-defined in getters.
+
 TO IMPLEMENT:
     * Remove or update of records?
-    * Ensure that the names of the attributes are well-defined in getters
     * Check the business rules in setters
     * Getteres with query that supports >, <, <=, ...
     * Add a `limit` parameter to limit the size of the output of getters
@@ -11,7 +13,7 @@ TO IMPLEMENT:
 from site import getusersitepackages
 import pymongo
 from bson.objectid import ObjectId
-import db_handler
+from . import db_handler # using relative path
 import re
 # import os
 import json
@@ -29,6 +31,27 @@ db_active_promotions = config["db_active_promotions"]
 db_products = config["db_products"]
 
 
+collection_attributes = {
+    db_users: [
+        '_id','username','email', 'password', 'phone','gender',
+        'age', 'zip_code', 'diet', 'becoins', 'saved_prom'
+    ],
+    db_shops:[
+        '_id', 'shopname','description','web', 'timetable',  'photo',
+        'location','address','district','neighbourhood','type','product_list'
+    ],
+    db_transactions:[
+        '_id','shop_id','user_id','timestamp',
+        'promotion_used','payment','becoins_gained'
+    ],
+    db_promotions:[
+        '_id','shop_id','description','becoins','valid_interval'
+    ],
+    db_active_promotions:[
+        '_id', 'prom_id', 'user_id', 'valid_until'
+    ]
+}
+
 # Setters and Getters
 
 # def getUserIdByUserName(user_name):
@@ -43,17 +66,40 @@ db_products = config["db_products"]
 #     response = db_handler.queryFind(db_name, collection, query)
 #     return list(response)
 
+def _get(collection, attributes, **query):
+    """
+    Base function for getters.
+
+    Input:
+        * `collection`: string, the name of the collection
+        * `attributes`: the attributes to catch; `_id` is always given
+        * `query`: conditions to search with.
+
+    Output:
+        * [{'attr':value, ...},...]: list of records that matches `query`.
+    """
+    operation = dict([(attr, True) for attr in attributes]) if attributes is not None else None
+    response = db_handler.queryFind(db_name, collection, query, operation)
+    return list(response)
+
+def _attrs_in(attributes, collection):
+    """
+    Return if all attributes are well defined in the collection
+    """
+    return all([key in collection_attributes[collection] for key in attributes])
+
 
 def getUser(attributes=None, **query):
     """
     Return a list of records with `attributes` based on `query`.
     Each of the record from `users` has shape:
         `_id`, `username`, `email`, `password`, `phone`,
-        `gender`, `age`, `zip_code`, `diet`, `becoins`.
+        `gender`, `age`, `zip_code`, `diet`, `becoins`, `saved_prom`.
 
     INPUT:
-        * `attributes`: attributes to catch; all attributes are returned by default
-                        and `_id` is always implicit.
+        * `attributes`: `list` of attributes to catch; all attributes are 
+                        returned by default and `_id` is always implicit.
+                        Can be also a single attribute in `str`.
         * `query`: conditions to search with. See examples below.
 
     OUTPUT:
@@ -72,11 +118,19 @@ def getUser(attributes=None, **query):
         >>> getUser(['email'], age=20, gender='')
         [{'_id': OjectId(1..), 'email':...}, {'_id': OjectId(2..), email:...}, ...]
 
+        >>> getUser('username', username='user1')
+        [{'_id': ObjectId(...), 'username':'user1'}]
+
     For more information, see `tool.setUser` and database documentation.
     """
-    operation = dict([(attr, True) for attr in attributes]) if attributes is not None else None
-    response = db_handler.queryFind(db_name, db_users, query, operation)
-    return list(response)
+
+    if isinstance(attributes, str):
+        attributes = [attributes]
+    
+    assert _attrs_in(attributes, db_users) if attributes is not None else True
+    assert _attrs_in(query.keys(), db_users)
+    return _get(db_users, attributes, **query)
+    
 
 
 def getShop(attributes=None, **query):
@@ -88,9 +142,12 @@ def getShop(attributes=None, **query):
 
     For more information, see `tools.getUser`,`tools.setShop` and database documentation.
     """
-    operation = dict([(attr, True) for attr in attributes]) if attributes is not None else None
-    response = db_handler.queryFind(db_name, db_shops, query, operation)
-    return list(response)
+    if isinstance(attributes, str):
+        attributes = [attributes]
+    
+    assert _attrs_in(attributes, db_shops) if attributes is not None else True
+    assert _attrs_in(query.keys(), db_shops)
+    return _get(db_shops, attributes, **query)
 
 
 def getPromotion(attributes=None, **query):
@@ -280,6 +337,60 @@ def setTransaction(data):
     }
     response = db_handler.queryInsert(db_name, db_transactions, document, one=True)
     return response.acknowledged, response.inserted_id
+
+def _update(collection, _id, **setters):
+    """
+    Base function to update a single document with given _id.
+    Only resets values.
+
+    Input:
+        * `collection`: string, the name of the collection
+        * `_id`: ObjectId of the document to update
+        * `**setters`: values to set
+    
+    Output:
+        * matches_count: the number of matched instances
+        * modified_count: the number of modified instances.
+        In a normal run, these values should be (1,1)
+    """
+    query = {'_id':_id}
+    operation = {'$set': setters}
+    result = db_handler.queryUpdate(db_name, collection, query, operation, one=True)
+    return result.matched_count, result.modified_count
+
+def updateUser(_id, **updates):
+    """
+    Updates a single `user` given its _id.
+
+    Examples:
+        >>> updateUser(getUser()[0]['_id], username='newname')
+        1,1
+        >>> user1 = getUser()[0]
+        >>> updateUser(user1['_id], becoins=user1['becoins']-100)
+    """
+
+    assert all([key in ['username', ] for key in updates])
+    return _update(db_users, _id, **updates)
+
+def updateShop(_id, **updates):
+    """
+    """
+    return _update(db_shops, _id, **updates)
+
+def updatePromotion(_id, **updates):
+    """
+    """
+    return _update(db_promotions, _id, **updates)
+
+def updateActivePromotion(_id, **updates):
+    """
+    """
+    return _update(db_active_promotions, _id, **updates)
+
+def updateTransaction(_id, **updates):
+    """
+    """
+    return _update(db_transactions, _id, **updates)
 
 
 if __name__ == '__main__':
