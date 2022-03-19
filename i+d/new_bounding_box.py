@@ -35,7 +35,7 @@ if extraction['status'] == 'ok':
                 'lng2': args.lng2
             })
     with open('./bounding_boxes.json', 'w') as json_file:
-        json.dump(bounding_boxes, json_file, ensure_ascii=False)
+        json.dump(bounding_boxes, json_file, ensure_ascii=False, indent=2)
 
 else:
     raise Exception()
