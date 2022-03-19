@@ -74,8 +74,9 @@ def _get(collection, attributes=None, **query):
     if isinstance(attributes, str):
         attributes = [attributes]
     
-    assert _attrs_in(attributes, collection) if attributes is not None else True
-    assert _attrs_in(query.keys(), collection)
+    if (attributes is not None and not _attrs_in(attributes, collection)) or \
+        (not _attrs_in(query.keys(), collection)):
+        raise Exception(f"Wrong attribute name for collection '{collection}'.")
     
     operation = dict([(attr, True) for attr in attributes]) if attributes is not None else None
     response = db_handler.queryFind(db_name, collection, query, operation)
@@ -98,8 +99,11 @@ def _update(collection, _id, **updates):
         In a normal run, these values should be (1,1)
     """
 
-    assert '_id' not in updates.keys()
-    assert _attrs_in(updates.keys(), collection)
+    if '_id' in updates.keys():
+        raise Exception("Update of internal `_id` is forbidden.")
+
+    if not _attrs_in(updates.keys(), collection):
+        raise Exception(f"Wrong attribute name for collection '{collection}'.")
 
     query = {'_id':_id}
     operation = {'$set': updates}
@@ -357,16 +361,18 @@ def updateUser(_id, **updates):
         >>> updateUser(user1['_id], becoins=user1['becoins']-100)
         1,1
         >>> updateUser(user1['_id'], _id=1)
-        <assertionError>
+        Exception: Update of internal _id is forbidden.
     """
 
     ## this is O(number of users) !!!!!!!!!!!!!!!!!!!!
     if 'username' in updates:
         usernames = [user['username'] for user in getUser('username')]
-        assert updates['username'] not in usernames
+        if updates['username'] in usernames:
+            raise Exception("The username already exists.")
     if 'email' in updates:
         emails = [user['email'] for user in getUser('email')]
-        assert updates['email'] not in emails
+        if updates['email'] in emails:
+            raise Exception("The email is already used.")
 
     return _update(db_users, _id, **updates)
 
