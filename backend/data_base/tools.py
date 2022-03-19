@@ -1,9 +1,9 @@
 """
 IMPLEMENTED:
     * Ensure that the names of the attributes are well-defined in getters.
+    * Remove or update of records?
 
 TO IMPLEMENT:
-    * Remove or update of records?
     * Check the business rules in setters
     * Getteres with query that supports >, <, <=, ...
     * Add a `limit` parameter to limit the size of the output of getters
