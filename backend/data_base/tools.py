@@ -12,7 +12,7 @@ TO IMPLEMENT:
 
 from site import getusersitepackages
 import pymongo
-from bson.objectid import ObjectId
+# from bson.objectid import ObjectId
 from . import db_handler # using relative path
 import re
 # import os
@@ -81,6 +81,31 @@ def _get(collection, attributes=None, **query):
     response = db_handler.queryFind(db_name, collection, query, operation)
 
     return list(response)
+
+def _update(collection, _id, **updates):
+    """
+    Base function to update a single document with given `_id` and `collection`.
+    Only resets values.
+
+    INPUT:
+        * `collection`: string, the name of the collection
+        * `_id`: ObjectId of the document to update
+        * `**setters`: values to set
+    
+    OUTPUT:
+        * matches_count: the number of matched instances
+        * modified_count: the number of modified instances.
+        In a normal run, these values should be (1,1)
+    """
+
+    assert '_id' not in updates.keys()
+    assert _attrs_in(updates.keys(), collection)
+
+    query = {'_id':_id}
+    operation = {'$set': updates}
+    result = db_handler.queryUpdate(db_name, collection, query, operation, one=True)
+    return result.matched_count, result.modified_count
+
 
 def getUser(attributes=None, **query):
     """
@@ -159,6 +184,7 @@ def getTransaction(attributes=None, **query):
     For more information, see `tools.getUser`, `tools.setTransaction` and database documentation.
     """
     return _get(db_transactions, attributes, **query)
+
 
 def setUser(data):
     """
@@ -311,29 +337,6 @@ def setTransaction(data):
     response = db_handler.queryInsert(db_name, db_transactions, document, one=True)
     return response.acknowledged, response.inserted_id
 
-def _update(collection, _id, **updates):
-    """
-    Base function to update a single document with given `_id` and `collection`.
-    Only resets values.
-
-    INPUT:
-        * `collection`: string, the name of the collection
-        * `_id`: ObjectId of the document to update
-        * `**setters`: values to set
-    
-    OUTPUT:
-        * matches_count: the number of matched instances
-        * modified_count: the number of modified instances.
-        In a normal run, these values should be (1,1)
-    """
-
-    assert '_id' not in updates.keys()
-    assert _attrs_in(updates.keys(), collection)
-
-    query = {'_id':_id}
-    operation = {'$set': updates}
-    result = db_handler.queryUpdate(db_name, collection, query, operation, one=True)
-    return result.matched_count, result.modified_count
 
 def updateUser(_id, **updates):
     """
@@ -391,6 +394,17 @@ def updateTransaction(_id, **updates):
     """
     return _update(db_transactions, _id, **updates)
 
+
+def removeActivePromotion(_id):
+    """
+    Due to the characteristics of the active promotion,
+    the remove operation will be necessary.
+
+    Return the number of removed promotions. 
+    Should be 1 in case of match as _id should be unique.
+    """
+    res = db_handler.queryRemove(db_name, db_active_promotions, {'_id':_id}, one=True)
+    return res.deleted_count
 
 if __name__ == '__main__':
     # print('main')
