@@ -76,9 +76,10 @@ def queryRemove(db_name, collection_name, query, one=False):
 	mongo_db =  mongo[db_name]
 	collections = mongo_db[collection_name]
 	if one:
-		removal = collections.remove_one(query)
+		#removal = collections.remove_one(query) <- this does not exist
+		removal = collections.delete_one(query)
 	else:
-		removal = collections.remove(query)
+		removal = collections.delete_many(query)
 	return removal
 
 
@@ -99,9 +100,3 @@ def queryAggregate(db_name, collection_name, match, group, sort):
 	pipeline = [x for x in args if x is not None]
 	docs = collections.aggregate(pipeline)
 	return docs # CommandCursor
-
-
-
-
-def hello():
-	print("hello")
