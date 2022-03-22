@@ -2,6 +2,9 @@ import sys
 import os
 from data_base import tools
 from datetime import datetime, timedelta
+from bson.objectid import ObjectId
+
+from App.validate import validate_promotion, validate_user_exists
 
 import firebase_admin
 import pyrebase
@@ -130,8 +133,11 @@ def recommended_shops(username):
     return 0
 
 # Get nearest shops
-@app.route('/nearest_shops/<username>/<lat>/<long>/<distance>')
-def recommended_shops(username, lat, long, distance):
+@app.route('/nearest_shops/<username>/<lat>/<long>/<distance>', methods=['POST'])
+def nearest_shops(username, lat, long, distance):
+    username = request.form.get('username')
+    [lat, lon] = [request.form.get('latitude'), request.form.get('longitude')]
+    max_distance = request.form.get('max_distance')
     return 0
 
 
@@ -154,6 +160,8 @@ def add_becoins():
 
 # Activate promotion
 @app.route('/promotions/activate', methods=['POST'])
+@validate_user_exists
+@validate_promotion
 def activate_promotion():
     """
     Activates a promotion for a given user, and sets its expiration date.

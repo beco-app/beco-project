@@ -1,9 +1,9 @@
 from functools import wraps
 from flask import request, abort
 from bson.objectid import ObjectId
-import sys
-sys.path.append("./backend/data_base")
-import tools
+# import sys
+# sys.path.append("./backend/data_base")
+from data_base import tools
 from time import time
 
 
@@ -12,7 +12,7 @@ def validate_user_exists(f):
     def wrapper(*args, **kwargs):
         user_id = request.form.get('user_id')
         users = tools.getUser(_id = ObjectId(user_id))
-        assert len(users) == 1
+        if not users: abort(401)
         return f(*args, **kwargs) 
     return wrapper
         
@@ -50,8 +50,8 @@ def validate_user(f):
         return f(*args, **kwargs) 
     return wrapper
 
-@validate_promotion
-def foo(a, b, **attr):
-    return a, b, attr
+# @validate_promotion
+# def foo(a, b, **attr):
+#     return a, b, attr
 
-foo(1,2,name='tomas')
+# foo(1,2,name='tomas')
