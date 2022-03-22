@@ -366,12 +366,10 @@ def updateUser(_id, **updates):
 
     ## this is O(number of users) !!!!!!!!!!!!!!!!!!!!
     if 'username' in updates:
-        usernames = [user['username'] for user in getUser('username')]
-        if updates['username'] in usernames:
+        if len(getUser(username=updates['username'])):
             raise Exception("The username already exists.")
     if 'email' in updates:
-        emails = [user['email'] for user in getUser('email')]
-        if updates['email'] in emails:
+        if len(getUser(email=updates['email'])):
             raise Exception("The email is already used.")
 
     return _update(db_users, _id, **updates)
@@ -413,6 +411,6 @@ def removeActivePromotion(_id):
     return res.deleted_count
 
 if __name__ == '__main__':
-    # print('main')
+    print('main')
     print(getUser())
     
