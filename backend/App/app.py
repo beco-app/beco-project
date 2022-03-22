@@ -169,23 +169,26 @@ def activate_promotion():
     user_id = request.form.get('user_id')
     promotion_id = request.form.get('promotion_id')
 
-    # Turn into ObjectId
-    user_id = ObjectId(user_id)
-    promotion_id = ObjectId(promotion_id)
-
     exp_date = datetime.now() + timedelta(days=1) # Set expiration date to 24h from the activation
 
     # Subtract becoins
-    # current_becoins = tools.getUser('becoins', username=user_id)[0]
-    # return str(current_becoins)
-    # user = getUser('username'=user_id)
-    # tools.updateUser()
-
+    user = tools.getUser(_id = ObjectId(user_id))[0]
+    cost = tools.getPromotion('becoins', _id = ObjectId(promotion_id))[0]['becoins']
+    tools.updateUser(user['_id'], becoins = user['becoins'] - cost)
+    
     # Write to db
-    res = tools.setActivePromotion({'prom_id': promotion_id, 'user_id': user_id, 'valid_until': exp_date})
+    res = tools.setActivePromotion({'prom_id': ObjectId(promotion_id), 'user_id': ObjectId(user_id), 'valid_until': exp_date})
 
     # Debug:
     return str(tools.getActivePromotion(['valid_until'], user_id=user_id)[0]) + str(res)
+
+
+# @app.route('/promotions/use', method=['POST'])
+# @validate_user_exists
+# def use_promotion():
+#     transaction()
+#     return 200
+
 
 
 if __name__ == '__main__':
