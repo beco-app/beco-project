@@ -237,19 +237,25 @@ def setShop(data):
     """
     Insert a record of shop in the collection `shops`.
 
-    The arguments are wrote explicitely in the function to avoid typos when inserting.
+    A single dictionary is given.
     The attribute `_id` cannot be manually set.
 
     INPUT:
-        * `shopname`:       str, unique?
-        * `description`:    str
-        * `timetable`:      {'Mo':[[h,m,h,m],[...]],'Tu':...,...}; 0<=h<=23, 0<=m<=59 int
-        * `photo`:          str
-        * `location`:       [float, float], longitude and latitude
-        * `adress`:         str, adress of the shop
-        * `type`:           str, 'Restaurant', 'FruitsAndVegetables', ...
-        * `product_list`:   list of `product_id`
-        * `phone`:          str, 9 digit
+        The dictionary `data` should have the following:
+        * '_id':		    ObjectId
+        * 'shopname':	    str
+        * 'description':    str
+        * 'web': 	        str
+        * 'timetable':	    {weekday:[]}
+        * 'photo':	        str
+        * 'location': 	    [lat, lon]
+        * 'address':	    str
+        * 'district':	    str
+        * 'neighbourhood':  str
+        * 'type':	        str
+        * 'product_list':   [product_id]
+        * 'phone':          str, 9 digits
+
 
     Returns:
         * (True, ObjectId) if the insertion succeed
@@ -258,9 +264,10 @@ def setShop(data):
     See database documentation for more information.
     """
     document = {
-        'shopname': data["shopname"],  'description': data["description"], 'timetable': data["timetable"], 'web': data["web"],
-        'photo': data["photo"], 'location': data["location"], 'adress':data["adress"], 'district': data["district"],
-        'neighbourhood': data["neighbourhood"], 'type': data["type"], 'product_list': data["product_list"], 'phone': data["phone"]
+        'shopname': data["shopname"],   'description':  data["description"],  'timetable':     data["timetable"], 
+        'web':      data["web"],        'photo':        data["photo"],        'location':      data["location"], 
+        'adress':   data["adress"],     'district':     data["district"],     'neighbourhood': data["neighbourhood"], 
+        'type':     data["type"],       'product_list': data["product_list"], 'phone':         data["phone"]
     }
     response = db_handler.queryInsert(db_name, db_shops, document, one=True)
     return response.acknowledged, response.inserted_id
