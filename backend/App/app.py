@@ -154,7 +154,6 @@ def add_becoins():
 
 # Activate promotion
 @app.route('/promotions/activate', methods=['POST'])
-@validate_promotion
 def activate_promotion():
     """
     Activates a promotion for a given user, and sets its expiration date.
@@ -162,12 +161,23 @@ def activate_promotion():
     user_id = request.form.get('user_id')
     promotion_id = request.form.get('promotion_id')
 
+    # Turn into ObjectId
+    user_id = ObjectId(user_id)
+    promotion_id = ObjectId(promotion_id)
+
     exp_date = datetime.now() + timedelta(days=1) # Set expiration date to 24h from the activation
 
-    setActivePromotion({'prom_id': promotion_id, 'user_id': user_id, 'valid_until': exp_date})
+    # Subtract becoins
+    # current_becoins = tools.getUser('becoins', username=user_id)[0]
+    # return str(current_becoins)
+    # user = getUser('username'=user_id)
+    # tools.updateUser()
 
-    # Check:
-    return str(tools.getActivePromotion(['valid_until'], user_id=user_id)[0])
+    # Write to db
+    res = tools.setActivePromotion({'prom_id': promotion_id, 'user_id': user_id, 'valid_until': exp_date})
+
+    # Debug:
+    return str(tools.getActivePromotion(['valid_until'], user_id=user_id)[0]) + str(res)
 
 
 if __name__ == '__main__':
