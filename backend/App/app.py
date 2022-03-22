@@ -1,6 +1,7 @@
 import sys
 import os
 from data_base import tools
+from datetime import datetime, timedelta
 
 import firebase_admin
 import pyrebase
@@ -77,15 +78,38 @@ def token():
 
 
 # Write user to database
-@app.route('/api/register_user')
+@app.route('/api/register_user', methods=['POST'])
 def register_user():
     """
         Register new user to the database, which also has been previously added to firestore
     """
     username = request.form.get('username')
-    becoins = 0
+    password = request.form.get('password')
+    becoins = 0 # Initial becoins
+
+    # Username check
+    if username is None:
+        return {'message': 'Invalid username'}, 200
+
+    # Password check
+    if password is None:
+        return {'message': 'Invalid password'}, 200
+
+    data = {
+        'username': username,
+        'email': None,
+        'password': password,
+        'phone': None,
+        'gender': None,
+        'age': None,
+        'zip_code': None,
+        'diet': None,
+        'becoins': becoins,
+        'saved_prom' : None
+    }
     try:
         # Afegir 
+        tools.setUser(data)
         return {'message': 'Success'}, 400
     except:
         return {'message': 'Error'}, 400
@@ -126,6 +150,24 @@ def add_becoins():
         return 0
     except:
         return {'message': 'Error'}, 404
+
+
+# Activate promotion
+@app.route('/promotions/activate', methods=['POST'])
+@validate_promotion
+def activate_promotion():
+    """
+    Activates a promotion for a given user, and sets its expiration date.
+    """
+    user_id = request.form.get('user_id')
+    promotion_id = request.form.get('promotion_id')
+
+    exp_date = datetime.now() + timedelta(days=1) # Set expiration date to 24h from the activation
+
+    setActivePromotion({'prom_id': promotion_id, 'user_id': user_id, 'valid_until': exp_date})
+
+    # Check:
+    return str(tools.getActivePromotion(['valid_until'], user_id=user_id)[0])
 
 
 if __name__ == '__main__':
