@@ -1,5 +1,6 @@
 import 'package:beco/views/LoginView.dart';
 import 'package:beco/views/RegisterView.dart';
+import 'package:beco/views/VerifyEmailView.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -37,47 +38,21 @@ class HomePage extends StatelessWidget {
         switch (snapshot.connectionState) {
           case ConnectionState.done:
             // final user = FirebaseAuth.instance.currentUser;
-            // print(user);
-            // if (user?.emailVerified ?? false) {
-            //   return const Text('Done');
+            // if (user != null) {
+            //   if (user.emailVerified) {
+            //     print('Email is verified');
+            //   } else {
+            //     return const VerifyEmailView();
+            //   }
             // } else {
-            //   return const VerifyEmailView();
+            //   return const LoginView();
             // }
+            // return const Text('Done');
             return const LoginView();
           default:
             return const CircularProgressIndicator();
         }
       },
-    );
-  }
-}
-
-class VerifyEmailView extends StatefulWidget {
-  const VerifyEmailView({Key? key}) : super(key: key);
-
-  @override
-  State<VerifyEmailView> createState() => _VerifyEmailViewState();
-}
-
-class _VerifyEmailViewState extends State<VerifyEmailView> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Email verification'),
-      ),
-      body: Column(
-        children: [
-          const Text('Please verify your email adress:'),
-          TextButton(
-            onPressed: () async {
-              final user = FirebaseAuth.instance.currentUser;
-              await user?.sendEmailVerification();
-            },
-            child: const Text('Send email'),
-          )
-        ],
-      ),
     );
   }
 }
