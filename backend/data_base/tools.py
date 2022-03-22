@@ -10,10 +10,13 @@ TO IMPLEMENT:
         (the parameter is already in db_handler.py file)
 """
 
+import sys
+sys.path.append("./backend/data_base")
+
 from site import getusersitepackages
 import pymongo
 # from bson.objectid import ObjectId
-from . import db_handler # using relative path
+import db_handler # using relative path
 import re
 # import os
 import json
