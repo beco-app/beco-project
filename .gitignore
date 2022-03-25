@@ -4,6 +4,7 @@
 *.ipynb_checkpoints*
 *.env*
 *.pem*
+*Icon*
 *.idea/*
 
 # Firebase credentials (ask @marcdmc for testing)
