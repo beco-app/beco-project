@@ -1,10 +1,14 @@
 from functools import wraps
 from flask import request, abort
 from bson.objectid import ObjectId
-# import sys
-# sys.path.append("./backend/data_base")
-from data_base import tools
 from time import time
+import sys
+local = True
+if local:
+    sys.path.append("/Users/tomas.gadea/tomasgadea/ACADEMIC/GCED/q6/PE/beco/beco-project")
+    from backend.data_base import tools
+else:
+    from data_base import tools
 
 
 def validate_user_exists(f):

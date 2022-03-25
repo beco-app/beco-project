@@ -1,10 +1,16 @@
 import sys
 import os
-from data_base import tools
 from datetime import datetime, timedelta
 from bson.objectid import ObjectId
 
-from App.validate import validate_promotion, validate_user_exists
+local = True
+if local:
+    sys.path.append("/Users/tomas.gadea/tomasgadea/ACADEMIC/GCED/q6/PE/beco/beco-project")
+    from backend.data_base import tools
+    from backend.App.validate import validate_promotion, validate_user_exists
+else:
+    from data_base import tools
+    from App.validate import validate_promotion, validate_user_exists
 
 import firebase_admin
 import pyrebase
@@ -42,9 +48,9 @@ def check_token(f):
 # Test
 @app.route('/')
 def hello_world():
-    return 'Hello from Flask!'
+    return 'Hello from Flask!', 200
 
-# Api route to get users
+# Api route to get userso
 @app.route('/api/userinfo')
 @check_token
 def userinfo():
@@ -125,7 +131,7 @@ def get_user(username):
     if not usr:
         return {'message': 'User not found'}, 404
     else:
-        return str(usr)
+        return str(usr), 200
 
 # Get recommended shops
 @app.route('/recommended/<username>')
@@ -180,7 +186,7 @@ def activate_promotion():
     res = tools.setActivePromotion({'prom_id': ObjectId(promotion_id), 'user_id': ObjectId(user_id), 'valid_until': exp_date})
 
     # Debug:
-    return str(tools.getActivePromotion(['valid_until'], user_id=user_id)[0]) + str(res)
+    return str(tools.getActivePromotion(['valid_until'], user_id=user_id)[0]) + str(res), 200
 
 
 # @app.route('/promotions/use', method=['POST'])
