@@ -34,12 +34,7 @@ def foo():
         metric = 'haversine'
     )
 
-    idxs = list()
-    dists = list()
-    for store in stores:
-        idx, dist = idx_dist(stations_tree, store)
-        idxs += [idx]
-        dists += [dist]
+    idxs, dists = stores_nearest_stations_list()
 
     near_stations = {
         store['id']: [
@@ -50,10 +45,35 @@ def foo():
     }
     print(near_stations)
 
-def idx_dist(stations_tree, store):
+def stores_nearest_stations_list(stations_tree, stores, radius=4000):
+    """
+    Returns two lists defining the nearest stations for every store in `stores`.
+    The first one elements are the `stations.values()` list indexes of the
+    store's nearest stations, and the second list returned has the distances
+    between the store and the nearest stations as elements.
+    The order in the lists corresponds to the order of the stores in the list
+    `stores`. The order of the elements of those lists are determined by the
+    increasing distances between the stations and the stores.
+    So, `dists[i][j]` will be the distance between the `stores`' i-th store and
+    the j-th nearest station; in addition, this station will be the
+    idxs[i][j]-th station in the list `stations`.
+
+    It will also return the nearest stations within a radius of `radius` meters
+    from the store. If there isn't any station in that radius will simply return
+    the nearest one.
+    """
+    idxs = []
+    dists = []
+    for store in stores:
+        idx, dist = idx_dist(stations_tree, store, radius)
+        idxs += [idx]
+        dists += [dist]
+    return idxs, dists
+
+def idx_dist(stations_tree, store, radius):
     idx, dist = stations_tree.query_radius(
         [(store['lat'] * pi/180, store['lon'] * pi/180)],
-        r=4000/earth_radius,
+        r=radius/earth_radius,
         return_distance = True
     )
     idx = [l.tolist() for l in idx.tolist()]
