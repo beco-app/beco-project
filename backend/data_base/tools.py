@@ -33,10 +33,16 @@ db_promotions = config["db_promotions"]
 db_active_promotions = config["db_active_promotions"]
 db_products = config["db_products"]
 
+
+## if there is any change in attributes, then change:
+##   * collection_attributes list
+##   * Documentation of get, set, update, remove...
+##   * 
+
 collection_attributes = {
     db_users: [
         '_id','username','email', 'password', 'phone','gender',
-        'age', 'zip_code', 'diet', 'becoins', 'saved_prom'
+        'birthday', 'zip_code', 'diet', 'becoins', 'saved_prom'
     ],
     db_shops:[
         '_id', 'shopname','description','web', 'timetable',  'photo',
@@ -119,7 +125,7 @@ def getUser(attributes=None, **query):
     Return a list of records with `attributes` based on `query`.
     Each of the record from `users` has shape:
         `_id`, `username`, `email`, `password`, `phone`,
-        `gender`, `age`, `zip_code`, `diet`, `becoins`, `saved_prom`.
+        `gender`, `birthday`, `zip_code`, `diet`, `becoins`, `saved_prom`.
 
     INPUT:
         * `attributes`: `list` of attributes to catch; all attributes are 
@@ -134,14 +140,14 @@ def getUser(attributes=None, **query):
         >>> getUser()
         [...all users...]
 
-        >>> getUser(age=20)
+        >>> getUser(zip_code='08018')
         [{all parameters user1}, {...}, ...]
 
         >>> getUser(['_id', 'email'], username='yikai')
         [{'_id': ObjectId('...'), 'email': '...'}]
 
-        >>> getUser(['email'], age=20, gender='')
-        [{'_id': OjectId(1..), 'email':...}, {'_id': OjectId(2..), email:...}, ...]
+        >>> getUser(['email'], zip_code='08018', gender='F')
+        [{'_id': OjectId(1..), 'email':...}, {'_id': OjectId(1..), email:...}, ...]
 
         >>> getUser('username', username='user1')
         [{'_id': ObjectId(...), 'username':'user1'}]
@@ -206,7 +212,7 @@ def setUser(data):
         * `password`:   str, encrypted
         * `phone`:      str, 9 digit
         * `gender`:     str, 'M' or 'F' (or 'O'->others?)
-        * `age`:        int, positive
+        * `birthday`:   float, timestamp
         * `zip_code`:   str, 5 digit
         * `diet`:       str
         * `becoins`:    float, positive
@@ -258,7 +264,6 @@ def setShop(data):
         * 'type':	        str
         * 'product_list':   [product_id]
         * 'phone':          str, 9 digits
-
 
     Returns:
         * (True, ObjectId) if the insertion succeed
@@ -413,6 +418,8 @@ def removeActivePromotion(_id):
     """
     Due to the characteristics of the active promotion,
     the remove operation will be necessary.
+
+    Only accepts one single _id.
 
     Return the number of removed promotions. 
     Should be 1 in case of match as _id should be unique.
