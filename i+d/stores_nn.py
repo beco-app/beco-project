@@ -34,26 +34,40 @@ def foo():
         metric = 'haversine'
     )
 
-    dist, idx = stations_tree.query_radius(
-        [(store['lat'] * pi/180, store['lon'] * pi/180) for store in stores],
-        r=2000.0
-    )
-    # dist, idx = stations_tree.query(
-    #     [(store['lat'] * pi/180, store['lon'] * pi/180) for store in stores],
-    #     k=3
-    # )
-    dist *= earth_radius
-
-    print(dist)
-    print(idx)
+    idxs = list()
+    dists = list()
+    for store in stores:
+        idx, dist = idx_dist(stations_tree, store)
+        idxs += [idx]
+        dists += [dist]
 
     near_stations = {
         store['id']: [
             (list(stations.keys())[station_idx], np.round(d,2))
-            for station_idx, d in zip(idx[i], dist[i])
+            for station_idx, d in zip(idxs[i], dists[i])
         ]
         for i, store in enumerate(stores)
     }
     print(near_stations)
+
+def idx_dist(stations_tree, store):
+    idx, dist = stations_tree.query_radius(
+        [(store['lat'] * pi/180, store['lon'] * pi/180)],
+        r=4000/earth_radius,
+        return_distance = True
+    )
+    idx = [l.tolist() for l in idx.tolist()]
+    dist = [l.tolist() for l in dist.tolist()]
+    if idx[0]:
+        return idx[0], [d * earth_radius for d in dist[0]]
+
+    dist, idx = stations_tree.query(
+        [(store['lat'] * pi/180, store['lon'] * pi/180)],
+        k=1
+    )
+    idx = idx.tolist()
+    dist = dist.tolist()
+    return idx[0], [d * earth_radius for d in dist[0]]
+
 
 foo()
