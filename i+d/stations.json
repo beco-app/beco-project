@@ -1,46 +1,58 @@
 {
+  "11761": {
+    "time": "2022-03-25T06:00:00+01:00",
+    "name": "Martorell, Catalunya, Spain",
+    "lat": 41.475384,
+    "lng": 1.9212021,
+    "aqi": 36.0
+  },
   "6669": {
     "name": "Barcelona (Eixample), Catalunya, Spain",
-    "time": "2022-03-22T08:00:00+01:00",
-    "aqi": 28.0
-  },
-  "6677": {
-    "name": "Sant Adrià de Besòs, Catalunya, Spain",
-    "time": "2022-03-22T09:00:00+01:00",
-    "aqi": 21.0
-  },
-  "6681": {
-    "name": "l'Hospitalet de Llobregat, Catalunya, Spain",
-    "time": "2022-03-22T09:00:00+01:00",
-    "aqi": 27.0
-  },
-  "10532": {
-    "name": "Barcelona (Palau Reial), Catalunya, Spain",
-    "time": "2022-03-22T08:00:00+01:00",
-    "aqi": 28.0
-  },
-  "10533": {
-    "name": "Barcelona (Parc Vall d'Hebrón), Catalunya, Spain",
-    "time": "2022-03-22T09:00:00+01:00",
+    "time": "2022-03-25T07:00:00+01:00",
+    "lat": 41.38534,
+    "lng": 2.153822,
     "aqi": 29.0
-  },
-  "10534": {
-    "name": "Barcelona (Poblenou), Catalunya, Spain",
-    "time": "2022-03-22T08:00:00+01:00",
-    "aqi": 27.0
   },
   "11758": {
     "name": "Barcelona (Gràcia-St.Gervasi), Catalunya, Spain",
-    "time": "2022-03-22T08:00:00+01:00",
-    "aqi": 28.0
+    "time": "2022-03-25T06:00:00+01:00",
+    "lat": 41.398743,
+    "lng": 2.1533852,
+    "aqi": null
   },
-  "11762": {
-    "name": "Barcelona, Catalunya, Spain",
-    "time": "2022-03-11T11:00:00+01:00"
+  "10532": {
+    "name": "Barcelona (Palau Reial), Catalunya, Spain",
+    "time": "2022-03-25T07:00:00+01:00",
+    "lat": 41.387486,
+    "lng": 2.1151497,
+    "aqi": 29.0
   },
-  "11761": {
-    "time": "2022-03-22T09:00:00+01:00",
-    "name": "Martorell, Catalunya, Spain",
-    "aqi": 19.0
+  "10533": {
+    "name": "Barcelona (Parc Vall d'Hebrón), Catalunya, Spain",
+    "time": "2022-03-25T07:00:00+01:00",
+    "lat": 41.42608,
+    "lng": 2.1479921,
+    "aqi": null
+  },
+  "10534": {
+    "name": "Barcelona (Poblenou), Catalunya, Spain",
+    "time": "2022-03-25T05:00:00+01:00",
+    "lat": 41.40388,
+    "lng": 2.2045226,
+    "aqi": 26.0
+  },
+  "6677": {
+    "name": "Sant Adrià de Besòs, Catalunya, Spain",
+    "time": "2022-03-25T07:00:00+01:00",
+    "lat": 41.42562,
+    "lng": 2.2222447,
+    "aqi": null
+  },
+  "6681": {
+    "name": "l'Hospitalet de Llobregat, Catalunya, Spain",
+    "time": "2022-03-25T06:00:00+01:00",
+    "lat": 41.370502,
+    "lng": 2.114973,
+    "aqi": 30.0
   }
 }

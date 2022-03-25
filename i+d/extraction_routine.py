@@ -63,8 +63,9 @@ def geo_query_to_latlng_style(response):
 
     response['data']['station'] = {
         'time': response['data']['time']['iso'],
-        'name': response['data']['city']['name']
+        'name': response['data']['city']['name'],
     }
+    response['data']['lat'], response['data']['lon'] = response['data']['city']['geo']
     response['data']['uid'] = response['data']['idx']
     response['data'] = [response['data']]
 
