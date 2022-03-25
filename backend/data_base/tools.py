@@ -46,7 +46,7 @@ collection_attributes = {
     ],
     db_shops:[
         '_id', 'shopname','description','web', 'timetable',  'photo',
-        'location','address','district','neighbourhood','type','product_list'
+        'location','address','district','neighbourhood','type','product_list', 'zip_code'
     ],
     db_transactions:[
         '_id','shop_id','user_id','timestamp',
@@ -160,7 +160,7 @@ def getShop(attributes=None, **query):
     """
     Return a list of records with `attributes` based on `query`.
     Each of the record from `shops` has shape:
-        `_id`, `shopname`, `description`, `timetable`,
+        `_id`, `shopname`, `description`, `timetable`, 'zip_code'
         `photo`, `location`, `address`, `type`, `product_list`, `phone`.
 
     For more information, see `tools.getUser`,`tools.setShop` and database documentation.
@@ -264,6 +264,7 @@ def setShop(data):
         * 'type':	        str
         * 'product_list':   [product_id]
         * 'phone':          str, 9 digits
+        * 'zip_code':       str, 5 digits
 
     Returns:
         * (True, ObjectId) if the insertion succeed
@@ -275,7 +276,8 @@ def setShop(data):
         'shopname': data["shopname"],   'description':  data["description"],  'timetable':     data["timetable"], 
         'web':      data["web"],        'photo':        data["photo"],        'location':      data["location"], 
         'address':   data["address"],     'district':     data["district"],     'neighbourhood': data["neighbourhood"], 
-        'type':     data["type"],       'product_list': data["product_list"], 'phone':         data["phone"]
+        'type':     data["type"],       'product_list': data["product_list"], 'phone':         data["phone"],
+        'zip_code': data["zip_code"]
     }
     response = db_handler.queryInsert(db_name, db_shops, document, one=True)
     return response.acknowledged, response.inserted_id
@@ -429,5 +431,5 @@ def removeActivePromotion(_id):
 
 if __name__ == '__main__':
     print('main')
-    print(getUser())
+    print(getUser()[0])
     
