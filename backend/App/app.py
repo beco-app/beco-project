@@ -169,7 +169,7 @@ def activate_promotion():
     user_id = request.form.get('user_id')
     promotion_id = request.form.get('promotion_id')
 
-    exp_date = datetime.now() + timedelta(days=1) # Set expiration date to 24h from the activation
+    exp_date = (datetime.now() + timedelta(days=1)).timestamp() # Set expiration date to 24h from the activation
 
     # Subtract becoins
     user = tools.getUser(_id = ObjectId(user_id))[0]
