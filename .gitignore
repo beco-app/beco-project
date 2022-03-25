@@ -5,3 +5,9 @@
 *.env*
 *.pem*
 *Icon*
+*.idea/*
+
+# Firebase credentials (ask @marcdmc for testing)
+backend/App/fbAdminConfig.json
+backend/App/fbconfig.json
+>>>>>>> 5c51431978cc2febdf590d8068b8c373404f0bbb
