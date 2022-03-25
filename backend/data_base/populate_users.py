@@ -1,6 +1,8 @@
 from tools import *
 import random
 from hashlib import pbkdf2_hmac
+from datetime import date, timedelta
+import time
 
 ## Definition of users
 ## Each user has attributes:  
@@ -9,7 +11,7 @@ from hashlib import pbkdf2_hmac
 #   password:	  str
 #   phone:	  str
 #   gender:	  char
-#   age:	  int
+#   birthday:	  int
 #   zip_code: 	  str
 #   diet:	  str
 #   becoins:	  double
@@ -53,7 +55,9 @@ def user_gen(n):
     # https://barbend.com/types-of-diets/#PD
     diets = ['No preference', 'Vegan', 'Carnivore']
     username_gen = next_username()
-    proms = getPromotion()
+    proms = getPromotion('_id')
+    first_birthday = date(1970,1,1)
+    last_birthday  = date(2008, 12, 31)
 
     for _ in range(n):
         username    = next(username_gen)
@@ -61,7 +65,9 @@ def user_gen(n):
         password    = hash_password(username, b'123456789')
         phone       = '8' + str(random.randrange(0,99_999_999)).zfill(8)
         gender      = 'F' if random.uniform(0,1) >= 0.5 else 'M'
-        age         = max(int(random.gauss(mu=20, sigma=5)), 10)
+        birthday    = time.mktime(
+            (min(first_birthday + timedelta(int(random.gauss(mu=365*30, sigma=365*10))), last_birthday)).timetuple()
+        )  # for age: max(int(random.gauss(mu=20, sigma=5)), 10)
         zip_code    = '080' + str(random.randint(10,42))
         diet        = diets[random.randint(0,len(diets)-1)]
         becoins     = random.randint(0, 1000)
@@ -69,7 +75,7 @@ def user_gen(n):
 
         user = {
             'username':username, 'email':email, 'password':password, 'phone':phone,
-            'gender':gender,     'age':age,     'zip_code':zip_code, 'diet':diet, 'becoins':becoins,
+            'gender':gender,     'birthday':birthday,     'zip_code':zip_code, 'diet':diet, 'becoins':becoins,
             'saved_prom':saved_prom
         }
 
@@ -80,7 +86,9 @@ def populate_users(n):
     users = user_gen(n)
     for user in users:
         print(setUser(user))
+        # print('-'*100)
+        # print(user)
 
 if __name__ == '__main__':
-    populate_users(1000)
+    populate_users(10)
 
