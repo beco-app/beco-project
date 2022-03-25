@@ -22,7 +22,7 @@ import re
 import json
 
 # Globals
-config = json.load(open("../config/config.json"))
+config = json.load(open("./backend/config/config.json"))
 db_username = config["db_username"]
 db_password = config["db_password"]
 db_name = config["db_name"]
