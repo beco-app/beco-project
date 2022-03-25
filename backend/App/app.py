@@ -7,10 +7,10 @@ local = True
 if local:
     sys.path.append("/Users/tomas.gadea/tomasgadea/ACADEMIC/GCED/q6/PE/beco/beco-project")
     from backend.data_base import tools
-    from backend.App.validate import validate_promotion, validate_user_exists
+    from backend.App.validate import validate_promotion, validate_user_exists, validate_unique_username
 else:
     from data_base import tools
-    from App.validate import validate_promotion, validate_user_exists
+    from App.validate import validate_promotion, validate_user_exists, validate_unique_username
 
 import firebase_admin
 import pyrebase
@@ -88,6 +88,7 @@ def token():
 
 # Write user to database
 @app.route('/api/register_user', methods=['POST'])
+@validate_unique_username
 def register_user():
     """
         Register new user to the database, which also has been previously added to firestore
@@ -98,11 +99,11 @@ def register_user():
 
     # Username check
     if username is None:
-        return {'message': 'Invalid username'}, 200
+        return {'message': 'Invalid username'}, 400
 
     # Password check
     if password is None:
-        return {'message': 'Invalid password'}, 200
+        return {'message': 'Invalid password'}, 400
 
     data = {
         'username': username,
@@ -119,9 +120,23 @@ def register_user():
     try:
         # Afegir 
         tools.setUser(data)
-        return {'message': 'Success'}, 400
+        return {'message': 'Success'}, 200
     except:
         return {'message': 'Error'}, 400
+
+@app.route('/api/remove_user', methods=['POST'])
+@validate_user_exists
+def remove_user():
+    """
+        Delete existing user from the database. Nothing changed in firebase
+    """
+    data = request.form.to_dict()
+    if "user_id" in data.keys():
+        deleted_count = tools.removeUserById(user_id=data['user_id'])
+    elif "username" in data.keys():
+        deleted_count = tools.removeUserByUsername(username=data['username'])
+
+    return str(deleted_count), 200
 
 
 # Get info from username

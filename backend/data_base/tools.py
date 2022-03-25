@@ -420,6 +420,14 @@ def removeActivePromotion(_id):
     res = db_handler.queryRemove(db_name, db_active_promotions, {'_id':_id}, one=True)
     return res.deleted_count
 
+def removeUserByUsername(username):
+    res = db_handler.queryRemove(db_name, db_users, {"username": username}, one=True)
+    return res.deleted_count
+
+def removeUserById(user_id):
+    res = db_handler.queryRemove(db_name, db_users, {"_id": user_id}, one=True)
+    return res.deleted_count
+
 if __name__ == '__main__':
     print('main')
     print(getUser())
