@@ -1,4 +1,8 @@
+import 'dart:collection';
+
+import 'package:beco/views/HomeView.dart';
 import 'package:beco/views/LoginView.dart';
+import 'package:beco/views/MapView.dart';
 import 'package:beco/views/RegisterView.dart';
 import 'package:beco/views/VerifyEmailView.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -13,13 +17,15 @@ void main() {
     MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+          primarySwatch: Colors.deepPurple,
+          primaryColor: Colors.deepPurple[900]),
       //home: const MyHomePage(title: 'Flutter Demo Home Page'),
-      home: const HomePage(),
+      home: const HomeView(),
       routes: {
         '/login/': (context) => const LoginView(),
         '/register/': (context) => const RegisterView(),
+        '/home/': (context) => const HomeView(),
+        '/map/': (context) => const MapView(),
       },
     ),
   );

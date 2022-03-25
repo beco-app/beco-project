@@ -31,60 +31,56 @@ class _LoginViewState extends State<LoginView> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: <Widget>[
-        Scaffold(
-          resizeToAvoidBottomInset: false,
-          // appBar: AppBar(
-          //   //title: const Text('Register'),
-          //   //backgroundColor: Colors.purple[800],
-          //   backgroundColor: Colors.transparent,
-          // ),
-          body: Padding(
-            padding: const EdgeInsets.all(32.0),
-            child: Column(
-              children: [
-                ...[
-                  // Container(
-                  //   height: 0,
-                  // ),
-                  const Spacer(),
-                  Image.asset(
-                    "assets/images/logo.png",
-                    width: MediaQuery.of(context).size.width,
-                    fit: BoxFit.cover,
-                  ),
-                  TextField(
-                    controller: _email,
-                    enableSuggestions: false,
-                    autocorrect: false,
-                    keyboardType: TextInputType.emailAddress,
-                    decoration: const InputDecoration(
-                      hintText: 'Email',
-                      labelText: 'Email',
-                      floatingLabelBehavior: FloatingLabelBehavior.always,
-                      border: OutlineInputBorder(),
-                      contentPadding:
-                          EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+    return Scaffold(
+      resizeToAvoidBottomInset: true,
+      body: CustomScrollView(
+        slivers: [
+          SliverFillRemaining(
+            hasScrollBody: false,
+            child: Padding(
+              padding: const EdgeInsets.all(32.0),
+              child: Column(
+                children: [
+                  ...[
+                    // Container(
+                    //   height: 0,
+                    // ),
+                    const Spacer(),
+                    Image.asset(
+                      "assets/images/logo.png",
+                      width: MediaQuery.of(context).size.width,
+                      fit: BoxFit.cover,
                     ),
-                  ),
-                  TextField(
-                    controller: _password,
-                    enableSuggestions: false,
-                    autocorrect: false,
-                    keyboardType: TextInputType.emailAddress,
-                    decoration: const InputDecoration(
-                      hintText: 'Password',
-                      labelText: 'Password',
-                      floatingLabelBehavior: FloatingLabelBehavior.always,
-                      border: OutlineInputBorder(),
-                      contentPadding:
-                          EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                    TextField(
+                      controller: _email,
+                      enableSuggestions: false,
+                      autocorrect: false,
+                      keyboardType: TextInputType.emailAddress,
+                      decoration: const InputDecoration(
+                        hintText: 'Email',
+                        labelText: 'Email',
+                        floatingLabelBehavior: FloatingLabelBehavior.always,
+                        border: OutlineInputBorder(),
+                        contentPadding:
+                            EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                      ),
                     ),
-                  ),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: ElevatedButton(
+                    TextField(
+                      controller: _password,
+                      enableSuggestions: false,
+                      autocorrect: false,
+                      decoration: const InputDecoration(
+                        hintText: 'Password',
+                        labelText: 'Password',
+                        floatingLabelBehavior: FloatingLabelBehavior.always,
+                        border: OutlineInputBorder(),
+                        contentPadding:
+                            EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: ElevatedButton(
                         onPressed: () async {
                           final email = _email.text;
                           final password = _password.text;
@@ -94,7 +90,6 @@ class _LoginViewState extends State<LoginView> {
                               email: email,
                               password: password,
                             );
-                            print(userCredential);
 
                             // Send user to backend
                             final r = await http.post(
@@ -103,52 +98,54 @@ class _LoginViewState extends State<LoginView> {
                                   'username': email,
                                   'password': password,
                                 });
+
+                            print(userCredential);
                           } on FirebaseAuthException catch (e) {
-                            if (e.code == 'user-not-found') {
-                              print('User not found');
-                            }
+                            print(e.code);
                           }
                         },
                         child: const Text('Log In',
                             style: TextStyle(fontWeight: FontWeight.bold)),
-                        style: TextButton.styleFrom(
-                          primary: Colors.white,
-                          backgroundColor: Colors.purple[800],
-                          onSurface: Colors.grey,
-                        )),
-                  ),
-                  const Spacer(),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).pushNamedAndRemoveUntil(
-                          '/register/',
-                          (route) => false,
-                        );
-                      },
-                      child: const Text('Sign Up',
-                          style: TextStyle(fontWeight: FontWeight.bold)),
-                      style: TextButton.styleFrom(
-                        primary: Colors.white,
-                        backgroundColor: Colors.purple[800],
-                        onSurface: Colors.grey,
+                        // style: TextButton.styleFrom(
+                        //   primary: Colors.white,
+                        //   backgroundColor: Colors.purple[800],
+                        //   onSurface: Colors.grey,
+                        //)
                       ),
                     ),
-                  )
-                ].expand(
-                  (widget) => [
-                    widget,
-                    const SizedBox(
-                      height: 24,
+                    Spacer(),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).pushNamedAndRemoveUntil(
+                            '/register/',
+                            (route) => false,
+                          );
+                        },
+                        child: const Text('Sign Up',
+                            style: TextStyle(fontWeight: FontWeight.bold)),
+                        // style: TextButton.styleFrom(
+                        //   primary: Colors.white,
+                        //   backgroundColor: Colors.purple[800],
+                        //   onSurface: Colors.grey,
+                        // ),
+                      ),
                     )
-                  ],
-                ),
-              ],
+                  ].expand(
+                    (widget) => [
+                      widget,
+                      const SizedBox(
+                        height: 24,
+                      )
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
