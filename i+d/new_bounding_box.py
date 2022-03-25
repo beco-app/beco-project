@@ -57,7 +57,7 @@ if 'status' in extraction and extraction['status'] == 'ok': # Extr. succesful
             if not st['uid'] in stations:
                 stations[st['uid']] = st['station']
                 stations[st['uid']]['lat'] = st['lat']
-                stations[st['uid']]['lng'] = st['lon']
+                stations[st['uid']]['lon'] = st['lon']
                 stations[st['uid']]['aqi'] = None
     with open('./stations.json', 'w') as json_file:
         json.dump(stations, json_file, ensure_ascii=False, indent=2)
