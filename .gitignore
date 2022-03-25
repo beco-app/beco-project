@@ -1,5 +1,11 @@
 *.DS_Store*
 *__pycache__/*
+*.pyc*
 *.ipynb_checkpoints*
 *.env*
 *.pem*
+*.idea/*
+
+# Firebase credentials (ask @marcdmc for testing)
+backend/App/fbAdminConfig.json
+backend/App/fbconfig.json

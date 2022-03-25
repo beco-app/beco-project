@@ -5,9 +5,30 @@
 
 You need the authentication file `BECO.pem`. If you don't, please contact @jguaschmarti
 
-Make sure you have the correct permissions over the `pem` file. Type `chmod go-r BECO.pem` the first time to set the proper permissions.
+Make sure you have the correct permissions over the `pem` file.
+
+Permissions:
+```
+chmod 400 BECO.pem
+```
 
 Connection command:
 ```
-ssh -i BECO.pem ubuntu@3.145.208.2
+ssh -i BECO.pem ubuntu@18.219.12.116
+```
+
+## Connection to remote mongo instance
+
+- **Tunnel**: 
+
+``` 
+ssh -i BECO.pem -N -L 27017:localhost:27017 ubuntu@18.219.12.116
+```
+
+
+## Restart connection to mongo
+
+```
+sudo systemctl stop mongod
+sudo systemctl start mongod
 ```
