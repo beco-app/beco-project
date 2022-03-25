@@ -5,3 +5,4 @@
 *.env*
 *.pem*
 *.idea/*
+i\+d/logs
