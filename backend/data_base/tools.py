@@ -155,7 +155,7 @@ def getShop(attributes=None, **query):
     Return a list of records with `attributes` based on `query`.
     Each of the record from `shops` has shape:
         `_id`, `shopname`, `description`, `timetable`,
-        `photo`, `location`, `adress`, `type`, `product_list`, `phone`.
+        `photo`, `location`, `address`, `type`, `product_list`, `phone`.
 
     For more information, see `tools.getUser`,`tools.setShop` and database documentation.
     """
@@ -269,7 +269,7 @@ def setShop(data):
     document = {
         'shopname': data["shopname"],   'description':  data["description"],  'timetable':     data["timetable"], 
         'web':      data["web"],        'photo':        data["photo"],        'location':      data["location"], 
-        'adress':   data["adress"],     'district':     data["district"],     'neighbourhood': data["neighbourhood"], 
+        'address':   data["address"],     'district':     data["district"],     'neighbourhood': data["neighbourhood"], 
         'type':     data["type"],       'product_list': data["product_list"], 'phone':         data["phone"]
     }
     response = db_handler.queryInsert(db_name, db_shops, document, one=True)
