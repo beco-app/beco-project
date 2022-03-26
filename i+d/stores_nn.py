@@ -9,9 +9,6 @@ sensors stations to a store.
 from sklearn.neighbors import BallTree
 import numpy as np
 from numpy import pi
-import pandas as pd
-import hashlib
-import requests
 import json
 
 __author__ = '[Gerard Calvo, Pau Matas]'
@@ -23,7 +20,7 @@ __status__ = 'Dev'
 FILES_PATH = "/Users/pau_matas/Desktop/GCED/Q6/PE/beco-project/i+d/"
 earth_radius = 6371008
 
-def foo():
+def set_stores_nearest_stations():
     with open(f"{FILES_PATH}stations.json") as json_file:
         stations = json.load(json_file)
     with open(f"{FILES_PATH}stores.json") as json_file:
@@ -34,7 +31,7 @@ def foo():
         metric = 'haversine'
     )
 
-    idxs, dists = stores_nearest_stations_list()
+    idxs, dists = stores_nearest_stations_list(stations_tree, stores)
 
     near_stations = {
         store['id']: [
@@ -43,7 +40,10 @@ def foo():
         ]
         for i, store in enumerate(stores)
     }
-    print(near_stations)
+
+    stores = dict_matching(stores, near_stations, 'nearest_stations')
+    with open('./stores.json', 'w') as json_file:
+        json.dump(stores, json_file, ensure_ascii=False, indent=2)
 
 def stores_nearest_stations_list(stations_tree, stores, radius=4000):
     """
@@ -65,12 +65,16 @@ def stores_nearest_stations_list(stations_tree, stores, radius=4000):
     idxs = []
     dists = []
     for store in stores:
-        idx, dist = idx_dist(stations_tree, store, radius)
+        idx, dist = nearest_station_idx_and_dist(stations_tree, store, radius)
         idxs += [idx]
         dists += [dist]
     return idxs, dists
 
-def idx_dist(stations_tree, store, radius):
+def nearest_station_idx_and_dist(stations_tree, store, radius):
+    """ Given a store and a stations_tree BallTree returns the idx and dist of
+        their nearest stations in a radius `radius` or from the nearest one if
+        there isn't no station within this radius.
+    """
     idx, dist = stations_tree.query_radius(
         [(store['lat'] * pi/180, store['lon'] * pi/180)],
         r=radius/earth_radius,
@@ -89,5 +93,36 @@ def idx_dist(stations_tree, store, radius):
     dist = dist.tolist()
     return idx[0], [d * earth_radius for d in dist[0]]
 
+def dict_matching(l, d, new_key):
+    """
+    INPUT:
+    - list l = [{'id': 'id1', ...}, {'id': id2', ... }]
+    - dict d = {
+                    'id1': [(key11, value11), (key12, value12)],
+                    'id2': [(key21, value21), ... ],
+                    ...
+                }
+    OUTPUT:
+    - list output = [
+        {
+            'id' = 'id1',
+            'key1' = ...,
+            ...
+            'keyn' = ...,
+            'new_key' = [(key11, value11), (key12, value12)],
+        },
+        ...
+    ]
 
-foo()
+    """
+    for i, dict in enumerate(l):
+        if dict['id'] in d:
+            l[i][new_key] = {tuple[0]: tuple[1] for tuple in d[dict['id']]}
+
+    return l
+
+def main():
+    set_stores_nearest_stations()
+
+if __name__ == '__main__':
+    main()
