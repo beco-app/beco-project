@@ -11,13 +11,14 @@ import numpy as np
 from numpy import pi
 import json
 
+from extraction_routine import FILES_PATH
+
 __author__ = '[Gerard Calvo, Pau Matas]'
 __maintainer__ = 'Pau Matas'
 __email__ = 'pmatasalbiol@gmail.com'
 __status__ = 'Dev'
 
 # Global vars
-FILES_PATH = "/Users/pau_matas/Desktop/GCED/Q6/PE/beco-project/i+d/"
 earth_radius = 6371008
 
 def set_stores_nearest_stations():
@@ -34,12 +35,14 @@ def set_stores_nearest_stations():
     idxs, dists = stores_nearest_stations_list(stations_tree, stores)
 
     near_stations = {
-        store['id']: [
-            (list(stations.keys())[station_idx], np.round(d,2))
+        store['id']: {
+            list(stations.keys())[station_idx]: np.round(d,2)
             for station_idx, d in zip(idxs[i], dists[i])
-        ]
+        }
         for i, store in enumerate(stores)
     }
+
+    # return near_stations
 
     stores = dict_matching(stores, near_stations, 'nearest_stations')
     with open('./stores.json', 'w') as json_file:
@@ -122,7 +125,7 @@ def dict_matching(l, d, new_key):
     return l
 
 def main():
-    set_stores_nearest_stations()
+    print(set_stores_nearest_stations())
 
 if __name__ == '__main__':
     main()
