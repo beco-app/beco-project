@@ -93,27 +93,29 @@ def register_user():
     """
         Register new user to the database, which also has been previously added to firestore
     """
-    username = request.form.get('username')
-    password = request.form.get('password')
+
+    data = request.form.to_dict()
     becoins = 0 # Initial becoins
 
-    # Username check
-    if username is None:
+    fields = {"username", "email", "password", "phone", "gender", "birthdate", "zipcode", "diet"}
+    if fields != data.keys():
+        return {"message": "Invalid data fields"}, 400
+
+    if data["username"] is None:
         return {'message': 'Invalid username'}, 400
 
-    # Password check
-    if password is None:
+    if data["password"] is None:
         return {'message': 'Invalid password'}, 400
 
     data = {
-        'username': username,
-        'email': None,
-        'password': password,
-        'phone': None,
-        'gender': None,
-        'age': None,
-        'zip_code': None,
-        'diet': None,
+        'username': data["username"],
+        'email': data["email"],
+        'password': data["password"],
+        'phone': data["phone"],
+        'gender': data["gender"],
+        'birthdate': data["birthdate"],
+        'zip_code': data["zipcode"],
+        'diet': data["diet"],
         'becoins': becoins,
         'saved_prom' : None
     }
@@ -122,7 +124,7 @@ def register_user():
         tools.setUser(data)
         return {'message': 'Success'}, 200
     except:
-        return {'message': 'Error'}, 400
+        return {'message': 'Error in updating database'}, 400
 
 @app.route('/api/remove_user', methods=['POST'])
 @validate_user_exists

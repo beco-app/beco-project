@@ -230,7 +230,7 @@ def setUser(data):
 
     document = {
         'username': data["username"], 'email': data["email"], 'password': data["password"], 'phone': data["phone"],
-        'gender': data["gender"], 'age': data["age"], 'zip_code': data["zip_code"], 'diet': data["diet"],
+        'gender': data["gender"], 'birthdate': data["birthdate"], 'zip_code': data["zip_code"], 'diet': data["diet"],
         'becoins': data["becoins"], "saved_prom" : data["saved_prom"]
     }
     response = db_handler.queryInsert(db_name, db_users, document, one=True)
