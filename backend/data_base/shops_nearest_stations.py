@@ -23,7 +23,7 @@ __status__ = 'Dev'
 # Global vars
 earth_radius = 6371008
 
-def set_shops_nearest_stations():
+def get_shops_nearest_stations():
     with open(f"{FILES_PATH}stations.json") as json_file:
         stations = json.load(json_file)
     
@@ -87,7 +87,7 @@ def nearest_station_idx_and_dist(stations_tree, shop, radius):
         return idx[0], [d * earth_radius for d in dist[0]]
 
     dist, idx = stations_tree.query(
-        [(shop['lat'] * pi/180, shop['lon'] * pi/180)],
+        [(shop['location'][0] * pi/180, shop['location'][1] * pi/180)],
         k=1
     )
     idx = idx.tolist()
