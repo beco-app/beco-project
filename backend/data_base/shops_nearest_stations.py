@@ -15,7 +15,7 @@ import json
 from tools import getShop
 from extraction_routine import FILES_PATH
 
-__author__ = '[Gerard Calvo, Pau Matas]'
+__author__ = '[Gerard Calvo, Yikai Qiu, Pau Matas]'
 __maintainer__ = 'Pau Matas'
 __email__ = 'pmatasalbiol@gmail.com'
 __status__ = 'Dev'
