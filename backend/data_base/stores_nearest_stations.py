@@ -1,8 +1,8 @@
-# -*- stores_nn.py -*-
+# -*- shops_nn.py -*-
 
 """
 The aim of this python script is to asign the k-nearest neighbour air quality
-sensors stations to a store.
+sensors stations to a shop.
 """
 
 # Libs
@@ -11,6 +11,8 @@ import numpy as np
 from numpy import pi
 import json
 
+# Own modules
+from tools import getShop
 from extraction_routine import FILES_PATH
 
 __author__ = '[Gerard Calvo, Pau Matas]'
@@ -21,65 +23,61 @@ __status__ = 'Dev'
 # Global vars
 earth_radius = 6371008
 
-def set_stores_nearest_stations():
+def set_shops_nearest_stations():
     with open(f"{FILES_PATH}stations.json") as json_file:
         stations = json.load(json_file)
-    with open(f"{FILES_PATH}stores.json") as json_file:
-        stores = json.load(json_file)
+    
+    shops = getShop('location')
 
     stations_tree = BallTree(
         np.deg2rad([(st['lat'], st['lon']) for st in stations.values()]),
         metric = 'haversine'
     )
 
-    idxs, dists = stores_nearest_stations_list(stations_tree, stores)
+    idxs, dists = shops_nearest_stations_list(stations_tree, shops)
 
     near_stations = {
-        store['id']: {
+        shop['_id']: {
             list(stations.keys())[station_idx]: np.round(d,2)
             for station_idx, d in zip(idxs[i], dists[i])
         }
-        for i, store in enumerate(stores)
+        for i, shop in enumerate(shops)
     }
 
-    # return near_stations
+    return near_stations
 
-    stores = dict_matching(stores, near_stations, 'nearest_stations')
-    with open('./stores.json', 'w') as json_file:
-        json.dump(stores, json_file, ensure_ascii=False, indent=2)
-
-def stores_nearest_stations_list(stations_tree, stores, radius=4000):
+def shops_nearest_stations_list(stations_tree, shops, radius=4000):
     """
-    Returns two lists defining the nearest stations for every store in `stores`.
+    Returns two lists defining the nearest stations for every shop in `shops`.
     The first one elements are the `stations.values()` list indexes of the
-    store's nearest stations, and the second list returned has the distances
-    between the store and the nearest stations as elements.
-    The order in the lists corresponds to the order of the stores in the list
-    `stores`. The order of the elements of those lists are determined by the
-    increasing distances between the stations and the stores.
-    So, `dists[i][j]` will be the distance between the `stores`' i-th store and
+    shop's nearest stations, and the second list returned has the distances
+    between the shop and the nearest stations as elements.
+    The order in the lists corresponds to the order of the shops in the list
+    `shops`. The order of the elements of those lists are determined by the
+    increasing distances between the stations and the shops.
+    So, `dists[i][j]` will be the distance between the `shops`' i-th shop and
     the j-th nearest station; in addition, this station will be the
     idxs[i][j]-th station in the list `stations`.
 
     It will also return the nearest stations within a radius of `radius` meters
-    from the store. If there isn't any station in that radius will simply return
+    from the shop. If there isn't any station in that radius will simply return
     the nearest one.
     """
     idxs = []
     dists = []
-    for store in stores:
-        idx, dist = nearest_station_idx_and_dist(stations_tree, store, radius)
+    for shop in shops:
+        idx, dist = nearest_station_idx_and_dist(stations_tree, shop, radius)
         idxs += [idx]
         dists += [dist]
     return idxs, dists
 
-def nearest_station_idx_and_dist(stations_tree, store, radius):
-    """ Given a store and a stations_tree BallTree returns the idx and dist of
+def nearest_station_idx_and_dist(stations_tree, shop, radius):
+    """ Given a shop and a stations_tree BallTree returns the idx and dist of
         their nearest stations in a radius `radius` or from the nearest one if
         there isn't no station within this radius.
     """
     idx, dist = stations_tree.query_radius(
-        [(store['lat'] * pi/180, store['lon'] * pi/180)],
+        [(shop['location'][0] * pi/180, shop['location'][1] * pi/180)],
         r=radius/earth_radius,
         return_distance = True
     )
@@ -89,7 +87,7 @@ def nearest_station_idx_and_dist(stations_tree, store, radius):
         return idx[0], [d * earth_radius for d in dist[0]]
 
     dist, idx = stations_tree.query(
-        [(store['lat'] * pi/180, store['lon'] * pi/180)],
+        [(shop['lat'] * pi/180, shop['lon'] * pi/180)],
         k=1
     )
     idx = idx.tolist()
@@ -123,9 +121,3 @@ def dict_matching(l, d, new_key):
             l[i][new_key] = {tuple[0]: tuple[1] for tuple in d[dict['id']]}
 
     return l
-
-def main():
-    print(set_stores_nearest_stations())
-
-if __name__ == '__main__':
-    main()
