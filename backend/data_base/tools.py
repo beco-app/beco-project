@@ -22,7 +22,7 @@ import re
 import json
 
 # Globals
-config = json.load(open("../config/config.json"))
+config = json.load(open("backend/config/config.json"))
 db_username = config["db_username"]
 db_password = config["db_password"]
 db_name = config["db_name"]
@@ -39,8 +39,8 @@ collection_attributes = {
         'age', 'zip_code', 'diet', 'becoins', 'saved_prom'
     ],
     db_shops:[
-        '_id', 'shopname','description','web', 'timetable',  'photo',
-        'location','address','district','neighbourhood','type','product_list'
+        '_id','shopname','description','web', 'timetable', 'photo','location',
+        'address','district','neighbourhood', 'zip_code','type','product_list'
     ],
     db_transactions:[
         '_id','shop_id','user_id','timestamp',
@@ -267,10 +267,10 @@ def setShop(data):
     See database documentation for more information.
     """
     document = {
-        'shopname': data["shopname"],   'description':  data["description"],  'timetable':     data["timetable"], 
-        'web':      data["web"],        'photo':        data["photo"],        'location':      data["location"], 
-        'adress':   data["adress"],     'district':     data["district"],     'neighbourhood': data["neighbourhood"], 
-        'type':     data["type"],       'product_list': data["product_list"], 'phone':         data["phone"]
+        'shopname':  data["shopname"],   'description':  data["description"],  'timetable':     data["timetable"], 
+        'web':       data["web"],        'photo':        data["photo"],        'location':      data["location"], 
+        'address':   data["address"],     'district':     data["district"],     'neighbourhood': data["neighbourhood"], 
+        'type':      data["type"],       'product_list': data["product_list"], 'phone':         data["phone"]
     }
     response = db_handler.queryInsert(db_name, db_shops, document, one=True)
     return response.acknowledged, response.inserted_id
