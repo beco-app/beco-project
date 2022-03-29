@@ -96,7 +96,9 @@ def register_user():
 
     data = request.form.to_dict()
     becoins = 0 # Initial becoins
-    print(data)
+    app.logger.warning('testing warning log')
+    app.logger.error('prova error')
+    app.logger.info(data)
 
     fields = {"username", "email", "password", "phone", "gender", "birthdate", "zipcode", "diet"}
     if fields != data.keys():
