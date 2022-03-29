@@ -28,10 +28,13 @@ def transaction_gen(n):
     return zip(users, shops, times, proms, pays, becoins)
 
 
-if __name__ == '__main__':
-    transactions = transaction_gen(5000)
+def populate_transactions(n):
+    transactions = transaction_gen(n)
     for t in transactions:
         t = {'shop_id': t[0], 'user_id': t[1], 'timestamp': t[2],
              'promotion_used': t[3], 'payment': t[4], 'becoin_gained': t[5]}
         setTransaction(t)
+
+if __name__ == '__main__':
+    populate_transactions(5000)
         
