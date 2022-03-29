@@ -236,7 +236,7 @@ def setUser(data):
 
     document = {
         'username': data["username"], 'email': data["email"], 'password': data["password"], 'phone': data["phone"],
-        'gender': data["gender"], 'age': data["age"], 'zip_code': data["zip_code"], 'diet': data["diet"],
+        'gender': data["gender"], 'birthday': data["birthday"], 'zip_code': data["zip_code"], 'diet': data["diet"],
         'becoins': data["becoins"], "saved_prom" : data["saved_prom"]
     }
     response = db_handler.queryInsert(db_name, db_users, document, one=True)
@@ -265,6 +265,7 @@ def setShop(data):
         * 'product_list':   [product_id]
         * 'phone':          str, 9 digits
         * 'zip_code':       str, 5 digits
+        * 'tags':           [str, str, str]
 
     Returns:
         * (True, ObjectId) if the insertion succeed
@@ -275,9 +276,10 @@ def setShop(data):
     document = {
         'shopname': data["shopname"],   'description':  data["description"],  'timetable':     data["timetable"], 
         'web':      data["web"],        'photo':        data["photo"],        'location':      data["location"], 
-        'address':   data["address"],     'district':     data["district"],     'neighbourhood': data["neighbourhood"], 
-        'type':     data["type"],       'product_list': data["product_list"], 'phone':         data["phone"],
-        'zip_code': data["zip_code"]
+        'address':   data["address"],   'district':     data["district"],     'neighbourhood': data["neighbourhood"], 
+        'zip_code': data["zip_code"],   'type':         data["type"],         'tags':          data["tags"],
+        'phone':    data["phone"],      'product_list': data["product_list"]
+        
     }
     response = db_handler.queryInsert(db_name, db_shops, document, one=True)
     return response.acknowledged, response.inserted_id
