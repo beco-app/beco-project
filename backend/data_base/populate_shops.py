@@ -29,8 +29,8 @@ def populate_shops(src):
                 'neighbourhood': neighbourhood, 'type': _type, 'product_list': product_list, 'phone': phone
             }
 
-            #print(setShop(shop))
-            print(shop)
+            print(setShop(shop))
+            #print(shop)
 
 if __name__ == '__main__':
     populate_shops('./backend/data_base/shops.csv')
