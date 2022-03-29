@@ -98,7 +98,7 @@ def login():
     user = tools.getUser({"email": data["email"]}, attributes=["password"])
     print(user)
     return user
-    
+
     if data["password"] != user["password"]:
         return {"message": "wrong password!"}, 400
 

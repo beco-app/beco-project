@@ -18,6 +18,7 @@ def validate_user_exists(f):
     def wrapper(*args, **kwargs):
         #user_id = request.form.get('user_id')
         data = request.form.to_dict()
+        users = None
         if "user_id" in data.keys():
             user_id = data['user_id']
             users = tools.getUser(_id = ObjectId(user_id))
