@@ -96,6 +96,7 @@ def register_user():
 
     data = request.form.to_dict()
     becoins = 0 # Initial becoins
+    print(data)
 
     fields = {"username", "email", "password", "phone", "gender", "birthdate", "zipcode", "diet"}
     if fields != data.keys():
