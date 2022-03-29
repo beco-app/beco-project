@@ -12,7 +12,6 @@ else:
 from backend.data_base import tools
 from backend.App.validate import validate_promotion, validate_user_exists, validate_unique_username
 
-import firebase_admin
 import pyrebase
 import json
 from firebase_admin import credentials, auth
