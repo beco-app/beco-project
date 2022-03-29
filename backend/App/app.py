@@ -18,6 +18,7 @@ import json
 #from firebase_admin import credentials, auth
 from flask import Flask, request
 from functools import wraps
+import logging
 
 # App configuration
 app = Flask(__name__)
@@ -96,22 +97,20 @@ def register_user():
 
     data = request.form.to_dict()
     becoins = 0 # Initial becoins
-    app.logger.warning('testing warning log')
-    app.logger.error('prova error')
-    app.logger.info(data)
+    print(data)
 
-    fields = {"username", "email", "password", "phone", "gender", "birthdate", "zipcode", "diet"}
+    fields = {"email", "password", "phone", "gender", "birthdate", "zipcode", "diet"}
     if fields != data.keys():
         return {"message": "Invalid data fields"}, 400
 
-    if data["username"] is None:
-        return {'message': 'Invalid username'}, 400
+    if data["email"] is None:
+        return {'message': 'Invalid email'}, 400
 
     if data["password"] is None:
         return {'message': 'Invalid password'}, 400
 
     data = {
-        'username': data["username"],
+        'username': data["email"],
         'email': data["email"],
         'password': data["password"],
         'phone': data["phone"],

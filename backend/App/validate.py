@@ -72,8 +72,9 @@ def validate_user(f):
 def validate_unique_username(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
-        username = request.form.get('username')
+        username = request.form.get('email')
         user_exists = tools.getUser(username=username) # empty list if new user
+        print("user_exists", user_exists)
         if user_exists: abort(400)
         return f(*args, **kwargs)
     return wrapper
