@@ -93,31 +93,3 @@ def nearest_station_idx_and_dist(stations_tree, shop, radius):
     idx = idx.tolist()
     dist = dist.tolist()
     return idx[0], [d * earth_radius for d in dist[0]]
-
-def dict_matching(l, d, new_key):
-    """
-    INPUT:
-    - list l = [{'id': 'id1', ...}, {'id': id2', ... }]
-    - dict d = {
-                    'id1': [(key11, value11), (key12, value12)],
-                    'id2': [(key21, value21), ... ],
-                    ...
-                }
-    OUTPUT:
-    - list output = [
-        {
-            'id' = 'id1',
-            'key1' = ...,
-            ...
-            'keyn' = ...,
-            'new_key' = [(key11, value11), (key12, value12)],
-        },
-        ...
-    ]
-
-    """
-    for i, dict in enumerate(l):
-        if dict['id'] in d:
-            l[i][new_key] = {tuple[0]: tuple[1] for tuple in d[dict['id']]}
-
-    return l
