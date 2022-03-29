@@ -6,11 +6,11 @@ from bson.objectid import ObjectId
 local = True
 if local:
     sys.path.append("/Users/tomas.gadea/tomasgadea/ACADEMIC/GCED/q6/PE/beco/beco-project")
-    from backend.data_base import tools
-    from backend.App.validate import validate_promotion, validate_user_exists, validate_unique_username
 else:
-    from data_base import tools
-    from App.validate import validate_promotion, validate_user_exists, validate_unique_username
+    sys.path.append("/home/ubuntu/beco-project")
+
+from backend.data_base import tools
+from backend.App.validate import validate_promotion, validate_user_exists, validate_unique_username
 
 import firebase_admin
 import pyrebase
