@@ -1,4 +1,3 @@
-
 from numpy import product
 import tools as tools
 import random
@@ -29,8 +28,9 @@ def populate_shops(src):
                 'photo':photo, 'location': location, 'address':address, 'district':district,
                 'neighbourhood': neighbourhood, 'type': _type, 'product_list': product_list, 'phone': phone
             }
+
             print(setShop(shop))
-            # print(shop)
+            #print(shop)
 
 if __name__ == '__main__':
     populate_shops('./backend/data_base/shops.csv')
