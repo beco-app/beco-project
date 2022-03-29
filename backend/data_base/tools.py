@@ -42,7 +42,7 @@ db_products = config["db_products"]
 collection_attributes = {
     db_users: [
         '_id','username','email', 'password', 'phone','gender',
-        'birthday', 'zip_code', 'diet', 'becoins', 'saved_prom'
+        'birthday', 'zip_code', 'preferences', 'becoins', 'saved_prom'
     ],
     db_shops:[
         '_id', 'shopname','description','web', 'timetable',  'photo',
@@ -237,7 +237,7 @@ def setUser(data):
 
     document = {
         'username': data["username"], 'email': data["email"], 'password': data["password"], 'phone': data["phone"],
-        'gender': data["gender"], 'birthday': data["birthday"], 'zip_code': data["zip_code"], 'diet': data["diet"],
+        'gender': data["gender"], 'birthday': data["birthday"], 'zip_code': data["zip_code"], 'preferences': data["preferences"],
         'becoins': data["becoins"], "saved_prom" : data["saved_prom"]
     }
     response = db_handler.queryInsert(db_name, db_users, document, one=True)
