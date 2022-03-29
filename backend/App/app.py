@@ -87,6 +87,23 @@ def token():
         return {'message': 'There was an error logging in'},400
 
 
+@app.route("/api/login", methods=['POST'])
+@validate_user_exists
+def login():
+    data = request.form.to_dict()
+    fields = {"email", "password"}
+    if fields != data.keys():
+        return {"message": "Invalid data fields"}, 400
+
+    user = tools.getUser({"email": data["email"]}, attributes=["password"])
+    print(user)
+    return user
+    
+    if data["password"] != user["password"]:
+        return {"message": "wrong password!"}, 400
+
+    return {"message": "success", "user_id": user["_id"]}, 200
+
 # Write user to database
 @app.route('/api/register_user', methods=['POST'])
 @validate_unique_username
@@ -97,7 +114,6 @@ def register_user():
 
     data = request.form.to_dict()
     becoins = 0 # Initial becoins
-    print(data)
 
     fields = {"email", "password", "phone", "gender", "birthdate", "zipcode", "diet"}
     if fields != data.keys():
