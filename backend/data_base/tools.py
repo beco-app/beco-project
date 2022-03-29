@@ -46,7 +46,8 @@ collection_attributes = {
     ],
     db_shops:[
         '_id', 'shopname','description','web', 'timetable',  'photo',
-        'location','address','district','neighbourhood','type','product_list', 'zip_code', 'nearest_stations'
+        'location','address','district','neighbourhood','type','product_list', 
+        'zip_code', 'nearest_stations', 'tags'
     ],
     db_transactions:[
         '_id','shop_id','user_id','timestamp',
@@ -274,11 +275,11 @@ def setShop(data):
     See database documentation for more information.
     """
     document = {
-        'shopname': data["shopname"],   'description':  data["description"],  'timetable':     data["timetable"], 
-        'web':      data["web"],        'photo':        data["photo"],        'location':      data["location"], 
-        'address':   data["address"],   'district':     data["district"],     'neighbourhood': data["neighbourhood"], 
-        'zip_code': data["zip_code"],   'type':         data["type"],         'tags':          data["tags"],
-        'phone':    data["phone"],      'product_list': data["product_list"]
+        'shopname': data["shopname"],   'description':  data["description"],  'timetable':        data["timetable"], 
+        'web':      data["web"],        'photo':        data["photo"],        'location':         data["location"], 
+        'address':  data["address"],    'district':     data["district"],     'neighbourhood':    data["neighbourhood"], 
+        'zip_code': data["zip_code"],   'type':         data["type"],         'tags':             data["tags"],
+        'phone':    data["phone"],      'product_list': data["product_list"], 'nearest_stations': data['nearest_stations']
         
     }
     response = db_handler.queryInsert(db_name, db_shops, document, one=True)
