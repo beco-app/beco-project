@@ -12,9 +12,10 @@ else:
 from backend.data_base import tools
 from backend.App.validate import validate_promotion, validate_user_exists, validate_unique_username
 
-import pyrebase
+#import firebase_admin
+#import pyrebase
 import json
-from firebase_admin import credentials, auth
+#from firebase_admin import credentials, auth
 from flask import Flask, request
 from functools import wraps
 
@@ -22,9 +23,9 @@ from functools import wraps
 app = Flask(__name__)
 
 # Connect to firebase
-cred = credentials.Certificate('backend/App/fbAdminConfig.json')
-firebase = firebase_admin.initialize_app(cred)
-pb = pyrebase.initialize_app(json.load(open('backend/App/fbconfig.json')))
+#cred = credentials.Certificate('backend/App/fbAdminConfig.json')
+#firebase = firebase_admin.initialize_app(cred)
+#pb = pyrebase.initialize_app(json.load(open('backend/App/fbconfig.json')))
 
 # Data source
 users = [{'uid': 1, 'name': 'Yikai Qiu'}]
