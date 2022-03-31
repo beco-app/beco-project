@@ -2,8 +2,9 @@ import sys
 import os
 from datetime import datetime, timedelta
 from bson.objectid import ObjectId
+from bson import json_util
 
-local = False
+local = True
 if local:
     sys.path.append("/Users/tomas.gadea/tomasgadea/ACADEMIC/GCED/q6/PE/beco/beco-project")
 else:
@@ -183,7 +184,7 @@ def nearest_shops(username, lat, long, distance):
 
 
 # Add BECOINS
-@app.route('/api/add_becoins')
+@app.route('/api/add_becoins', methods=["GET"])
 def add_becoins():
     """
         Adds becoins to a user's account
@@ -231,6 +232,16 @@ def activate_promotion():
 #     return 200
 
 
+
+# Map Page
+@app.route("/load_map", methods=["GET"])
+def load_map():
+    data = request.form.to_dict()
+    shops = tools.getShop(["_id","address", "location", "shopname", "neighbourhood"]) # all shops
+    shops_dict = {"shops": shops}
+    response = json.loads(json_util.dumps(shops_dict))
+
+    return response, 200
 
 if __name__ == '__main__':
     app.run(debug=True)

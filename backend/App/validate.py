@@ -4,7 +4,7 @@ from bson.objectid import ObjectId
 from time import time
 import sys
 
-local = False
+local = True
 if local:
     sys.path.append("/Users/tomas.gadea/tomasgadea/ACADEMIC/GCED/q6/PE/beco/beco-project")
 else:
