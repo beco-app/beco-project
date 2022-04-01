@@ -237,7 +237,7 @@ def activate_promotion():
 @app.route("/load_map", methods=["GET"])
 def load_map():
     data = request.form.to_dict()
-    shops = tools.getShop(["_id","address", "location", "shopname", "neighbourhood"]) # all shops
+    shops = tools.getShop(["_id","address", "location", "shopname", "phone", "neighbourhood"]) # all shops
     shops_dict = {"shops": shops}
     response = json.loads(json_util.dumps(shops_dict))
 
