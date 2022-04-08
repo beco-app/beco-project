@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from bson.objectid import ObjectId
 from bson import json_util
 
-local = True
+local = False
 if local:
     sys.path.append("/Users/tomas.gadea/tomasgadea/ACADEMIC/GCED/q6/PE/beco/beco-project")
 else:
@@ -237,7 +237,7 @@ def activate_promotion():
 @app.route("/load_map", methods=["GET"])
 def load_map():
     data = request.form.to_dict()
-    shops = tools.getShop(["_id","address", "location", "shopname", "phone", "neighbourhood"]) # all shops
+    shops = tools.getShop(["_id","address", "location", "shopname", "phone", "neighbourhood", "description"]) # all shops
     shops_dict = {"shops": shops}
     response = json.loads(json_util.dumps(shops_dict))
 
