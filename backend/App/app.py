@@ -116,7 +116,7 @@ def register_user():
     data = request.form.to_dict()
     becoins = 0 # Initial becoins
 
-    fields = {"email", "password", "phone", "gender", "birthdate", "zipcode", "diet"}
+    fields = {"email", "password", "phone", "gender", "birthday", "zipcode", "diet"}
     if fields != data.keys():
         return {"message": "Invalid data fields"}, 400
 
@@ -132,7 +132,7 @@ def register_user():
         'password': data["password"],
         'phone': data["phone"],
         'gender': data["gender"],
-        'birthdate': data["birthdate"],
+        'birthday': data["birthday"],
         'zip_code': data["zipcode"],
         'diet': data["diet"],
         'becoins': becoins,
