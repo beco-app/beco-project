@@ -24,7 +24,7 @@ __status__ = 'Dev'
 
 # Global variables
 token = '5ba0f3024f257b103b04cc3fd569a67994c57e2e'
-FILES_PATH = "/Users/pau_matas/Desktop/GCED/Q6/PE/beco-project/i+d/"
+FILES_PATH = "./backend/data_base/"
 
 def sensors_api_query(token, lat1, lng1, lat2=None, lng2=None):
     """ Given a token and one bounding box or point parameters returns the
