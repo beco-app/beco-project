@@ -38,10 +38,30 @@ def shop_count_sim(u_shops, v_shops):
     return dot
 
 
+def recommend_new_user(user_id):
+    u_zipcode = getUser(_id=user_id)[0]['zip_code']
+    shops = getShop(['_id'], zip_code=u_zipcode)
+    shops = {s['_id']:1 for s in shops}
+
+    for sh, score in shops.items():
+        preferences = getUser(_id=user_id)[0]['preferences']
+        for tag in getShop(_id=sh)[0]['tags']:
+            if tag in preferences:
+                shops[sh] *= 1.25  # hyperparameter
+
+    
+    return sorted(shops.items(), key=lambda x: -x[1])
+
+
 def recommend(user_id):
 
     # Find most similar users
     u_shops = get_shop_count(user_id)
+
+    # To new users, recommend shops in its zip code with preferences
+    if len(u_shops) == 0:
+        return recommend_new_user(user_id)
+
     users = getUser(['_id'])
     sims = []
     for v in users:
@@ -79,7 +99,7 @@ def recommend(user_id):
 
     for sh, score in shops.items():
         preferences = getUser(_id=user_id)[0]['preferences']
-        for tag in getShop(_id=sh)['tags']:
+        for tag in getShop(_id=sh)[0]['tags']:
             if tag in preferences:
                 shops[sh] *= 1.25  # hyperparameter
 
