@@ -1,3 +1,4 @@
+import 'package:beco/views/MapWidget.dart';
 import 'package:beco/views/ProfileWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:beco/views/HomeWidget.dart';
@@ -27,6 +28,7 @@ class _HomeViewState extends State<HomeView> {
       Icons.camera,
       size: 150,
     ),
+    MapWidget(),
     Icon(
       Icons.chat,
       size: 150,
