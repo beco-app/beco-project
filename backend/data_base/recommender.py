@@ -65,27 +65,23 @@ def recommend(user_id):
     
 
     # Compute approx ubication of user and ponderate by distance
-
-    def eval_loc(loc_str):
-        lat = float(eval(loc_str)[0].replace(',', '.'))
-        lon = float(eval(loc_str)[1].replace(',', '.'))
-        return lat, lon
     
-    u_locs = [eval_loc(getShop([], _id=s)[0]['location']) for s, _ in u_shops.items()]
+    u_locs = [getShop([], _id=s)[0]['location'] for s, _ in u_shops.items()]
     lats, lons = [lat for lat, _ in u_locs], [lon for _, lon in u_locs]
     loc = np.mean(lats), np.mean(lons)
-    s_locs = [eval_loc(getShop([], _id=s)[0]['location']) for s in shops.keys()]
+    s_locs = [getShop([], _id=s)[0]['location'] for s in shops.keys()]
     dists = [distance(loc, s_loc).km for s_loc in s_locs]
     dists = np.array(dists) / max(dists)
     dist_scores = [np.pi / 2 - np.arctan(d) for d in dists]  # hyperparameter
     shops = {sh: sc*dist_scores[i] for i, (sh, sc) in enumerate(shops.items())}
 
-    # Sum if user and shop are vegan
+    # Sum if user interested in shop tags
 
-    if getUser([], _id=user_id)[0]['diet'] == 'Vegan':  # Add more types?
-        for sh, _ in shops.items():
-            if getShop([], _id=sh)[0]['type'] == 'vegan food':
-                shops[sh] *= 1.2  # Hyperparameter
+    for sh, score in shops.items():
+        preferences = getUser(_id=user_id)[0]['preferences']
+        for tag in getShop(_id=sh)['tags']:
+            if tag in preferences:
+                shops[sh] *= 1.25  # hyperparameter
 
     
     return sorted(shops.items(), key=lambda x: -x[1])
