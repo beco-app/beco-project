@@ -5,6 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart' as intl;
 
+// Created to save the user data and send it to backend.
 class User {
   late final String email;
   late final String password;
@@ -65,7 +66,6 @@ class _RegisterViewState extends State<RegisterView> {
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
         title: const Text('Register'),
-        // backgroundColor: Colors.purple[800],
       ),
       body: CustomScrollView(
         slivers: [
@@ -94,7 +94,7 @@ class _RegisterViewState extends State<RegisterView> {
                       controller: _password,
                       enableSuggestions: false,
                       autocorrect: false,
-                      keyboardType: TextInputType.emailAddress,
+                      obscureText: true,
                       decoration: const InputDecoration(
                         hintText: 'Password',
                         labelText: 'Password',
@@ -122,7 +122,7 @@ class _RegisterViewState extends State<RegisterView> {
                       controller: _zipcode,
                       enableSuggestions: false,
                       autocorrect: false,
-                      keyboardType: TextInputType.emailAddress,
+                      keyboardType: TextInputType.number,
                       decoration: const InputDecoration(
                         hintText: 'Zip code',
                         labelText: 'Zip code',
@@ -176,8 +176,9 @@ class _RegisterViewState extends State<RegisterView> {
                       },
                       items: <String>[
                         'Prefer not to answer',
-                        'Male',
-                        'Female',
+                        'Omnivore',
+                        'Vegetarian',
+                        'Vegan',
                         'Other'
                       ].map<DropdownMenuItem<String>>((String value) {
                         return DropdownMenuItem<String>(
@@ -207,12 +208,12 @@ class _RegisterViewState extends State<RegisterView> {
                           user.gender = gender;
                           user.diet = diet;
                           try {
-                            final userCredential = await FirebaseAuth.instance
-                                .createUserWithEmailAndPassword(
-                              email: user.email,
-                              password: user.password,
-                            );
-                            print(userCredential);
+                            // final userCredential = await FirebaseAuth.instance
+                            //     .createUserWithEmailAndPassword(
+                            //   email: user.email,
+                            //   password: user.password,
+                            // );
+                            // print(userCredential);
 
                             // Send user to backend
                             final r = await http.post(
@@ -228,11 +229,6 @@ class _RegisterViewState extends State<RegisterView> {
                         },
                         child: const Text('Sign Up',
                             style: TextStyle(fontWeight: FontWeight.bold)),
-                        // style: TextButton.styleFrom(
-                        //   primary: Colors.white,
-                        //   backgroundColor: Colors.purple[800],
-                        //   onSurface: Colors.grey,
-                        // )
                       ),
                     ),
                     const Spacer(),
@@ -247,11 +243,6 @@ class _RegisterViewState extends State<RegisterView> {
                         },
                         child: const Text('Log In',
                             style: TextStyle(fontWeight: FontWeight.bold)),
-                        // style: TextButton.styleFrom(
-                        //   primary: Colors.white,
-                        //   backgroundColor: Colors.purple[800],
-                        //   onSurface: Colors.grey,
-                        // ),
                       ),
                     )
                   ].expand(
@@ -272,6 +263,7 @@ class _RegisterViewState extends State<RegisterView> {
   }
 }
 
+// Pop-up widget to select the birth date.
 class _FormDatePicker extends StatefulWidget {
   final DateTime date;
   final ValueChanged<DateTime> onChanged;
@@ -314,18 +306,6 @@ class _FormDatePickerState extends State<_FormDatePicker> {
               initialDate: widget.date,
               firstDate: DateTime(1900),
               lastDate: DateTime(2100),
-              // builder: (BuildContext context, Widget? child) {
-              //   return Theme(
-              //     data: ThemeData.light().copyWith(
-              //       primaryColor: const Color(0xFF512DA8),
-              //       colorScheme:
-              //           ColorScheme.light(primary: const Color(0xFF512DA8)),
-              //       buttonTheme:
-              //           ButtonThemeData(textTheme: ButtonTextTheme.primary),
-              //     ),
-              //     child: child!,
-              //   );
-              // },
             );
             // Don't change the date if the date picker returns null.
             if (newDate == null) {

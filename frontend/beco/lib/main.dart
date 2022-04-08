@@ -1,15 +1,29 @@
 import 'dart:collection';
 
+import 'package:beco/views/DetailView.dart';
 import 'package:beco/views/HomeView.dart';
 import 'package:beco/views/LoginView.dart';
-import 'package:beco/views/MapView.dart';
+import 'package:beco/views/UNUSEDMapView.dart';
 import 'package:beco/views/RegisterView.dart';
 import 'package:beco/views/VerifyEmailView.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
+import 'ShopLocations.dart';
 import 'firebase_options.dart';
+
+// final voidStore = Store(
+//   address: "",
+//   id: "",
+//   image: "https://theibizan.com/wp-content/uploads/2019/03/eco.jpg",
+//   lat: 0,
+//   lng: 0,
+//   name: "",
+//   phone: "",
+//   region: "",
+//   description: "",
+// );
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,8 +33,7 @@ void main() {
       theme: ThemeData(
           primarySwatch: Colors.deepPurple,
           primaryColor: Colors.deepPurple[900]),
-      //home: const MyHomePage(title: 'Flutter Demo Home Page'),
-      home: const HomeView(),
+      home: const HomeView(), // Page shown when app is started.
       routes: {
         '/login/': (context) => const LoginView(),
         '/register/': (context) => const RegisterView(),

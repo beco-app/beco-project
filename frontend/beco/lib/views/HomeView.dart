@@ -1,3 +1,4 @@
+import 'package:beco/views/MapWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:beco/firebase_options.dart';
@@ -18,15 +19,16 @@ class _HomeViewState extends State<HomeView> {
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
 
-  static const List<Widget> _pages = <Widget>[
-    Icon(
-      Icons.call,
-      size: 150,
+  static final List<Widget> _pages = <Widget>[
+    Column(
+      children: [
+        Icon(
+          Icons.camera,
+          size: 150,
+        ),
+      ],
     ),
-    Icon(
-      Icons.camera,
-      size: 150,
-    ),
+    MapWidget(),
     Icon(
       Icons.chat,
       size: 150,
