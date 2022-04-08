@@ -3,7 +3,6 @@ import 'dart:collection';
 import 'package:beco/views/DetailView.dart';
 import 'package:beco/views/HomeView.dart';
 import 'package:beco/views/LoginView.dart';
-import 'package:beco/views/UNUSEDMapView.dart';
 import 'package:beco/views/RegisterView.dart';
 import 'package:beco/views/VerifyEmailView.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -38,7 +37,7 @@ void main() {
         '/login/': (context) => const LoginView(),
         '/register/': (context) => const RegisterView(),
         '/home/': (context) => const HomeView(),
-        '/map/': (context) => const MapView(),
+        //'/map/': (context) => const MapWidget(),
       },
     ),
   );
