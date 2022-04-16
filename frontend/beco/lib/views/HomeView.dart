@@ -29,10 +29,6 @@ class _HomeViewState extends State<HomeView> {
       size: 150,
     ),
     MapWidget(),
-    Icon(
-      Icons.chat,
-      size: 150,
-    ),
     ProfileWidget(),
   ];
 
