@@ -3,12 +3,14 @@ import os
 from datetime import datetime, timedelta
 from bson.objectid import ObjectId
 
-local = True
+local = False
 if local:
     sys.path.append("/Users/tomas.gadea/tomasgadea/ACADEMIC/GCED/q6/PE/beco/beco-project")
     from backend.data_base import tools
     from backend.App.validate import validate_promotion, validate_user_exists
 else:
+    import sys
+    sys.path.append("./backend/data_base")
     from data_base import tools
     from App.validate import validate_promotion, validate_user_exists
 
