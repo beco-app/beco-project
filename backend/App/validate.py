@@ -7,11 +7,11 @@ import sys
 local = False
 if local:
     sys.path.append("/Users/tomas.gadea/tomasgadea/ACADEMIC/GCED/q6/PE/beco/beco-project")
+    from backend.data_base import tools
 else:
-    sys.path.append("/home/ubuntu/beco-project")
-
-from backend.data_base import tools
-
+    import sys
+    sys.path.append("./backend/data_base")
+    import tools
 
 def validate_user_exists(f):
     @wraps(f)

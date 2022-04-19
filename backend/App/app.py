@@ -8,7 +8,10 @@ local = False
 if local:
     sys.path.append("/Users/tomas.gadea/tomasgadea/ACADEMIC/GCED/q6/PE/beco/beco-project")
 else:
-    sys.path.append("/home/ubuntu/beco-project")
+    sys.path.append("./backend/data_base")
+    sys.path.append("./backend/App")
+    import tools
+    from validate import validate_promotion, validate_user_exists
 
 from backend.data_base import tools
 from backend.App.validate import validate_promotion, validate_user_exists, validate_unique_username
@@ -231,6 +234,16 @@ def activate_promotion():
 #     transaction()
 #     return 200
 
+
+@app.route("/homepage", methods=["GET"])
+def homepage():
+    data = request.form.to_dict()
+    shops = tools.getShop(["_id", "shopname", "description", "photo", "type", "tags"])
+    #shops = tools.getShop(["_id", "shopname", "description"])
+    shops_dict = {"shops": shops}
+    response = json.loads(json_util.dumps(shops_dict))
+
+    return response, 200
 
 
 # Map Page
