@@ -35,14 +35,33 @@ class _MapWidgetState extends State<MapWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return GoogleMap(
-      myLocationEnabled: false,
-      onMapCreated: _onMapCreated,
-      initialCameraPosition: CameraPosition(
-        target: _center,
-        zoom: 12.0,
+    return DefaultTabController(
+      length: 3,
+      child: Scaffold(
+        appBar: AppBar(
+          bottom: const TabBar(isScrollable: true, tabs: [
+            Tab(text: 'text1'),
+            Tab(text: 'text1'),
+            Tab(text: 'text1'),
+          ]),
+        ),
+        body: SafeArea(
+          bottom: false,
+          child: TabBarView(children: [
+            GoogleMap(
+              myLocationEnabled: false,
+              onMapCreated: _onMapCreated,
+              initialCameraPosition: CameraPosition(
+                target: _center,
+                zoom: 12.0,
+              ),
+              markers: _markers.values.toSet(),
+            ),
+            Text("Hola"),
+            Text("Hola"),
+          ]),
+        ),
       ),
-      markers: _markers.values.toSet(),
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:beco/views/MapWidget.dart';
 import 'package:beco/views/ProfileWidget.dart';
+import 'package:beco/views/provaView.dart';
 import 'package:flutter/material.dart';
 import 'package:beco/views/HomeWidget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -24,15 +25,8 @@ class _HomeViewState extends State<HomeView> {
 
   static List<Widget> _pages = <Widget>[
     HomeWidget(),
-    Icon(
-      Icons.camera,
-      size: 150,
-    ),
     MapWidget(),
-    Icon(
-      Icons.chat,
-      size: 150,
-    ),
+    provaWidget(),
     ProfileWidget(),
   ];
 
