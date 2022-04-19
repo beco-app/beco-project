@@ -12,7 +12,7 @@ class _HomeWidgetState extends State<HomeWidget> {
   @override
   Widget build(BuildContext context) {
     return CustomScrollView(
-      slivers: [
+      slivers: <Widget>[
         SliverAppBar(
           floating: true,
           actions: <Widget>[
@@ -22,32 +22,35 @@ class _HomeWidgetState extends State<HomeWidget> {
         ),
         SliverFillRemaining(
           hasScrollBody: false,
-          child: Padding(
-            padding: const EdgeInsets.all(32.0),
-            child: Column(
+          child: Column(
               children:[
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 IconsRow(),
-                SizedBox(height: 20),
-                ShopButton(shopName: "Bodevici", imgPath:"assets/images/logo.png", shortDescr: "Ice cream shop", icons: ['accessible_sharp', "child_friendly"]),
-                SizedBox(height: 20),
-                ShopButton(shopName: "Bodevici", imgPath:"assets/images/logo.png", shortDescr: "Ice cream shop", icons: ['accessible_sharp', "child_friendly"]),
-                SizedBox(height: 20),
-                ShopButton(shopName: "Bodevici", imgPath:"assets/images/logo.png", shortDescr: "Ice cream shop", icons: ['accessible_sharp', "child_friendly"]),
-                SizedBox(height: 20),
-                ShopButton(shopName: "Bodevici", imgPath:"assets/images/logo.png", shortDescr: "Ice cream shop", icons: ['accessible_sharp', "child_friendly"]),
-                SizedBox(height: 20),
-                ShopButton(shopName: "Bodevici", imgPath:"assets/images/logo.png", shortDescr: "Ice cream shop", icons: ['accessible_sharp', "child_friendly"]),
-                SizedBox(height: 20),
-                ShopButton(shopName: "Bodevici", imgPath:"assets/images/logo.png", shortDescr: "Ice cream shop", icons: ['accessible_sharp', "child_friendly"]),
-                SizedBox(height: 20),
-                ShopButton(shopName: "Bodevici", imgPath:"assets/images/logo.png", shortDescr: "Ice cream shop", icons: ['accessible_sharp', "child_friendly"]),
-                SizedBox(height: 20),
-                ShopButton(shopName: "Bodevici", imgPath:"assets/images/logo.png", shortDescr: "Ice cream shop", icons: ['accessible_sharp', "child_friendly"]),
+                Padding(
+                  padding: const EdgeInsets.all(32),
+                  child: Column(
+                    children: [
+                      ShopButton(shopName: "Bodevici", imgPath:"assets/images/logo.png", shortDescr: "Ice cream shop", icons: ['Accessible', "For children"]),
+                      SizedBox(height: 20),
+                      ShopButton(shopName: "Bodevici", imgPath:"assets/images/logo.png", shortDescr: "Ice cream shop", icons: ['accessible_sharp', "child_friendly"]),
+                      SizedBox(height: 20),
+                      ShopButton(shopName: "Bodevici", imgPath:"assets/images/logo.png", shortDescr: "Ice cream shop", icons: ['accessible_sharp', "child_friendly"]),
+                      SizedBox(height: 20),
+                      ShopButton(shopName: "Bodevici", imgPath:"assets/images/logo.png", shortDescr: "Ice cream shop", icons: ['accessible_sharp', "child_friendly"]),
+                      SizedBox(height: 20),
+                      ShopButton(shopName: "Bodevici", imgPath:"assets/images/logo.png", shortDescr: "Ice cream shop", icons: ['accessible_sharp', "child_friendly"]),
+                      SizedBox(height: 20),
+                      ShopButton(shopName: "Bodevici", imgPath:"assets/images/logo.png", shortDescr: "Ice cream shop", icons: ['accessible_sharp', "child_friendly"]),
+                      SizedBox(height: 20),
+                      ShopButton(shopName: "Bodevici", imgPath:"assets/images/logo.png", shortDescr: "Ice cream shop", icons: ['accessible_sharp', "child_friendly"]),
+                      SizedBox(height: 20),
+                      ShopButton(shopName: "Bodevici", imgPath:"assets/images/logo.png", shortDescr: "Ice cream shop", icons: ['accessible_sharp', "child_friendly"]),
+                    ],
+                  )
+                )
               ]
             )
           )
-        )
       ]
     );
   }
@@ -55,13 +58,12 @@ class _HomeWidgetState extends State<HomeWidget> {
 
 Map<String, IconData> myIcons =
     {
-      "accessible_sharp": Icons.accessible_sharp, 
-      "child_friendly":  Icons.child_friendly,
-      "vertical_align_top_sharp": Icons.vertical_align_top_sharp,
-      "vertical_align1": Icons.vertical_align_top_sharp, 
-      "vertical_align2": Icons.vertical_align_top_sharp,
-      "vertical_align3": Icons.vertical_align_top_sharp,
-      "vertical_align4": Icons.vertical_align_top_sharp,
+      "Accessible": Icons.accessible_sharp, 
+      "For children":  Icons.child_friendly,
+      "Beverages": Icons.local_drink,
+      "Restaurant": Icons.local_dining,
+      "Herbalist":Icons.local_pharmacy,
+      "Pharmacy": Icons.healing, 
     };
 
 class ShopButton extends StatelessWidget {
@@ -72,11 +74,11 @@ class ShopButton extends StatelessWidget {
     required this.icons,
     Key? key,
   }) : super(key: key);
-
-  final String shopName;
-  final String imgPath;
-  final String shortDescr;
-  final List<String> icons;
+  
+  final String shopName; //= "Unknown";
+  final String imgPath; //= "assets/images/logo.png";
+  final String shortDescr; //= "No description available";
+  final List<String> icons; //= [];
 
   @override
   Widget build(context) {
@@ -101,11 +103,18 @@ class ShopButton extends StatelessWidget {
             child: 
             Row( // Everything inside the button
               children: [
+                SizedBox(width: 20),
                 Column( //Text, short description and Icons
                   children:[
                     Text(
                       shopName,
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)
                     ),
+                    SizedBox(height: 5),
+                    Text(
+                      shortDescr,
+                    ),
+                    SizedBox(height: 10),
                     Row( //Icons
                       children: [
                         for (String word in icons) Icon(
@@ -132,9 +141,12 @@ class ShopButton extends StatelessWidget {
 }
 
 class IconsRow extends StatelessWidget {
-  const IconsRow({
+  IconsRow({
+    this.isSelected = false, //acabar
     Key? key,
   }) : super(key: key);
+  
+   bool isSelected;
   @override
   Widget build(context) {
     return SingleChildScrollView(
@@ -142,35 +154,43 @@ class IconsRow extends StatelessWidget {
       child: Row(      children: [
         for (var word in myIcons.keys) Row(
           children: [
-            SizedBox(width: 20),
+            const SizedBox(width: 20),
             Material(
               borderRadius: BorderRadius.circular(30),
               clipBehavior: Clip.antiAliasWithSaveLayer,
               child: InkWell(
-                onTap: () {},
+                onTap: () {isSelected ? false : true;}, //acabar
                 child: Container ( //Button config
                   decoration: BoxDecoration(
-                    color: Colors.grey[350],
+                    color: Colors.grey[350],//isSelected ? Colors.grey[350] : Colors.grey[950],
                     borderRadius: BorderRadius.circular(30),
                   ),
-                  child: 
-                  Row( // Everything inside the button
-                    children: [
-                      Text(
-                        word,
+                  child: Padding(padding: const EdgeInsets.fromLTRB(10,5,10,5), 
+                  child:
+                    Row( // Everything inside the button
+                      children: [
+                        Icon(
+                          myIcons[word],
+                          size: 30,
                         ),
-                      Icon(
-                        myIcons[word],
-                        size: 30,
-                        )
-                    ]
-                  ),
+                        SizedBox(width: 10),
+                        Text(
+                          word,
+                        ),
+                        Text(
+                          isSelected ? "True" : "False", // acabar
+                        ),
+                      ]
+                    ),
+                  )
                 ) 
               )
             )
           ]
-        )
-      ],)
+        ),
+        SizedBox(width: 20),
+      ],
+      )
     );
   }
 }

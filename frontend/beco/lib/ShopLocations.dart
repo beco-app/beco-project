@@ -29,7 +29,7 @@ class Store {
     required this.lat,
     required this.lng,
     required this.name,
-    required this.phone,
+    // required this.phone,
     required this.region,
     required this.description,
   });
@@ -43,7 +43,7 @@ class Store {
   final double lat;
   final double lng;
   final String name;
-  final String phone;
+  // final String phone;
   final String region;
   final String description;
 }
@@ -70,7 +70,7 @@ Future<Locations> getStores() async {
     lat: 0,
     lng: 0,
     name: "",
-    phone: "",
+    // phone: "",
     region: "",
     description: "",
   );

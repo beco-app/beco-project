@@ -23,7 +23,7 @@ Store _$StoreFromJson(Map<String, dynamic> json) => Store(
       lat: (json['location'][0] as num).toDouble(),
       lng: (json['location'][1] as num).toDouble(),
       name: json['shopname'] as String,
-      phone: json['phone'] as String,
+      // phone: json['phone'] as String,
       region: json['neighbourhood'] as String,
       description: json['description'] as String,
     );
@@ -35,7 +35,7 @@ Map<String, dynamic> _$StoreToJson(Store instance) => <String, dynamic>{
       'lat': instance.lat,
       'lng': instance.lng,
       'name': instance.name,
-      'phone': instance.phone,
+      // 'phone': instance.phone,
       'region': instance.region,
       'description': instance.description,
     };
