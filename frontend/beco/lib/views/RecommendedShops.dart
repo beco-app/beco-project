@@ -9,7 +9,6 @@ part 'RecommendedShops.g.dart';
 @JsonSerializable()
 class HomepageStore {
   HomepageStore({
-    required this.address,
     required this.id,
     required this.image,
     required this.name,
@@ -18,10 +17,10 @@ class HomepageStore {
     required this.type,
   });
 
-  factory HomepageStore.fromJson(Map<String, dynamic> json) => _$HomepageStoreFromJson(json);
+  factory HomepageStore.fromJson(Map<String, dynamic> json) =>
+      _$HomepageStoreFromJson(json);
   Map<String, dynamic> toJson() => _$HomepageStoreToJson(this);
 
-  final String address;
   final String id;
   final String image;
   final String name;
@@ -36,17 +35,15 @@ class Shops {
     required this.stores,
   });
 
-  factory Shops.fromJson(Map<String, dynamic> json) =>
-      _$ShopsFromJson(json);
+  factory Shops.fromJson(Map<String, dynamic> json) => _$ShopsFromJson(json);
   Map<String, dynamic> toJson() => _$ShopsToJson(this);
 
   final List<HomepageStore> stores;
 }
 
-Future<Shops> getStores() async {
+Future<Shops> getHomepageStores() async {
   const shopButtonsURL = 'http://18.219.12.116/homepage';
   final voidStore = HomepageStore(
-    address: "",
     id: "",
     image: "https://theibizan.com/wp-content/uploads/2019/03/eco.jpg",
     name: "",
