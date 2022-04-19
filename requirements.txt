@@ -25,6 +25,7 @@ httplib2==0.20.4
 idna==3.3
 itsdangerous==2.1.0
 Jinja2==3.0.3
+joblib==1.1.0
 jwcrypto==1.0
 MarkupSafe==2.1.0
 msgpack==1.0.3
@@ -47,8 +48,12 @@ pytz==2021.3
 requests==2.27.1
 requests-toolbelt==0.9.1
 rsa==4.8
+scikit-learn==1.0.2
+scipy==1.8.0
 six==1.16.0
+sklearn==0.0
 sseclient==0.0.27
+threadpoolctl==3.1.0
 tqdm==4.63.0
 uritemplate==4.1.1
 urllib3==1.26.8

@@ -6,6 +6,7 @@
 *.pem*
 *Icon*
 *.idea/*
+i\+d/logs
 
 *prova2.dart
 *Homepage.dart
