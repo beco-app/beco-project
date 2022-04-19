@@ -53,7 +53,10 @@ def user_gen(n):
     random.seed(123456789)
 
     # https://barbend.com/types-of-diets/#PD
-    diets = ['No preference', 'Vegan', 'Carnivore']
+    tags = ['restaurant', 'bar', 'supermarket', 'bakery', 'vegan food', 'vegetarian food',
+         'beverages', 'alimentation', 'local products', 'green space', 'plastic free',
+         'zero waste', 'herbalist', 'second hand', 'in bulk', 'cosmetics', 'pharmacy',
+         'fruits & vegetables', 'recycled material', 'others']
     username_gen = next_username()
     proms = getPromotion('_id')
     first_birthday = date(1970,1,1)
@@ -69,14 +72,14 @@ def user_gen(n):
             (min(first_birthday + timedelta(int(random.gauss(mu=365*30, sigma=365*10))), last_birthday)).timetuple()
         )  # for age: max(int(random.gauss(mu=20, sigma=5)), 10)
         zip_code    = '080' + str(random.randint(10,42))
-        diet        = diets[random.randint(0,len(diets)-1)]
+        preferences = random.sample(tags, k=5)
         becoins     = random.randint(0, 1000)
         saved_prom  = random.choices(proms, k=random.randint(0,len(proms))) if len(proms) else []
 
         user = {
-            'username':username, 'email':email, 'password':password, 'phone':phone,
-            'gender':gender,     'birthday':birthday,     'zip_code':zip_code, 'diet':diet, 'becoins':becoins,
-            'saved_prom':saved_prom
+            'username':username, 'email':email,           'password':password, 'phone':phone,
+            'gender':gender,     'birthday':birthday,     'zip_code':zip_code, 'preferences':preferences, 
+            'becoins':becoins,   'saved_prom':saved_prom
         }
 
         yield user 

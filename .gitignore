@@ -6,6 +6,10 @@
 *.pem*
 *Icon*
 *.idea/*
+i\+d/logs
+
+*prova2.dart
+*Homepage.dart
 
 # Firebase credentials (ask @marcdmc for testing)
 backend/App/fbAdminConfig.json

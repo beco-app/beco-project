@@ -42,11 +42,12 @@ db_products = config["db_products"]
 collection_attributes = {
     db_users: [
         '_id','username','email', 'password', 'phone','gender',
-        'birthday', 'zip_code', 'diet', 'becoins', 'saved_prom'
+        'birthday', 'zip_code', 'preferences', 'becoins', 'saved_prom'
     ],
     db_shops:[
         '_id', 'shopname','description','web', 'timetable',  'photo',
-        'location','address','district','neighbourhood','type','product_list'
+        'location','address','district','neighbourhood','type','product_list', 
+        'zip_code', 'nearest_stations', 'tags'
     ],
     db_transactions:[
         '_id','shop_id','user_id','timestamp',
@@ -160,7 +161,7 @@ def getShop(attributes=None, **query):
     """
     Return a list of records with `attributes` based on `query`.
     Each of the record from `shops` has shape:
-        `_id`, `shopname`, `description`, `timetable`,
+        `_id`, `shopname`, `description`, `timetable`, 'zip_code'
         `photo`, `location`, `address`, `type`, `product_list`, `phone`.
 
     For more information, see `tools.getUser`,`tools.setShop` and database documentation.
@@ -236,7 +237,7 @@ def setUser(data):
 
     document = {
         'username': data["username"], 'email': data["email"], 'password': data["password"], 'phone': data["phone"],
-        'gender': data["gender"], 'age': data["age"], 'zip_code': data["zip_code"], 'diet': data["diet"],
+        'gender': data["gender"], 'birthday': data["birthday"], 'zip_code': data["zip_code"], 'preferences': data["preferences"],
         'becoins': data["becoins"], "saved_prom" : data["saved_prom"]
     }
     response = db_handler.queryInsert(db_name, db_users, document, one=True)
@@ -264,6 +265,8 @@ def setShop(data):
         * 'type':	        str
         * 'product_list':   [product_id]
         * 'phone':          str, 9 digits
+        * 'zip_code':       str, 5 digits
+        * 'tags':           [str, str, str]
 
     Returns:
         * (True, ObjectId) if the insertion succeed
@@ -272,10 +275,12 @@ def setShop(data):
     See database documentation for more information.
     """
     document = {
-        'shopname': data["shopname"],   'description':  data["description"],  'timetable':     data["timetable"], 
-        'web':      data["web"],        'photo':        data["photo"],        'location':      data["location"], 
-        'address':   data["address"],     'district':     data["district"],     'neighbourhood': data["neighbourhood"], 
-        'type':     data["type"],       'product_list': data["product_list"], 'phone':         data["phone"]
+        'shopname': data["shopname"],   'description':  data["description"],  'timetable':        data["timetable"], 
+        'web':      data["web"],        'photo':        data["photo"],        'location':         data["location"], 
+        'address':  data["address"],    'district':     data["district"],     'neighbourhood':    data["neighbourhood"], 
+        'zip_code': data["zip_code"],   'type':         data["type"],         'tags':             data["tags"],
+        'phone':    data["phone"],      'product_list': data["product_list"], 'nearest_stations': data['nearest_stations']
+        
     }
     response = db_handler.queryInsert(db_name, db_shops, document, one=True)
     return response.acknowledged, response.inserted_id
@@ -429,5 +434,5 @@ def removeActivePromotion(_id):
 
 if __name__ == '__main__':
     print('main')
-    print(getUser())
+    print(getUser()[0])
     

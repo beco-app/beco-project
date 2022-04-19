@@ -4,6 +4,10 @@
         android:label="beco"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+
+        <meta-data android:name="com.google.android.geo.API_KEY"
+               android:value="AIzaSyDr7uWUDY51_9dI8lCt1ffiP6DURo53eew"/> <!-- https://console.cloud.google.com/google/maps-apis/credentials?authuser=3&project=beco-345609&supportedpurview=project-->
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
