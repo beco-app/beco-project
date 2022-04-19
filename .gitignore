@@ -4,7 +4,9 @@
 *.ipynb_checkpoints*
 *.env*
 *.pem*
+*Icon*
 *.idea/*
+i\+d/logs
 
 # Firebase credentials (ask @marcdmc for testing)
 backend/App/fbAdminConfig.json
