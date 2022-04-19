@@ -214,6 +214,33 @@ def save_promotion():
         200
     )
 
+# Unsave promotion
+@app.route('/promotions/unsave', methods=['POST'])
+@validate_user_exists
+@validate_promotion
+def unsave_promotion():
+    """
+    Unsaves a promotion for a given user.
+    """
+    user_id = request.form.get('user_id')
+    promotion_id = request.form.get('promotion_id')
+
+    # Deletes promotion_id from user's saved_prom
+    user_saved_prom = tools.getUser(['saved_prom'], _id = ObjectId(user_id))[0]['saved_prom']
+    if ObjectId(promotion_id) not in user_saved_prom:
+        raise ValueError(f'Promotion {promotion_id} not saved for user {user_id}')
+    
+    user_saved_prom.remove(ObjectId(promotion_id))
+    tools.updateUser(ObjectId(user_id), saved_prom=user_saved_prom)
+    
+    # Debug:
+    return (
+        (
+            str(tools.getUser(['saved_prom'], _id = ObjectId(user_id))[0]['saved_prom']) +
+            '\n' + promotion_id),
+        200
+    )
+
 
 # @app.route('/promotions/use', method=['POST'])
 # @validate_user_exists
