@@ -1,3 +1,5 @@
+[![](https://tokei.rs/b1/github/XAMPPRocky/tokei)](https://github.com/beco-app/beco-project)
+
 # beco-project
 main repo of the project, we will try to keep it as a monorepo and work by branches
 
