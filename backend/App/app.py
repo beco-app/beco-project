@@ -9,10 +9,10 @@ if local:
     from backend.data_base import tools
     from backend.App.validate import validate_promotion, validate_user_exists
 else:
-    import sys
     sys.path.append("./backend/data_base")
-    from data_base import tools
-    from App.validate import validate_promotion, validate_user_exists
+    sys.path.append("./backend/App")
+    import tools
+    from validate import validate_promotion, validate_user_exists
 
 import firebase_admin
 import pyrebase
