@@ -2,6 +2,7 @@ import sys
 import os
 from datetime import datetime, timedelta
 from bson.objectid import ObjectId
+from bson import json_util
 
 local = False
 if local:
@@ -197,6 +198,16 @@ def activate_promotion():
 #     transaction()
 #     return 200
 
+
+@app.route("/homepage", methods=["GET"])
+def homepage():
+    data = request.form.to_dict()
+    shops = tools.getShop(["_id", "shopname", "description", "photo", "type", "tags"])
+    #shops = tools.getShop(["_id", "shopname", "description"])
+    shops_dict = {"shops": shops}
+    response = json.loads(json_util.dumps(shops_dict))
+
+    return response, 200
 
 
 if __name__ == '__main__':

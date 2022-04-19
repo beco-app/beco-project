@@ -46,7 +46,7 @@ collection_attributes = {
     ],
     db_shops:[
         '_id', 'shopname','description','web', 'timetable',  'photo',
-        'location','address','district','neighbourhood','type','product_list'
+        'location','address','district','neighbourhood','type','product_list', 'tags'
     ],
     db_transactions:[
         '_id','shop_id','user_id','timestamp',
