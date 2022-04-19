@@ -4,8 +4,9 @@ from datetime import datetime, timedelta
 from bson.objectid import ObjectId
 
 local = True
+tommyG = False
 if local:
-    sys.path.append("/Users/tomas.gadea/tomasgadea/ACADEMIC/GCED/q6/PE/beco/beco-project")
+    sys.path.append("/Users/tomas.gadea/tomasgadea/ACADEMIC/GCED/q6/PE/beco/beco-project") if tommyG else sys.path.append("/Users/pau_matas/Desktop/GCED/Q6/PE/beco-project")
     from backend.data_base import tools
     from backend.App.validate import validate_promotion, validate_user_exists
 else:
@@ -13,9 +14,9 @@ else:
     from App.validate import validate_promotion, validate_user_exists
 
 import firebase_admin
-import pyrebase
+# import pyrebase
 import json
-from firebase_admin import credentials, auth
+# from firebase_admin import credentials, auth
 from flask import Flask, request
 from functools import wraps
 
@@ -23,9 +24,9 @@ from functools import wraps
 app = Flask(__name__)
 
 # Connect to firebase
-cred = credentials.Certificate('backend/App/fbAdminConfig.json')
-firebase = firebase_admin.initialize_app(cred)
-pb = pyrebase.initialize_app(json.load(open('backend/App/fbconfig.json')))
+# cred = credentials.Certificate('backend/App/fbAdminConfig.json')
+# firebase = firebase_admin.initialize_app(cred)
+# pb = pyrebase.initialize_app(json.load(open('backend/App/fbconfig.json')))
 
 # Data source
 users = [{'uid': 1, 'name': 'Yikai Qiu'}]
@@ -79,7 +80,7 @@ def token():
     email = request.form.get('email')
     password = request.form.get('password')
     try:
-        user = pb.auth().sign_in_with_email_and_password(email, password)
+        # user = pb.auth().sign_in_with_email_and_password(email, password)
         jwt = user['idToken']
         return {'token': jwt}, 200
     except:
@@ -187,6 +188,31 @@ def activate_promotion():
 
     # Debug:
     return str(tools.getActivePromotion(['valid_until'], user_id=user_id)[0]) + str(res), 200
+
+# Save promotion
+@app.route('/promotions/save', methods=['POST'])
+@validate_user_exists
+@validate_promotion
+def save_promotion():
+    """
+    Saves a promotion for a given user.
+    """
+    user_id = request.form.get('user_id')
+    promotion_id = request.form.get('promotion_id')
+
+    # Append promotion_id to user's saved_prom
+    user_saved_prom = tools.getUser(['saved_prom'], _id = ObjectId(user_id))[0]['saved_prom']
+    if ObjectId(promotion_id) not in user_saved_prom:
+        user_saved_prom.append(ObjectId(promotion_id))
+        tools.updateUser(ObjectId(user_id), saved_prom=user_saved_prom)
+    
+    # Debug:
+    return (
+        (
+            str(tools.getUser(['saved_prom'], _id = ObjectId(user_id))[0]['saved_prom']) +
+            '\n' + promotion_id),
+        200
+    )
 
 
 # @app.route('/promotions/use', method=['POST'])
