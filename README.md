@@ -14,3 +14,9 @@ Then create a Pull Request (PR) and wait for its merging :)
 The issue associated will be closed and the task on the kanban will automatically be marked as "completed".
 
 (Alternatively you can do this through github GUI)
+
+
+
+```
+git ls-files | xargs wc -l
+```
