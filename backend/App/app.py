@@ -13,7 +13,19 @@ import pymongo
 from bson import json_util
 from bson.objectid import ObjectId
 
+<<<<<<< HEAD
 sys.path.append(os.getcwd())
+=======
+local = False
+if local:
+    sys.path.append("/Users/tomas.gadea/tomasgadea/ACADEMIC/GCED/q6/PE/beco/beco-project")
+else:
+    sys.path.append("/home/ubuntu/beco-project")
+    sys.path.append("/home/ubuntu/beco-project/backend/data_base")
+
+    import tools
+    from validate import validate_promotion, validate_user_exists
+>>>>>>> 1dfa0ee (global paths)
 
 from backend.data_base import tools
 from backend.App.validate import validate_promotion, validate_user_exists, validate_unique_username
