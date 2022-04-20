@@ -4,15 +4,7 @@ from datetime import datetime, timedelta
 from bson.objectid import ObjectId
 from bson import json_util
 
-local = False
-if local:
-    sys.path.append("/Users/tomas.gadea/tomasgadea/ACADEMIC/GCED/q6/PE/beco/beco-project")
-else:
-    sys.path.append("/home/ubuntu/beco-project")
-    sys.path.append("/home/ubuntu/beco-project/backend/data_base")
-
-    import tools
-    from validate import validate_promotion, validate_user_exists
+sys.path.append(os.getcwd())
 
 from backend.data_base import tools
 from backend.App.validate import validate_promotion, validate_user_exists, validate_unique_username
@@ -55,6 +47,10 @@ def check_token(f):
 @app.route('/')
 def hello_world():
     return 'Hello from Flask!', 200
+
+@app.route('/tommyG')
+def tommyG():
+    return 'tommyG', 200
 
 # Api route to get userso
 @app.route('/api/userinfo')
