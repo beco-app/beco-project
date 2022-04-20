@@ -57,7 +57,6 @@ def recommend_new_user(user_id):
 def recommend(user_id):
     # Find most similar users
     u_shops = get_shop_count(user_id)
-    print(u_shops)
     # To new users, recommend shops in its zip code with preferences
     if len(u_shops) == 0:
         return recommend_new_user(user_id)
@@ -85,9 +84,6 @@ def recommend(user_id):
 
     # Compute approx ubication of user and ponderate by distance
     shop_ids = [s for s,_ in u_shops.items()]
-    print(shop_ids[0])
-    print(getShop([], _id=shop_ids[0]))
-    print([getShop([], _id=s) for s, _ in u_shops.items()])
     u_locs = [getShop([], _id=s)[0]['location'] for s, _ in u_shops.items()]
     lats, lons = [lat for lat, _ in u_locs], [lon for _, lon in u_locs]
     loc = np.mean(lats), np.mean(lons)
@@ -109,5 +105,5 @@ def recommend(user_id):
 
     # Factors: visited or not, air pollution...
 
-
-print(recommend(ObjectId("625010dd05e04170d454bd52")))
+resp = recommend(ObjectId("626051ddc20304614ca55e4b"))
+print(resp)
