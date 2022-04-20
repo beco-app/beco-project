@@ -57,6 +57,10 @@ def check_token(f):
 def hello_world():
     return 'Hello from Flask!', 200
 
+@app.route('/tommyG')
+def tommyG():
+    return 'tommyG', 200
+
 # Api route to get userso
 @app.route('/api/userinfo')
 @check_token
