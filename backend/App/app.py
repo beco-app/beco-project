@@ -368,7 +368,6 @@ def recent_promotions():
 def homepage():
     data = request.form.to_dict()
     shops = tools.getShop(["_id", "shopname", "description", "photo", "type", "tags"])
-    #shops = tools.getShop(["_id", "shopname", "description"])
     shops_dict = {"shops": shops}
     response = json.loads(json_util.dumps(shops_dict))
 
