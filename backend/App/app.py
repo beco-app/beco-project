@@ -6,15 +6,6 @@ from bson import json_util
 
 sys.path.append(os.getcwd())
 
-#local = False
-#if local:
-#    sys.path.append("/Users/tomas.gadea/tomasgadea/ACADEMIC/GCED/q6/PE/beco/beco-project")
-#else:
-#    sys.path.append("./backend/data_base")
-#    sys.path.append("./backend/App")
-#    import tools
-#    from validate import validate_promotion, validate_user_exists
-
 from backend.data_base import tools
 from backend.App.validate import validate_promotion, validate_user_exists, validate_unique_username
 

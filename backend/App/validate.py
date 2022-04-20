@@ -6,16 +6,6 @@ import sys
 import os
 
 sys.path.append(os.getcwd())
-
-#local = False
-#if local:
-#    sys.path.append("/Users/tomas.gadea/tomasgadea/ACADEMIC/GCED/q6/PE/beco/beco-project")
-#    from backend.data_base import tools
-#else:
-#    import sys
-#    sys.path.append("./backend/data_base")
-#    import tools
-
 from backend.data_base import tools
 
 
