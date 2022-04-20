@@ -46,4 +46,4 @@ def populate_shops(src):
         print(updateShop(shop_id, nearest_stations=stations[shop_id]))
 
 if __name__ == '__main__':
-    populate_shops('./backend/data_base/shops.csv')
+    populate_shops('./backend/data_base/shops_upper.csv')
