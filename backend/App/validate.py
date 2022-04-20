@@ -10,7 +10,7 @@ if local:
     from backend.data_base import tools
 else:
     import sys
-    sys.path.append("./backend/data_base")
+    sys.path.append("/home/ubuntu/beco-project/backend/data_base")
     import tools
 
 def validate_user_exists(f):

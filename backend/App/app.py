@@ -8,8 +8,9 @@ local = False
 if local:
     sys.path.append("/Users/tomas.gadea/tomasgadea/ACADEMIC/GCED/q6/PE/beco/beco-project")
 else:
-    sys.path.append("./backend/data_base")
-    sys.path.append("./backend/App")
+    sys.path.append("/home/ubuntu/beco-project")
+    sys.path.append("/home/ubuntu/beco-project/backend/data_base")
+
     import tools
     from validate import validate_promotion, validate_user_exists
 
