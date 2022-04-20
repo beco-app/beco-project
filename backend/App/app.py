@@ -4,7 +4,6 @@ from datetime import datetime, timedelta
 from bson.objectid import ObjectId
 from bson import json_util
 
-print("getcwd() =", os.getcwd())
 sys.path.append(os.getcwd())
 
 #local = False
