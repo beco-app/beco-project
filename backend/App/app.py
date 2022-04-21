@@ -2,23 +2,20 @@ import sys
 import os
 from datetime import datetime, timedelta
 from bson.objectid import ObjectId
+from bson import json_util
 
-local = True
-tommyG = False
-if local:
-    sys.path.append("/Users/tomas.gadea/tomasgadea/ACADEMIC/GCED/q6/PE/beco/beco-project") if tommyG else sys.path.append("/Users/pau_matas/Desktop/GCED/Q6/PE/beco-project")
-    from backend.data_base import tools
-    from backend.App.validate import validate_promotion, validate_user_exists
-else:
-    from data_base import tools
-    from App.validate import validate_promotion, validate_user_exists
+sys.path.append(os.getcwd())
 
-import firebase_admin
-# import pyrebase
+from backend.data_base import tools
+from backend.App.validate import validate_promotion, validate_user_exists
+
+#import firebase_admin
+#import pyrebase
 import json
-# from firebase_admin import credentials, auth
+#from firebase_admin import credentials, auth
 from flask import Flask, request
 from functools import wraps
+import logging
 
 # App configuration
 app = Flask(__name__)
