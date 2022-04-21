@@ -35,7 +35,7 @@ Map<String, dynamic> _$StoreToJson(Store instance) => <String, dynamic>{
     };
 
 Stores _$StoresFromJson(Map<String, dynamic> json) => Stores(
-      stores: (json['stores'] as List<dynamic>)
+      stores: (json['shops'] as List<dynamic>)
           .map((e) => Store.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
