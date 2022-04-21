@@ -9,20 +9,22 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
-import 'ShopLocations.dart';
+import 'Stores.dart';
 import 'firebase_options.dart';
 
-// final voidStore = Store(
-//   address: "",
-//   id: "",
-//   image: "https://theibizan.com/wp-content/uploads/2019/03/eco.jpg",
-//   lat: 0,
-//   lng: 0,
-//   name: "",
-//   phone: "",
-//   region: "",
-//   description: "",
-// );
+final voidStore = Store(
+  id: "",
+  address: "",
+  shopname: "",
+  lat: 0,
+  lng: 0,
+  neighbourhood: "",
+  description: "",
+  photo: "https://theibizan.com/wp-content/uploads/2019/03/eco.jpg",
+  type: "",
+  tags: [""],
+  web: "",
+);
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,7 +34,12 @@ void main() {
       theme: ThemeData(
           primarySwatch: Colors.deepPurple,
           primaryColor: Colors.deepPurple[900]),
+<<<<<<< HEAD
       home: const HomePage(), // Page shown when app is started.
+=======
+      // home: DetailView(store: voidStore), // Page shown when app is started.
+      home: const HomeView(),
+>>>>>>> d3c545b (Unified all store classes)
       routes: {
         '/login/': (context) => const LoginView(),
         '/register/': (context) => const RegisterView(),

@@ -70,7 +70,6 @@ Future<Stores> getMapStores() async {
   try {
     final response = await http.get(Uri.parse(shopLocationsURL));
     print("RESPONSE");
-    print(response);
     log(response.body);
     if (response.statusCode == 200) {
       return Stores.fromJson(json.decode(response.body));
@@ -109,7 +108,6 @@ Future<Stores> getHomepageStores() async {
 
   try {
     final response = await http.get(Uri.parse(shopButtonsURL));
-    print(response);
     print("RESPONSE");
     log(response.body);
     if (response.statusCode == 200) {

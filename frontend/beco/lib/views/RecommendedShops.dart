@@ -10,8 +10,8 @@ part 'RecommendedShops.g.dart';
 class HomepageStore {
   HomepageStore({
     required this.id,
-    required this.image,
-    required this.name,
+    required this.photo,
+    required this.shopname,
     required this.description,
     required this.tags,
     required this.type,
@@ -22,8 +22,8 @@ class HomepageStore {
   Map<String, dynamic> toJson() => _$HomepageStoreToJson(this);
 
   final String id;
-  final String image;
-  final String name;
+  final String photo;
+  final String shopname;
   final String description;
   final List tags;
   final String type;
@@ -45,8 +45,8 @@ Future<Shops> getHomepageStores() async {
   const shopButtonsURL = 'http://18.219.12.116/homepage';
   final voidStore = HomepageStore(
     id: "",
-    image: "https://theibizan.com/wp-content/uploads/2019/03/eco.jpg",
-    name: "",
+    photo: "https://theibizan.com/wp-content/uploads/2019/03/eco.jpg",
+    shopname: "",
     description: "",
     tags: [],
     type: "",

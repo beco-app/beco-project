@@ -367,7 +367,7 @@ def recent_promotions():
 @app.route("/homepage", methods=["GET"])
 def homepage():
     data = request.form.to_dict()
-    shops = tools.getShop(["_id", "shopname", "description", "photo", "type", "tags"])
+    shops = tools.getShop(["_id", "address", "location", "shopname", "neighbourhood", "description", "photo", "type", "tags", "web"])
     shops_dict = {"shops": shops}
     response = json.loads(json_util.dumps(shops_dict))
 
@@ -378,7 +378,7 @@ def homepage():
 @app.route("/load_map", methods=["GET"])
 def load_map():
     data = request.form.to_dict()
-    shops = tools.getShop(["_id","address", "location", "shopname", "neighbourhood", "description", "photo"])
+    shops = tools.getShop(["_id","address", "location", "shopname", "neighbourhood", "description", "photo",  "type", "tags", "web"])
     shops_dict = {"shops": shops}
     response = json.loads(json_util.dumps(shops_dict))
 
