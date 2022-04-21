@@ -6,12 +6,14 @@ from collections import Counter
 from geopy.distance import distance
 import numpy as np
 from bson.objectid import ObjectId
+from time import time
 
 
 def get_shop_count(uid):
     """
     Return all shops where uid has buyed and how many times (normalized)
     Return in a dict {shop_id: normalized_times}
+    Obsolete?
     """
     all_trans = getTransaction(['shop_id'], user_id=uid)
     all_shops = [t['shop_id'] for t in all_trans]
@@ -56,7 +58,10 @@ def recommend_new_user(user_id):
 
 def recommend(user_id):
     # Find most similar users
+    all_trans = getTransaction(['shop_id', 'user_id'])
+
     u_shops = get_shop_count(user_id)
+
     # To new users, recommend shops in its zip code with preferences
     if len(u_shops) == 0:
         return recommend_new_user(user_id)
@@ -65,7 +70,10 @@ def recommend(user_id):
     sims = []
     for v in users:
         v = v['_id']
-        v_shops = get_shop_count(v)
+        v_shops = [t['shop_id'] for t in all_trans if t['user_id'] == v]
+        v_shops = Counter(v_shops)
+        norm = sum([v ** 2 for v in v_shops.values()])
+        v_shops = {k: v ** 2 / norm for k, v in v_shops.items()}
         uv_sim = shop_count_sim(u_shops, v_shops)
         sims.append((v, uv_sim))
     sims = sorted(sims, key=lambda x: -x[1])
@@ -82,12 +90,15 @@ def recommend(user_id):
             else:
                 shops[shop] = score
 
+    shops = dict(sorted(shops.items(), key=lambda x: -x[1])[:min(10, len(shops))])  # Hyperparameter 
+    shop_info = [getShop(['location', 'tags'], _id=s)[0] for s in shops.keys()]
+
     # Compute approx ubication of user and ponderate by distance
     shop_ids = [s for s,_ in u_shops.items()]
-    u_locs = [getShop([], _id=s)[0]['location'] for s, _ in u_shops.items()]
+    u_locs = [getShop(['location'], _id=s)[0]['location'] for s in u_shops.keys()]
     lats, lons = [lat for lat, _ in u_locs], [lon for _, lon in u_locs]
     loc = np.mean(lats), np.mean(lons)
-    s_locs = [getShop([], _id=s)[0]['location'] for s in shops.keys()]
+    s_locs = [s['location'] for s in shop_info]
     dists = [distance(loc, s_loc).km for s_loc in s_locs]
     dists = np.array(dists) / max(dists)
     dist_scores = [np.pi / 2 - np.arctan(d) for d in dists]  # hyperparameter
@@ -95,9 +106,9 @@ def recommend(user_id):
 
     # Sum if user interested in shop tags
 
-    for sh, score in shops.items():
-        preferences = getUser(_id=user_id)[0]['preferences']
-        for tag in getShop(_id=sh)[0]['tags']:
+    preferences = getUser(['preferences'], _id=user_id)[0]['preferences']
+    for info, (sh, score) in zip(shop_info, shops.items()):
+        for tag in info['tags']:
             if tag in preferences:
                 shops[sh] *= 1.25  # hyperparameter
 
@@ -105,5 +116,5 @@ def recommend(user_id):
 
     # Factors: visited or not, air pollution...
 
-resp = recommend(ObjectId("626051ddc20304614ca55e4b"))
-print(resp)
+#resp = recommend(ObjectId("626051ddc20304614ca55e4b"))
+#print(resp)
