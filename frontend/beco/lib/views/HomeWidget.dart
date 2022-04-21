@@ -32,7 +32,7 @@ class _HomeWidgetState extends State<HomeWidget> {
             const SizedBox(height: 20),
             IconsRow(),
             Padding(
-              padding: const EdgeInsets.all(32),
+              padding: const EdgeInsets.all(20),
               child: FutureBuilder<Shops>(
                 future: storeList,
                 builder: (context, snapshot) {
@@ -44,8 +44,8 @@ class _HomeWidgetState extends State<HomeWidget> {
                           Column(
                             children: [
                               ShopButton(
-                                  shopName: snapshot.data!.stores[i].name,
-                                  imgPath: snapshot.data!.stores[i].image,
+                                  shopName: snapshot.data!.stores[i].shopname,
+                                  imgPath: snapshot.data!.stores[i].photo,
                                   shortDescr: snapshot.data!.stores[i].type,
                                   icons: snapshot.data!.stores[i].tags),
                               const SizedBox(height: 20),

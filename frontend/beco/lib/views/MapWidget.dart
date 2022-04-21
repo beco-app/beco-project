@@ -1,4 +1,4 @@
-import 'package:beco/ShopLocations.dart';
+import 'package:beco/Stores.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -12,19 +12,20 @@ class MapWidget extends StatefulWidget {
 class _MapWidgetState extends State<MapWidget> {
   final Map<String, Marker> _markers = {};
   Future<void> _onMapCreated(GoogleMapController controller) async {
-    final storeList = await getStores();
+    final storeList = await getMapStores();
     setState(() {
       _markers.clear();
       for (final store in storeList.stores) {
+        print(store.lat);
         final marker = Marker(
-          markerId: MarkerId(store.name),
+          markerId: MarkerId(store.shopname),
           position: LatLng(store.lat, store.lng),
           infoWindow: InfoWindow(
-            title: store.name,
+            title: store.shopname,
             snippet: store.address,
           ),
         );
-        _markers[store.name] = marker;
+        _markers[store.shopname] = marker;
       }
     });
   }
