@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'RecommendedShops.dart';
+import 'package:beco/Stores.dart';
 
 class HomeWidget extends StatefulWidget {
   const HomeWidget({Key? key}) : super(key: key);
@@ -11,7 +11,7 @@ class HomeWidget extends StatefulWidget {
 }
 
 class _HomeWidgetState extends State<HomeWidget> {
-  late Future<Shops> storeList;
+  late Future<Stores> storeList;
 
   @override
   void initState() {
@@ -33,7 +33,7 @@ class _HomeWidgetState extends State<HomeWidget> {
             IconsRow(),
             Padding(
               padding: const EdgeInsets.all(20),
-              child: FutureBuilder<Shops>(
+              child: FutureBuilder<Stores>(
                 future: storeList,
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
