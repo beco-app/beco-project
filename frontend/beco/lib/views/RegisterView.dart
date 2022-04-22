@@ -208,19 +208,23 @@ class _RegisterViewState extends State<RegisterView> {
                           user.gender = gender;
                           user.diet = diet;
                           try {
-                            // final userCredential = await FirebaseAuth.instance
-                            //     .createUserWithEmailAndPassword(
-                            //   email: user.email,
-                            //   password: user.password,
-                            // );
-                            // print(userCredential);
+                            final userCredential = await FirebaseAuth.instance
+                                .createUserWithEmailAndPassword(
+                              email: user.email,
+                              password: user.password,
+                            );
+                            print(userCredential);
 
                             // Send user to backend
                             final r = await http.post(
                                 Uri.parse(
                                     'http://18.219.12.116/api/register_user'),
                                 body: user.toJson());
-                            print(r.body);
+
+                            Navigator.of(context).pushNamedAndRemoveUntil(
+                              '/login/',
+                              (route) => false,
+                            );
                           } on FirebaseAuthException catch (e) {
                             if (e.code == 'user-not-found') {
                               print('User not found');
