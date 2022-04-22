@@ -137,8 +137,11 @@ def recommended_shops():
     data = request.form.to_dict()
     user_id = data['user_id']
     resp = recommend(ObjectId(user_id))
-    print("response", resp)
-    shops_dict = {"shops": resp}
+    shops = []
+    for shop_id, score in resp:
+        shop_content = tools.getShop(_id=shop_id)
+        shops.append(shop_content[0])
+    shops_dict = {"shops": shops}
     response = json.loads(json_util.dumps(shops_dict))
     return response, 200
 
