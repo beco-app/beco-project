@@ -1,7 +1,10 @@
+import 'package:beco/views/provaView.dart';
 import 'package:flutter/material.dart';
+import 'package:beco/views/DiscountWidget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:beco/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
+//import 'package:flutter_textfield_search/search.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart' as intl;
 
@@ -27,10 +30,7 @@ class _HomeViewState extends State<HomeView> {
       Icons.camera,
       size: 150,
     ),
-    Icon(
-      Icons.chat,
-      size: 150,
-    ),
+    DiscountWidget(),
     Icon(
       Icons.chat,
       size: 150,
