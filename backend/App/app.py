@@ -239,9 +239,9 @@ def unsave_promotion():
     )
 
 # Get saved promotions
-@app.route('/promotions/get_saved', methods=['GET'])
+@app.route('/promotions/saved', methods=['GET'])
 @validate_user_exists
-def get_saved_promotions():
+def saved_promotions():
     """
     Unsaves a promotion for a given user.
     """
