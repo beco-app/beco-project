@@ -8,17 +8,6 @@ import os
 sys.path.append(os.getcwd())
 from backend.data_base import tools
 
-<<<<<<< HEAD
-=======
-local = False
-if local:
-    sys.path.append("/Users/tomas.gadea/tomasgadea/ACADEMIC/GCED/q6/PE/beco/beco-project")
-    from backend.data_base import tools
-else:
-    import sys
-    sys.path.append("/home/ubuntu/beco-project/backend/data_base")
-    import tools
->>>>>>> 1dfa0ee (global paths)
 
 def validate_user_exists(f):
     @wraps(f)
