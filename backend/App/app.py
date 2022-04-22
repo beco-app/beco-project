@@ -5,8 +5,9 @@ from bson.objectid import ObjectId
 from bson import json_util
 
 sys.path.append(os.getcwd())
+
 from backend.data_base import tools
-from backend.App.validate import validate_promotion, validate_user_exists
+from backend.App.validate import validate_promotion, validate_user_exists, validate_unique_username
 from backend.data_base.recommender import recommend
 
 
@@ -16,6 +17,7 @@ import json
 #from firebase_admin import credentials, auth
 from flask import Flask, request
 from functools import wraps
+import logging
 
 # App configuration
 app = Flask(__name__)
@@ -47,6 +49,10 @@ def check_token(f):
 @app.route('/')
 def hello_world():
     return 'Hello from Flask!', 200
+
+@app.route('/tommyG')
+def tommyG():
+    return 'tommyG', 200
 
 # Api route to get userso
 @app.route('/api/userinfo')
@@ -84,42 +90,76 @@ def token():
         return {'message': 'There was an error logging in'},400
 
 
+@app.route("/api/login", methods=['POST'])
+@validate_user_exists
+def login():
+    data = request.form.to_dict()
+    fields = {"email", "password"}
+    if fields != data.keys():
+        return {"message": "Invalid data fields"}, 400
+
+    user = tools.getUser({"email": data["email"]}, attributes=["password"])
+    print(user)
+    return user
+
+    if data["password"] != user["password"]:
+        return {"message": "wrong password!"}, 400
+
+    return {"message": "success", "user_id": user["_id"]}, 200
+
 # Write user to database
 @app.route('/api/register_user', methods=['POST'])
+@validate_unique_username
 def register_user():
     """
         Register new user to the database, which also has been previously added to firestore
     """
-    username = request.form.get('username')
-    password = request.form.get('password')
+
+    data = request.form.to_dict()
     becoins = 0 # Initial becoins
 
-    # Username check
-    if username is None:
-        return {'message': 'Invalid username'}, 200
+    fields = {"email", "password", "phone", "gender", "birthday", "zipcode", "diet"}
+    if fields != data.keys():
+        return {"message": "Invalid data fields"}, 400
 
-    # Password check
-    if password is None:
-        return {'message': 'Invalid password'}, 200
+    if data["email"] is None:
+        return {'message': 'Invalid email'}, 400
+
+    if data["password"] is None:
+        return {'message': 'Invalid password'}, 400
 
     data = {
-        'username': username,
-        'email': None,
-        'password': password,
-        'phone': None,
-        'gender': None,
-        'age': None,
-        'zip_code': None,
-        'diet': None,
+        'username': data["email"],
+        'email': data["email"],
+        'password': data["password"],
+        'phone': data["phone"],
+        'gender': data["gender"],
+        'birthday': data["birthday"],
+        'zip_code': data["zipcode"],
+        'diet': data["diet"],
         'becoins': becoins,
         'saved_prom' : None
     }
     try:
         # Afegir 
         tools.setUser(data)
-        return {'message': 'Success'}, 400
+        return {'message': 'Success'}, 200
     except:
-        return {'message': 'Error'}, 400
+        return {'message': 'Error in updating database'}, 400
+
+@app.route('/api/remove_user', methods=['POST'])
+@validate_user_exists
+def remove_user():
+    """
+        Delete existing user from the database. Nothing changed in firebase
+    """
+    data = request.form.to_dict()
+    if "user_id" in data.keys():
+        deleted_count = tools.removeUserById(user_id=data['user_id'])
+    elif "username" in data.keys():
+        deleted_count = tools.removeUserByUsername(username=data['username'])
+
+    return str(deleted_count), 200
 
 
 # Get info from username
@@ -155,7 +195,7 @@ def nearest_shops(username, lat, long, distance):
 
 
 # Add BECOINS
-@app.route('/api/add_becoins')
+@app.route('/api/add_becoins', methods=["GET"])
 def add_becoins():
     """
         Adds becoins to a user's account
@@ -203,6 +243,26 @@ def activate_promotion():
 #     return 200
 
 
+@app.route("/homepage", methods=["GET"])
+def homepage():
+    data = request.form.to_dict()
+    shops = tools.getShop(["_id", "shopname", "description", "photo", "type", "tags"])
+    #shops = tools.getShop(["_id", "shopname", "description"])
+    shops_dict = {"shops": shops}
+    response = json.loads(json_util.dumps(shops_dict))
+
+    return response, 200
+
+
+# Map Page
+@app.route("/load_map", methods=["GET"])
+def load_map():
+    data = request.form.to_dict()
+    shops = tools.getShop(["_id","address", "location", "shopname", "neighbourhood", "description", "photo"])
+    shops_dict = {"shops": shops}
+    response = json.loads(json_util.dumps(shops_dict))
+
+    return response, 200
 
 if __name__ == '__main__':
     app.run(debug=True)
