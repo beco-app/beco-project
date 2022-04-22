@@ -2,6 +2,8 @@ import sys
 import os
 from datetime import datetime, timedelta
 from bson.objectid import ObjectId
+from bson import json_util
+
 
 local = True
 tommyG = False
@@ -19,6 +21,7 @@ import json
 # from firebase_admin import credentials, auth
 from flask import Flask, request
 from functools import wraps
+from time import time
 
 # App configuration
 app = Flask(__name__)
@@ -241,6 +244,37 @@ def unsave_promotion():
         200
     )
 
+# Get saved promotions
+@app.route('/promotions/get_saved', methods=['GET'])
+@validate_user_exists
+def get_saved_promotions():
+    """
+    Unsaves a promotion for a given user.
+    """
+    user_id = request.form.get('user_id')
+
+    # Itererate over user's saved_prom and checks if it's still valid
+    saved_prom = tools.getUser(['saved_prom'], _id = ObjectId(user_id))[0]['saved_prom']
+    now = time()
+    saved_prom = [
+        prom_id
+        for prom_id in saved_prom
+        if tools.getPromotion(['valid_interval'], _id = prom_id)[0]['valid_interval'][0] < now < tools.getPromotion(['valid_interval'], _id = prom_id)[0]['valid_interval'][1]
+        
+    ]
+    tools.updateUser(ObjectId(user_id), saved_prom=saved_prom)
+    
+    # user_saved_prom.remove(ObjectId(promotion_id))
+    
+    # Debug:
+    promotions = []
+    for prom_id in saved_prom:
+        promotions.append(tools.getPromotion(_id = prom_id))
+    
+
+    response = json.loads(json_util.dumps({"promotions": promotions}))
+    return response, 200
+    
 
 # @app.route('/promotions/use', method=['POST'])
 # @validate_user_exists

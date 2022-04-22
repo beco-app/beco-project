@@ -16,7 +16,7 @@ def validate_user_exists(f):
     def wrapper(*args, **kwargs):
         user_id = request.form.get('user_id')
         users = tools.getUser(_id = ObjectId(user_id))
-        if not users: abort(401)
+        if not users: abort(400)
         return f(*args, **kwargs) 
     return wrapper
         
