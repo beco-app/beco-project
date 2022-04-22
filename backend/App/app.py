@@ -3,14 +3,11 @@ import os
 from datetime import datetime, timedelta
 from bson.objectid import ObjectId
 
-local = True
-if local:
-    sys.path.append("/Users/tomas.gadea/tomasgadea/ACADEMIC/GCED/q6/PE/beco/beco-project")
-    from backend.data_base import tools
-    from backend.App.validate import validate_promotion, validate_user_exists
-else:
-    from data_base import tools
-    from App.validate import validate_promotion, validate_user_exists
+sys.path.append(os.getcwd())
+from backend.data_base import tools
+from backend.App.validate import validate_promotion, validate_user_exists
+from backend.data_base.recommender import recommend
+
 
 import firebase_admin
 import pyrebase
@@ -134,9 +131,12 @@ def get_user(username):
         return str(usr), 200
 
 # Get recommended shops
-@app.route('/recommended/<username>')
-def recommended_shops(username):
-    return 0
+@app.route('/recommended_shops/')
+def recommended_shops():
+    data = request.form.to_dict()
+    user_id = data['user_id']
+    resp = recommend(user_id)
+    return resp, 200
 
 # Get nearest shops
 @app.route('/nearest_shops/<username>/<lat>/<long>/<distance>', methods=['POST'])
