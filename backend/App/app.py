@@ -131,12 +131,13 @@ def get_user(username):
         return str(usr), 200
 
 # Get recommended shops
-@app.route('/recommended_shops/')
+@app.route('/recommended_shops/', methods=['GET'])
 def recommended_shops():
     data = request.form.to_dict()
     user_id = data['user_id']
-    resp = recommend(user_id)
-    return resp, 200
+    resp = recommend(ObjectId(user_id))
+    print("response", resp)
+    return {"shops": resp}, 200
 
 # Get nearest shops
 @app.route('/nearest_shops/<username>/<lat>/<long>/<distance>', methods=['POST'])
