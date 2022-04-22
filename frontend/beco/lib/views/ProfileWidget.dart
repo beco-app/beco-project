@@ -121,7 +121,7 @@ Future<String> getUser() async {
     print(r.statusCode);
     //r = r.toString();
     print(r);
-    return '';
+    return r.body;
   } catch (e) {
     print('--------------------------------Errrrrrrrrrror:');
     print(e);
@@ -148,3 +148,24 @@ Future<String> getUser() async {
 //     return '';
 //   }
 // }
+
+// FutureBuilder<Stores>(
+//                 future: storeList,
+//                 builder: (context, snapshot) {
+//                   if (snapshot.hasData) {
+//                     return Column(
+//                       children: [
+//                         // Text(snapshot.data!.stores[0].name.toString()),
+//                         for (var i = 0; i < 20; i++)
+//                           Column(
+//                             children: [
+//                               ShopButton(
+//                                   shopName: snapshot.data!.stores[i].shopname,
+//                                   imgPath: snapshot.data!.stores[i].photo,
+//                                   shortDescr: snapshot.data!.stores[i].type,
+//                                   icons: snapshot.data!.stores[i].tags),
+//                               const SizedBox(height: 20),
+//                             ],
+//                           ),
+//                       ],
+//                     );
