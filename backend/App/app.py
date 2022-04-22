@@ -8,6 +8,8 @@ sys.path.append(os.getcwd())
 
 from backend.data_base import tools
 from backend.App.validate import validate_promotion, validate_user_exists, validate_unique_username
+from backend.data_base.recommender import recommend
+
 
 #import firebase_admin
 #import pyrebase
@@ -170,9 +172,18 @@ def get_user(username):
         return str(usr), 200
 
 # Get recommended shops
-@app.route('/recommended/<username>')
-def recommended_shops(username):
-    return 0
+@app.route('/recommended_shops/', methods=['GET'])
+def recommended_shops():
+    data = request.form.to_dict()
+    user_id = data['user_id']
+    resp = recommend(ObjectId(user_id))
+    shops = []
+    for shop_id, score in resp:
+        shop_content = tools.getShop(_id=shop_id)
+        shops.append(shop_content[0])
+    shops_dict = {"shops": shops}
+    response = json.loads(json_util.dumps(shops_dict))
+    return response, 200
 
 # Get nearest shops
 @app.route('/nearest_shops/<username>/<lat>/<long>/<distance>', methods=['POST'])

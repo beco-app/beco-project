@@ -43,6 +43,8 @@ def shop_count_sim(u_shops, v_shops):
 
 
 def recommend_new_user(user_id):
+    resp = getUser(_id=user_id)
+    print("this is the mf response:", resp)
     u_zipcode = getUser(_id=user_id)[0]['zip_code']
     shops = getShop(['_id'], zip_code=u_zipcode)
     shops = {s['_id']: 1 for s in shops}
