@@ -2,6 +2,7 @@ import sys
 import os
 from datetime import datetime, timedelta
 from bson.objectid import ObjectId
+from bson import json_util
 
 sys.path.append(os.getcwd())
 from backend.data_base import tools
@@ -137,7 +138,9 @@ def recommended_shops():
     user_id = data['user_id']
     resp = recommend(ObjectId(user_id))
     print("response", resp)
-    return {"shops": resp}, 200
+    shops_dict = {"shops": resp}
+    response = json.loads(json_util.dumps(shops_dict))
+    return response, 200
 
 # Get nearest shops
 @app.route('/nearest_shops/<username>/<lat>/<long>/<distance>', methods=['POST'])
