@@ -92,9 +92,9 @@ class _LoginViewState extends State<LoginView> {
                               password: password,
                             );
 
-                            final userid =
-                                FirebaseAuth.instance.currentUser!.getIdToken();
-                            print(userid);
+                            // final userid =
+                            //     FirebaseAuth.instance.currentUser!.getIdToken();
+                            // print(userid);
 
                             // Send user to backend
                             final r = await http.post(
