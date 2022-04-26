@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
 import 'package:json_annotation/json_annotation.dart';
 import 'package:flutter/services.dart' show rootBundle;
@@ -90,7 +91,7 @@ Future<Stores> getMapStores() async {
 }
 
 Future<Stores> getHomepageStores() async {
-  const shopButtonsURL = 'http://18.219.12.116/homepage';
+  const shopButtonsURL = 'http://18.219.12.116/recommended_shops/';
   final voidStore = Store(
     id: "",
     address: "",
@@ -107,7 +108,8 @@ Future<Stores> getHomepageStores() async {
   final noStores = Stores(stores: [voidStore]);
 
   try {
-    final response = await http.get(Uri.parse(shopButtonsURL));
+    final response = await http.post(Uri.parse(shopButtonsURL),
+        body: {"user_id": await FirebaseAuth.instance.currentUser!.uid});
     print("RESPONSE");
     log(response.body);
     if (response.statusCode == 200) {

@@ -40,7 +40,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                     return Column(
                       children: [
                         // Text(snapshot.data!.stores[0].name.toString()),
-                        for (var i = 0; i < 20; i++)
+                        for (var i = 0; i < snapshot.data!.stores.length; i++)
                           Column(
                             children: [
                               ShopButton(
