@@ -330,10 +330,11 @@ def recent_promotions():
 
     now = time()
     print(now)
-    most_recent = queryFind('beco_db', 'promotions', {'valid_interval.to' : {'$gte': 0}}).sort('valid_interval.from', -1)
-    print(list(most_recent))
-    print(len(list(most_recent)))
-    return {'recent':list(most_recent)}, 200    
+    most_recent = queryFind('beco_db', 'promotions', {'valid_interval.to' : {'$gte': now}, 'valid_interval.from' : {'$lte': now}}).sort('valid_interval.from', -1).limit(10)
+    most_recent_ids = [prom['_id'] for prom in most_recent]
+
+    response = json.loads(json_util.dumps({'recent_proms': most_recent_ids}))
+    return response, 200    
 
 # @app.route('/promotions/use', method=['POST'])
 # @validate_user_exists
