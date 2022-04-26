@@ -25,7 +25,7 @@ def transaction_gen(n):
     pays = [round(random.uniform(5, 60), 2) for i in range(n)]
     # 100 becoins for each 10€ spent
     becoins = [p//10*100 for p in pays]
-    return zip(users, shops, times, proms, pays, becoins)
+    return zip(shops, users, times, proms, pays, becoins)
 
 
 def populate_transactions(n):
