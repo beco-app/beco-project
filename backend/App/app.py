@@ -320,8 +320,22 @@ def saved_promotions():
     response = json.loads(json_util.dumps({"promotions": promotions}))
     return response, 200
 
+# Get activated promotions
+@app.route('/promotions/activated', methods=['GET'])
+@validate_user_exists
+def activated_promotions():
+    """
+    Returns activated promotions list for a given user.
+    """
+    user_id = request.form.get('user_id')
+
+    user_active_proms = queryFind('beco_db', 'active_promotions', {'user_id' : ObjectId(user_id)})
+    user_active_proms = [tools.getPromotion(_id = prom['prom_id']) for prom in user_active_proms]
+
+    response = json.loads(json_util.dumps({'user_active_proms': user_active_proms}))
+    return response, 200   
+
 # Get recent promotions
-# db.promotions.find({"valid_interval[1]":{$gte: new Date() }}).sort({"valid_interval[0]":-1})
 @app.route('/promotions/recent', methods=['GET'])
 def recent_promotions():
     """
@@ -329,7 +343,6 @@ def recent_promotions():
     """
 
     now = time()
-    print(now)
     most_recent = queryFind('beco_db', 'promotions', {'valid_interval.to' : {'$gte': now}, 'valid_interval.from' : {'$lte': now}}).sort('valid_interval.from', -1).limit(10)
     most_recent_ids = [prom['_id'] for prom in most_recent]
 
