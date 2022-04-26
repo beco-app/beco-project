@@ -79,15 +79,7 @@ class _DiscountWidgetState extends State<DiscountWidget> {
   }
 }
 
-Map<String, IconData> myIcons = {
-  "accessible": Icons.accessible_sharp,
-  "or children": Icons.child_friendly,
-  "beverages": Icons.local_drink,
-  "restaurant": Icons.local_dining,
-  "herbalist": Icons.local_pharmacy,
-  "pharmacy": Icons.healing,
-  "bakery": Icons.healing,
-};
+List<String> options = ['Active', 'Saved', 'Recommended'];
 
 class ShopButton extends StatelessWidget {
   const ShopButton({
@@ -138,16 +130,6 @@ class ShopButton extends StatelessWidget {
                           shortDescr,
                         ),
                         SizedBox(height: 10),
-                        Row(
-                          //Icons
-                          children: [
-                            for (String word in icons)
-                              Icon(
-                                myIcons[word],
-                                size: 30,
-                              )
-                          ],
-                        ),
                       ]),
                   const Spacer(),
                   Image.network(
@@ -174,7 +156,7 @@ class IconsRow extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         child: Row(
           children: [
-            for (var word in myIcons.keys)
+            for (var word in options)
               Row(children: [
                 const SizedBox(width: 20),
                 Material(
@@ -195,16 +177,8 @@ class IconsRow extends StatelessWidget {
                               padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                               child: Row(// Everything inside the button
                                   children: [
-                                Icon(
-                                  myIcons[word],
-                                  size: 30,
-                                ),
-                                SizedBox(width: 10),
                                 Text(
                                   word,
-                                ),
-                                Text(
-                                  isSelected ? "True" : "False", // acabar
                                 ),
                               ]),
                             ))))
