@@ -280,12 +280,11 @@ def recent_promotions():
     """
 
     now = time()
-    now = str(int(now))
     print(now)
-    most_recent = queryFind('beco_db', 'promotions', {'$gte': [{'$valid_interval':{'$slice' : [1 , 1] }}, 1650620417]}, limit=10)
-    #, operation={'sort':{'valid_interval[0]':-1}}
+    most_recent = queryFind('beco_db', 'promotions', {'valid_interval.to' : {'$gte': 0}}).sort('valid_interval.from', -1)
     print(list(most_recent))
-    return most_recent, 200    
+    print(len(list(most_recent)))
+    return {'recent':list(most_recent)}, 200    
 
 # @app.route('/promotions/use', method=['POST'])
 # @validate_user_exists
