@@ -296,7 +296,7 @@ def setPromotion(data):
         * `shop_id`:        ObjectId, should be in collection `shop`
         * `description`:    str
         * `becoins`:        int, positive
-        * `valid_interval`: [float, float], timestamp
+        * `valid_interval`: {'from': float, 'to': float}, timestamp
 
     Returns:
         * (True, ObjectId) if the insertion succeed
