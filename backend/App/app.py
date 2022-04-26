@@ -122,7 +122,6 @@ def login():
         return {"message": "Invalid data fields"}, 400
 
     user = tools.getUser({"email": data["email"]}, attributes=["password"])
-    print(user)
     return user
 
     if data["password"] != user["password"]:
@@ -208,7 +207,12 @@ def get_user(username):
 def recommended_shops():
     data = request.form.to_dict()
     user_id = data['user_id']
-    resp = recommend(ObjectId(user_id))
+    try:
+        user_id = ObjectId(user_id)
+    except:
+        print("user_id from firebase")
+        
+    resp = recommend(user_id)
     shops = []
     for shop_id, score in resp:
         shop_content = tools.getShop(_id=shop_id)
