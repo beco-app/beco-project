@@ -289,6 +289,14 @@ def unsave_promotion():
         200
     )
 
+def add_shop_name_in_proms_list(proms_list):
+    """
+    Adds the shop name to the list of promotions
+    """
+    for prom in proms_list:
+        prom['shopname'] = tools.getShop(['shopname'], _id = ObjectId(prom['shop_id']))[0]['shopname']
+    return proms_list
+
 # Get saved promotions
 @app.route('/promotions/saved', methods=['GET'])
 @validate_user_exists
@@ -313,6 +321,7 @@ def saved_promotions():
     
     # Debug:
     promotions = [tools.getPromotion(_id = prom_id) for prom_id in saved_prom]
+    promotions = add_shop_name_in_proms_list(promotions)
     response = json.loads(json_util.dumps({"promotions": promotions}))
     return response, 200
 
@@ -333,6 +342,7 @@ def activated_promotions():
         for prom in user_active_proms
     ]
 
+    user_active_proms = add_shop_name_in_proms_list(user_active_proms)
     response = json.loads(
         json_util.dumps({'user_active_proms': user_active_proms})
     )
@@ -354,6 +364,7 @@ def recent_promotions():
         }
     ).sort('valid_interval.from', -1).limit(10)
     
+    most_recent = add_shop_name_in_proms_list(list(most_recent))
     response = json.loads(json_util.dumps({'recent_proms': list(most_recent)}))
     return response, 200    
 
