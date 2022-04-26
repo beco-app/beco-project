@@ -138,31 +138,35 @@ def register_user():
         Register new user to the database, which also has been previously added to firestore
     """
 
-    data = request.form.to_dict()
+    req = request.form.to_dict()
     becoins = 0 # Initial becoins
 
     fields = {"email", "password", "phone", "gender", "birthday", "zipcode", "diet"}
-    if fields != data.keys():
+    if fields != req.keys():
         return {"message": "Invalid data fields"}, 400
 
-    if data["email"] is None:
+    if req["email"] is None:
         return {'message': 'Invalid email'}, 400
 
-    if data["password"] is None:
+    if req["password"] is None:
         return {'message': 'Invalid password'}, 400
 
     data = {
-        'username': data["email"],
-        'email': data["email"],
-        'password': data["password"],
-        'phone': data["phone"],
-        'gender': data["gender"],
-        'birthday': data["birthday"],
-        'zip_code': data["zipcode"],
-        'diet': data["diet"],
+        'username': req["email"],
+        'email': req["email"],
+        'password': req["password"],
+        'phone': req["phone"],
+        'gender': req["gender"],
+        'birthday': req["birthday"],
+        'zip_code': req["zipcode"],
+        'diet': req["diet"],
         'becoins': becoins,
         'saved_prom' : None
     }
+    #'preferences': data["preferences"],
+
+    if "user_id" in req.keys():
+        data["_id"] = req["user_id"] # firebase user_id
     try:
         # Afegir 
         tools.setUser(data)
