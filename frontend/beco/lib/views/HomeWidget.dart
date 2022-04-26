@@ -2,6 +2,11 @@ import 'package:beco/views/DetailView.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:beco/Stores.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+
+import 'ScannerView.dart';
+
+
 
 class HomeWidget extends StatefulWidget {
   const HomeWidget({Key? key}) : super(key: key);
@@ -12,11 +17,23 @@ class HomeWidget extends StatefulWidget {
 
 class _HomeWidgetState extends State<HomeWidget> {
   late Future<Stores> storeList;
+  String _scanBarcode = '';
 
   @override
   void initState() {
     super.initState();
     storeList = getHomepageStores();
+  }
+
+  Future<void> scanBarcodeNormal() async {
+    // Platform messages may fail, so we use a try/catch PlatformException.
+    try {
+      _scanBarcode = await FlutterBarcodeScanner.scanBarcode(
+          '#ff6666', 'Cancel', true, ScanMode.BARCODE);
+      print(_scanBarcode);
+    } on Exception catch (exception) {
+      _scanBarcode = 'Failed to get platform version.';
+    }
   }
 
   @override
@@ -30,6 +47,19 @@ class _HomeWidgetState extends State<HomeWidget> {
           hasScrollBody: false,
           child: Column(children: [
             const SizedBox(height: 20),
+            InkWell(
+                onTap: () {
+                  scanBarcodeNormal(); 
+                },
+                child: Container ( //Button config     
+                        child: Icon(
+                          Icons.camera_alt,
+                          size:  30,
+                        ),
+                      ),
+                  ),
+            
+            const SizedBox(height: 20), 
             IconsRow(),
             Padding(
               padding: const EdgeInsets.all(20),
@@ -65,25 +95,25 @@ class _HomeWidgetState extends State<HomeWidget> {
 }
 
 Map<String, IconData> myIcons = {
-  "accessible": Icons.accessible_sharp,
-  "for children": Icons.child_friendly,
-  "beverages": Icons.emoji_food_beverage,
-  "restaurant": Icons.local_dining,
-  "herbalist": Icons.local_pharmacy,
-  "pharmacy": Icons.healing,
-  "bakery": Icons.bakery_dining,
-  "recycled material": Icons.recycling,
-  "green space": Icons.nature_people,
-  "plastic free": Icons.panorama_outlined ,
-  "bar": Icons.local_cafe_outlined,
-  "second hand":Icons.refresh,
-  "others": Icons.question_mark,
-  "allows pets": Icons.pets_sharp,
-  "vegan food": Icons.emoji_nature,
-  "supermarket": Icons.local_grocery_store,
-  "local products": Icons.location_on,
-  "fruits and vegetables": Icons.location_on,
-  "vegetarian food": Icons.location_on,
+  "Accessible": Icons.accessible_sharp,
+  "For children": Icons.child_friendly,
+  "Beverages": Icons.emoji_food_beverage,
+  "Restaurant": Icons.local_dining,
+  "Herbalist": Icons.local_pharmacy,
+  "Pharmacy": Icons.healing,
+  "Bakery": Icons.bakery_dining,
+  "Recycled material": Icons.recycling,
+  "Green space": Icons.nature_people,
+  "Plastic free": Icons.panorama_outlined ,
+  "Bar": Icons.local_cafe_outlined,
+  "Second hand":Icons.refresh,
+  "Others": Icons.question_mark,
+  "Allows pets": Icons.pets_sharp,
+  "Vegan food": Icons.emoji_nature,
+  "Supermarket": Icons.local_grocery_store,
+  "Local products": Icons.location_on,
+  "Fruits and vegetables": Icons.location_on,
+  "Vegetarian food": Icons.location_on,
 };
 
 class ShopButton extends StatelessWidget {

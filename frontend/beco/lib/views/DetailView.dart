@@ -10,7 +10,9 @@ class DetailView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final args = ModalRoute.of(context)!.settings.arguments as Store;
-    return CustomScrollView(slivers: [
+    return Scaffold(
+            resizeToAvoidBottomInset: true,
+            body: CustomScrollView(slivers: [
       SliverAppBar(
           //maybe sliverpersistentheader is better
           floating: false,
@@ -49,18 +51,63 @@ class DetailView extends StatelessWidget {
                   style: const TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 20)
                 ),
+                SizedBox(height: 10),
                 Text(
                   args.type,
                   style: const TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 15)
+                    fontSize: 15)
                 ),
+                SizedBox(height: 20),
+                Text("Description",
+                    style: const TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 12)),
+                SizedBox(height: 10),
                 Text(
                   args.description,
-                  style: const TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 13)
                 ),
+                SizedBox(height: 20),
+                Text("Features", style: const TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 12)),
+                SizedBox(height: 10),
+                for (var word in args.tags) Row(
+                  children: [
+                    Icon(
+                      myIcons[word],
+                      size: 30,
+                    ),
+                    SizedBox(width: 20),
+                    Text(word.toString())
+                  ]
+          ),
+                SizedBox(height: 20),
+                Text("Where are we?", style: const TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 12)),
+                SizedBox(height: 10),
+                Text(args.address),
                 const SizedBox(height: 2000)
               ])))
-    ]);
+    ]));
   }
   }
+
+Map<String, IconData> myIcons = {
+  "accessible": Icons.accessible_sharp,
+  "for children": Icons.child_friendly,
+  "beverages": Icons.emoji_food_beverage,
+  "restaurant": Icons.local_dining,
+  "herbalist": Icons.local_pharmacy,
+  "pharmacy": Icons.healing,
+  "bakery": Icons.bakery_dining,
+  "recycled material": Icons.recycling,
+  "green space": Icons.nature_people,
+  "plastic free": Icons.panorama_outlined ,
+  "bar": Icons.local_cafe_outlined,
+  "second hand":Icons.refresh,
+  "others": Icons.question_mark,
+  "allows pets": Icons.pets_sharp,
+  "vegan food": Icons.emoji_nature,
+  "supermarket": Icons.local_grocery_store,
+  "local products": Icons.location_on,
+  "fruits and vegetables": Icons.location_on,
+  "vegetarian food": Icons.location_on,
+};
