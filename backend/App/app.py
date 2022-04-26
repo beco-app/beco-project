@@ -141,9 +141,9 @@ def register_user():
     req = request.form.to_dict()
     becoins = 0 # Initial becoins
 
-    fields = {"email", "password", "phone", "gender", "birthday", "zipcode", "diet"}
-    if fields != req.keys():
-        return {"message": "Invalid data fields"}, 400
+    #fields = {"email", "password", "phone", "gender", "birthday", "zipcode", "diet"}
+    #if fields != req.keys():
+    #    return {"message": "Invalid data fields"}, 400
 
     if req["email"] is None:
         return {'message': 'Invalid email'}, 400
