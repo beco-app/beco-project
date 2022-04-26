@@ -145,7 +145,7 @@ def register_user():
     print("dictttt", list(req.keys())[0])
     req = json.loads(list(req.keys())[0])
 
-    #fields = {"email", "password", "phone", "gender", "birthday", "zipcode", "diet"}
+    #fields = {"email", "password", "phone", "gender", "birthday", "zipcode", "preferences"}
     #if fields != req.keys():
     #    return {"message": "Invalid data fields"}, 400
     print("this is the requests", type(req), req)
@@ -164,7 +164,7 @@ def register_user():
         'gender': req["gender"],
         'birthday': req["birthday"],
         'zip_code': req["zipcode"],
-        'diet': req["diet"],
+        'preferences': req["preferences"],
         'becoins': becoins,
         'saved_prom' : None
     }
@@ -172,12 +172,12 @@ def register_user():
 
     if "user_id" in req.keys():
         data["_id"] = req["user_id"] # firebase user_id
-    try:
+    #try:
         # Afegir 
-        tools.setUser(data)
-        return {'message': 'Success'}, 200
-    except:
-        return {'message': 'Error in updating database'}, 400
+    tools.setUser(data)
+    return {'message': 'Success'}, 200
+    #except:
+    #    return {'message': 'Error in updating database'}, 400
 
 @app.route('/api/remove_user', methods=['POST'])
 @validate_user_exists
