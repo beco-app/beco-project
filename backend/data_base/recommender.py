@@ -61,8 +61,9 @@ def recommend_new_user(user_id):
 def recommend(user_id):
     # Find most similar users
     all_trans = getTransaction(['shop_id', 'user_id'])
-
+    print("all trans", all_trans)
     u_shops = get_shop_count(user_id)
+    print("u_shops", u_shops)
 
     # To new users, recommend shops in its zip code with preferences
     if len(u_shops) == 0:
