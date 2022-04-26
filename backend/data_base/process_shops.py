@@ -26,10 +26,10 @@ types = ['restaurant', 'bar', 'supermarket', 'alimentation', 'beverages', 'baker
          'fruits & vegetables', 'pharmacy', 'cosmetics', 'herbalist', 'non-alimentation', 'others']
 types_sample = choices(types, k=len(bcnsost))
 bcnsost['type'] = types_sample
-tags = ['restaurant', 'bar', 'supermarket', 'bakery', 'vegan food', 'vegetarian food',
-         'beverages', 'alimentation', 'local products', 'green space', 'plastic free',
-         'zero waste', 'herbalist', 'second hand', 'in bulk', 'cosmetics', 'pharmacy',
-         'fruits & vegetables', 'recycled material', 'others']
+tags = ['Restaurant', 'Bar', 'Supermarket', 'Bakery', 'Vegan food',
+        'Beverages', 'Local products', 'Green space', 'Plastic free',
+        'Herbalist', 'Second hand', 'Cosmetics', 'Pharmacy', 'Fruits & vegetables', 
+        'Recycled material', 'Accessible', 'For children', 'Allows pets']
 tags_sample = [sample(tags, k=3) for i in range(len(bcnsost))]
 bcnsost['tags'] = tags_sample
 bcnsost['timetable'] = [None]*len(bcnsost)
