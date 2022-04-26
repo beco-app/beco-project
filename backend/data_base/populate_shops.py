@@ -23,6 +23,7 @@ def populate_shops(src):
             items = [ v for k,v in list(row.items())[1:]]
 
             shopname, description, web, address, district, neighbourhood, location, zip_code, _type, tags, timetable, photo, product_list, phone = items
+            photo = "https://upload.wikimedia.org/wikipedia/commons/b/b1/Missing-image-232x150.png"
             tags = eval(tags)
             lat, lon = eval(location)
             location = (float(lat.replace(',', '.')), float(lon.replace(',', '.')))

@@ -12,9 +12,16 @@ from backend.data_base import tools
 def validate_user_exists(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
-        user_id = request.form.get('user_id')
-        users = tools.getUser(_id = ObjectId(user_id))
-        if not users: abort(400)
+        #user_id = request.form.get('user_id')
+        data = request.form.to_dict()
+        users = None
+        if "user_id" in data.keys():
+            user_id = data['user_id']
+            users = tools.getUser(_id = ObjectId(user_id))
+        elif "username" in data.keys():
+            username = data['username']
+            users = tools.getUser(username=username)
+        if not users: abort(401)
         return f(*args, **kwargs) 
     return wrapper
         
@@ -27,12 +34,15 @@ def validate_promotion(f):
         user_id = request.form.get('user_id')
         promotions = tools.getPromotion(_id = ObjectId(promotion_id))
         users = tools.getUser(_id = ObjectId(user_id))
-        assert len(promotions) == 1 and len(users) == 1
+        #assert len(promotions) == 1 and len(users) == 1
+        if len(promotions) != 1 or len(users) != 1: abort(400)
         promotion = promotions[0]
         user = users[0]
         now = time()
-        assert promotion['valid_interval'][0] < now < promotion['valid_interval'][1]
-        assert promotion['becoins'] <= user['becoins']
+        #assert promotion['valid_interval'][0] < now < promotion['valid_interval'][1]
+        if now <= promotion['valid_interval'][0] or promotion['valid_interval'][1] <= now: abort(400)
+        #assert promotion['becoins'] <= user['becoins']
+        if user['becoins'] < promotion['becoins']: abort(400)
         return f(*args, **kwargs) 
     return wrapper
 
@@ -43,14 +53,30 @@ def validate_user(f):
         user_id = request.form.get('user_id')
         promotions = tools.getPromotion(_id = ObjectId(promotion_id))
         users = tools.getUser(_id = ObjectId(user_id))
-        assert len(promotions) == 1 and len(users) == 1
+        #assert len(promotions) == 1 and len(users) == 1
+        if len(promotions) != 1 or len(users) != 1: abort(400)
         promotion = promotions[0]
         user = users[0]
         now = time()
-        assert promotion['valid_interval'][0] < now < promotion['valid_interval'][1]
-        assert promotion['becoins'] <= user['becoins']
+        #assert promotion['valid_interval'][0] < now < promotion['valid_interval'][1]
+        if now <= promotion['valid_interval'][0] or promotion['valid_interval'][1] <= now: abort(400)
+        #assert promotion['becoins'] <= user['becoins']
+        if user['becoins'] < promotion['becoins']: abort(400)
         return f(*args, **kwargs) 
     return wrapper
+
+
+def validate_unique_username(f):
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        username = request.form.get('email')
+        user_exists = tools.getUser(username=username) # empty list if new user
+        print("user_exists", user_exists)
+        if user_exists: abort(400)
+        return f(*args, **kwargs)
+    return wrapper
+
+
 
 # @validate_promotion
 # def foo(a, b, **attr):

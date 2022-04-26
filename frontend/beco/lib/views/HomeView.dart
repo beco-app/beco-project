@@ -1,5 +1,8 @@
+import 'package:beco/views/MapWidget.dart';
+import 'package:beco/views/ProfileWidget.dart';
 import 'package:beco/views/provaView.dart';
 import 'package:flutter/material.dart';
+import 'package:beco/views/HomeWidget.dart';
 import 'package:beco/views/DiscountWidget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:beco/firebase_options.dart';
@@ -21,20 +24,11 @@ class _HomeViewState extends State<HomeView> {
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
 
-  static const List<Widget> _pages = <Widget>[
-    Icon(
-      Icons.call,
-      size: 150,
-    ),
-    Icon(
-      Icons.camera,
-      size: 150,
-    ),
+  static List<Widget> _pages = <Widget>[
+    HomeWidget(),
+    MapWidget(),
     DiscountWidget(),
-    Icon(
-      Icons.chat,
-      size: 150,
-    ),
+    ProfileWidget(),
   ];
 
   void _onItemTapped(int index) {
