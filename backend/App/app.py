@@ -312,11 +312,7 @@ def saved_promotions():
     # user_saved_prom.remove(ObjectId(promotion_id))
     
     # Debug:
-    promotions = []
-    for prom_id in saved_prom:
-        promotions.append(tools.getPromotion(_id = prom_id))
-    
-
+    promotions = [tools.getPromotion(_id = prom_id) for prom_id in saved_prom]
     response = json.loads(json_util.dumps({"promotions": promotions}))
     return response, 200
 
@@ -329,10 +325,17 @@ def activated_promotions():
     """
     user_id = request.form.get('user_id')
 
-    user_active_proms = queryFind('beco_db', 'active_promotions', {'user_id' : ObjectId(user_id)})
-    user_active_proms = [tools.getPromotion(_id = prom['prom_id']) for prom in user_active_proms]
+    user_active_proms = queryFind(
+        'beco_db', 'active_promotions', {'user_id' : ObjectId(user_id)}
+    )
+    user_active_proms = [
+        tools.getPromotion(_id = prom['prom_id'])
+        for prom in user_active_proms
+    ]
 
-    response = json.loads(json_util.dumps({'user_active_proms': user_active_proms}))
+    response = json.loads(
+        json_util.dumps({'user_active_proms': user_active_proms})
+    )
     return response, 200   
 
 # Get recent promotions
@@ -343,10 +346,15 @@ def recent_promotions():
     """
 
     now = time()
-    most_recent = queryFind('beco_db', 'promotions', {'valid_interval.to' : {'$gte': now}, 'valid_interval.from' : {'$lte': now}}).sort('valid_interval.from', -1).limit(10)
-    most_recent_ids = [prom['_id'] for prom in most_recent]
-
-    response = json.loads(json_util.dumps({'recent_proms': most_recent_ids}))
+    most_recent = queryFind(
+        'beco_db', 'promotions',
+        {
+            'valid_interval.to' : {'$gte': now},
+            'valid_interval.from' : {'$lte': now}
+        }
+    ).sort('valid_interval.from', -1).limit(10)
+    
+    response = json.loads(json_util.dumps({'recent_proms': list(most_recent)}))
     return response, 200    
 
 # @app.route('/promotions/use', method=['POST'])
