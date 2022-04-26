@@ -16,7 +16,7 @@ def populate_db(s, nu, np, nap, nt) :
     populate_active_prom(nap)
     print('-'*50, '-'*50, '-'*50, f"{len(getActivePromotion())} active proms inserted", "inserting transaction", sep='\n')
     populate_transactions(nt)
-    print('-'*50, '-'*50, '-'*50, f"{len(getTransaction())} transactions inserted")
+    print('-'*50, '-'*50, '-'*50, f"{len(getTransaction())} transactions inserted", sep='\n')
 
 if __name__ == '__main__':
     populate_db('backend/data_base/shops.csv', 1000, 100, 10, 5000)
