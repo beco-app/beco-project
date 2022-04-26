@@ -142,8 +142,8 @@ def register_user():
     becoins = 0 # Initial becoins
 
 
-    print("dictttt", list(req.keys())[0])
-    req = json.loads(list(req.keys())[0])
+    print("this is the mf request", req)
+    #req = json.loads(list(req.keys())[0])
 
     #fields = {"email", "password", "phone", "gender", "birthday", "zipcode", "preferences"}
     #if fields != req.keys():
@@ -204,7 +204,7 @@ def get_user(username):
         return str(usr), 200
 
 # Get recommended shops
-@app.route('/recommended_shops/', methods=['GET'])
+@app.route('/recommended_shops/', methods=['POST'])
 def recommended_shops():
     data = request.form.to_dict()
     user_id = data['user_id']
