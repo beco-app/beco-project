@@ -211,8 +211,9 @@ def recommended_shops():
         user_id = ObjectId(user_id)
     except:
         print("user_id from firebase")
-        
+
     resp = recommend(user_id)
+    print("the resp klk:", resp)
     shops = []
     for shop_id, score in resp:
         shop_content = tools.getShop(_id=shop_id)
