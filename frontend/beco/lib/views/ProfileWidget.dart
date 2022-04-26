@@ -17,7 +17,9 @@ class _ProfileWidgetState extends State<ProfileWidget> {
   Widget build(BuildContext context) {
     String username = 'user3';
     var userinfo = getUser(username);
-
+    if (userinfo == null) {
+      print('You have enterd!!!!!!!!!!!!!!!');
+    }
     return CustomScrollView(slivers: [
       SliverAppBar(
           //maybe sliverpersistentheader is better
@@ -64,10 +66,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                 const SizedBox(height: 20),
                 ElevatedButton(
                     onPressed: () {
-                      Navigator.of(context).pushNamedAndRemoveUntil(
-                        '/login/',
-                        (route) => false,
-                      );
+                      showAlertDialog(context);
                     },
                     child: const Text("Log out",
                         style: TextStyle(
@@ -86,9 +85,14 @@ Widget infoContainerFromFuture(
   return FutureBuilder<String>(
       future: userinfo,
       builder: (context, snapshot) {
-        User userinfo = User(snapshot.data!.toString());
-        return InfoContainer(
-            attribute: attribute, content: userinfo[key].toString());
+        String content = '';
+        if (snapshot.hasData) {
+          User userinfo = User(snapshot.data.toString());
+          content = userinfo[key].toString();
+        } else {
+          content = 'Loading...';
+        }
+        return InfoContainer(attribute: attribute, content: content);
       });
 }
 
@@ -141,6 +145,43 @@ class InfoContainer extends StatelessWidget {
   }
 }
 
+showAlertDialog(BuildContext context) {
+  // set up the buttons
+  Widget cancelButton = TextButton(
+    child: const Text("Cancel"),
+    onPressed: () {
+      Navigator.of(context).pop();
+    },
+  );
+  Widget continueButton = TextButton(
+    child: const Text("Continue"),
+    onPressed: () {
+      Navigator.of(context).pushNamedAndRemoveUntil(
+        '/login/',
+        (route) => false,
+      );
+    },
+  );
+
+  // set up the AlertDialog
+  AlertDialog alert = AlertDialog(
+    title: const Text("Warning"),
+    content: const Text("Are you sure?"),
+    actions: [
+      cancelButton,
+      continueButton,
+    ],
+  );
+
+  // show the dialog
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
+}
+
 class User {
   // Build a User class that contains the userinfo in string (returned by getUser)
   // and prepared the string to be a Map<String, String>;
@@ -164,34 +205,32 @@ class User {
     // change all ' to " for json.convert
     s = s.replaceAll(RegExp("'"), '"');
     _user = json.decode(s);
-    print(_user);
+    //print(_user);
   }
 
   String operator [](String key) {
+    if (_user[key] == null) {
+      print('You have enterd!!!!!!!!!!!!!!!');
+      return '';
+    }
     switch (key) {
       case 'preferences':
         switch (_user[key].length) {
           case 0:
             return 'No preferences';
-          case 1:
-            String first = _user[key][0];
-            return first[0].toUpperCase() +
-                first.substring(1, first.length - 1);
           default:
-            String first = _user[key][0];
-            return first[0].toUpperCase() +
-                first.substring(1, first.length) +
-                '...';
+            String preferences = _user[key].toString();
+            return preferences.substring(1, preferences.length - 1);
         }
       case 'phone':
-        print(_user[key]);
+        //print(_user[key]);
         return '+34 ' + _user[key].toString();
       case 'gender':
         switch (_user[key]) {
           case 'M':
-            return 'Man';
+            return 'Male';
           case 'F':
-            return 'Woman';
+            return 'Female';
           default:
             return _user[key];
         }
@@ -222,52 +261,3 @@ Future<String> getUser(String username) async {
     return '';
   }
 }
-
-// dynamic getUser1() async {
-//   // https://360techexplorer.com/connect-flutter-to-mongodb/
-//   try {
-//     var db = await mongo.Db.create('mongodb://127.0.0.1:27017/beco_db');
-//     await db.open();
-//     print('--------------------------------');
-//     print(db.runtimeType);
-//     var collection = db.collection('users');
-//     // Standard way
-//     var response = await collection
-//         .findOne(mongo.where.eq("username", 'user1').fields(['username']));
-
-//     return response;
-//   } catch (e) {
-//     print('--------------------------------Errrrrrrrrrror:');
-//     print(e);
-//     return '';
-//   }
-// }
-
-// String s = FutureBuilder<String>(future: storeList, builder: (context, snapshot) {
-//   if (snapshot.hasData) {
-//     return Column(
-//       children: [
-//         // Text(snapshot.data!.stores[0].name.toString()),
-//         for (var i = 0; i < 20; i++)
-//           Column(
-//             children: [
-//               ShopButton(
-//                 shopName: snapshot.data!.stores[i].shopname,
-//                 imgPath: snapshot.data!.stores[i].photo,
-//                 shortDescr: snapshot.data!.stores[i].type,
-//                 icons: snapshot.data!.stores[i].tags
-//               ),
-//               const SizedBox(height: 20),
-//             ],
-//           ),
-//         ],
-//       );
-//   }
-//    else if (snapshot.hasError) {
-//                     return Text('${snapshot.error}');
-//                   }
-
-//                   // By default, show a loading spinner.
-//                   return const CircularProgressIndicator();
-//                 },
-// }
