@@ -17,6 +17,8 @@ from flask import Flask, request
 from functools import wraps
 from time import time
 
+from backend.data_base.db_handler import queryFind
+
 # App configuration
 app = Flask(__name__)
 
@@ -243,7 +245,7 @@ def unsave_promotion():
 @validate_user_exists
 def saved_promotions():
     """
-    Unsaves a promotion for a given user.
+    Returns saved promotions list for a given user.
     """
     user_id = request.form.get('user_id')
 
@@ -268,7 +270,22 @@ def saved_promotions():
 
     response = json.loads(json_util.dumps({"promotions": promotions}))
     return response, 200
-    
+
+# Get recent promotions
+# db.promotions.find({"valid_interval[1]":{$gte: new Date() }}).sort({"valid_interval[0]":-1})
+@app.route('/promotions/recent', methods=['GET'])
+def recent_promotions():
+    """
+    Returns the most recent promotions.
+    """
+
+    now = time()
+    now = str(int(now))
+    print(now)
+    most_recent = queryFind('beco_db', 'promotions', {'$gte': [{'$valid_interval':{'$slice' : [1 , 1] }}, 1650620417]}, limit=10)
+    #, operation={'sort':{'valid_interval[0]':-1}}
+    print(list(most_recent))
+    return most_recent, 200    
 
 # @app.route('/promotions/use', method=['POST'])
 # @validate_user_exists
