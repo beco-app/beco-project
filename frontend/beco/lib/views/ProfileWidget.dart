@@ -1,11 +1,8 @@
 import 'dart:async';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'dart:math';
-// import 'package:mongo_dart/mongo_dart.dart'
+
 //    as mongo; // flutter pub add mongo_dart
 
 class ProfileWidget extends StatefulWidget {
@@ -18,7 +15,8 @@ class ProfileWidget extends StatefulWidget {
 class _ProfileWidgetState extends State<ProfileWidget> {
   @override
   Widget build(BuildContext context) {
-    var userinfo = getUser();
+    String username = 'user3';
+    var userinfo = getUser(username);
 
     return CustomScrollView(slivers: [
       SliverAppBar(
@@ -50,96 +48,34 @@ class _ProfileWidgetState extends State<ProfileWidget> {
           child: Padding(
               padding: const EdgeInsets.all(32.0),
               child: Column(children: [
-                // InfoContainer(
-                //     attribute: 'Username', content: userinfo.value['username']),
-                // InfoContainer(
-                //     attribute: 'Username', content: getUser().toString()),
-                infoContainerFromFuture('Username', 'username', userinfo),
+                infoContainerFromFuture('User', 'username', userinfo),
                 const SizedBox(height: 20),
-                // FutureBuilder<String>(
-                //     future: userinfo,
-                //     builder: (context, snapshot) {
-                //       String userinfo = snapshot.data!.toString();
-                //       String mail = userinfo
-                //           .substring(2, userinfo.length - 1)
-                //           .split(',')[2]
-                //           .split(':')[1];
-                //       mail = mail.substring(2,
-                //           mail.length - 1); // start from 2 as there is a space
-                //       return InfoContainer(attribute: 'Mail', content: mail);
-                //     }),
-                // const InfoContainer(
-                //     attribute: 'Mail',
-                //     content: 'martag@gmail.com'), //TO DO: Check length
                 infoContainerFromFuture('Mail', 'email', userinfo),
                 const SizedBox(height: 20),
-                // FutureBuilder<String>(
-                //     future: userinfo,
-                //     builder: (context, snapshot) {
-                //       String userinfo = snapshot.data!.toString();
-                //       String username = userinfo
-                //           .substring(2, userinfo.length - 1)
-                //           .split(',')[4]
-                //           .split(':')[1];
-                //       username = '+34 ' +
-                //           username.substring(
-                //               2,
-                //               username.length -
-                //                   1); // start from 2 as there is a space
-                //       return InfoContainer(
-                //           attribute: 'Phone', content: username);
-                //     }),
-                // const InfoContainer(
-                //     attribute: 'Phone', content: '+34 999 999 999'),
                 infoContainerFromFuture('Phone', 'phone', userinfo),
                 const SizedBox(height: 20),
-                // FutureBuilder<String>(
-                //     future: userinfo,
-                //     builder: (context, snapshot) {
-                //       String userinfo = snapshot.data!.toString();
-                //       String zipcode = userinfo
-                //           .substring(2, userinfo.length - 1)
-                //           .split(',')[7]
-                //           .split(':')[1];
-                //       zipcode = zipcode.substring(
-                //           2,
-                //           zipcode.length -
-                //               1); // start from 2 as there is a space
-                //       return InfoContainer(
-                //           attribute: 'Zip Code', content: zipcode);
-                //     }),
-                // const InfoContainer(attribute: 'Zipcode', content: '62954'),
                 infoContainerFromFuture('Zipcode', 'zip_code', userinfo),
                 const SizedBox(height: 20),
-                // FutureBuilder<String>(
-                //     future: userinfo,
-                //     builder: (context, snapshot) {
-                //       String userinfo = snapshot.data!.toString();
-                //       String diet = userinfo
-                //           .substring(2, userinfo.length - 1)
-                //           .split(',')[8]
-                //           .split(':')[1];
-                //       diet = diet.substring(3,
-                //           diet.length - 1); // start from 2 as there is a space
-                //       return InfoContainer(attribute: 'Diet', content: diet);
-                //     }),
-                const InfoContainer(
-                    attribute: 'Diet',
-                    content: 'No preference'), //WHEN THERES TIME: Able changes
-                //infoContainerFromFuture('Diet', 'preferences', userinfo),
+                infoContainerFromFuture('Pref.', 'preferences', userinfo),
                 const SizedBox(height: 20),
-                // FutureBuilder<String>(future: userinfo, builder:(context, snapshot){
-                //   String userinfo = snapshot.data!.toString();
-                //   String username = userinfo.substring(2,userinfo.length-1).split(',')[1].split(':')[1];
-                //   username = username.substring(2,username.length-1);  // start from 2 as there is a space
-                //   return InfoContainer(attribute: 'Username', content: username);
-                // }),
-                // const InfoContainer(attribute: 'Gender', content: 'Woman'),
                 infoContainerFromFuture('Gender', 'gender', userinfo),
                 const SizedBox(height: 20),
                 infoContainerFromFuture('Birthday', 'birthday', userinfo),
-                // const InfoContainer(
-                //     attribute: 'Birthday', content: '31/12/1999')
+                const SizedBox(height: 20),
+                ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pushNamedAndRemoveUntil(
+                        '/login/',
+                        (route) => false,
+                      );
+                    },
+                    child: const Text("Log out",
+                        style: TextStyle(
+                            fontSize: 20,
+                            color: Color.fromARGB(255, 64, 64, 64))),
+                    style: ElevatedButton.styleFrom(
+                        primary: const Color.fromARGB(255, 213, 213, 213),
+                        padding: const EdgeInsets.all(8.0)))
               ])))
     ]);
   }
@@ -168,9 +104,12 @@ class InfoContainer extends StatelessWidget {
 
   @override
   Widget build(context) {
+    double screenheight = MediaQuery.of(context).size.height;
+    double screenwidth = MediaQuery.of(context).size.width;
     return Container(
-        padding: const EdgeInsets.only(left: 30.0),
+        padding: const EdgeInsets.only(left: 20.0),
         height: 55,
+        width: screenwidth * 0.9,
         alignment: Alignment.bottomLeft,
         decoration: BoxDecoration(
           color: const Color.fromRGBO(217, 195, 220, 0.584),
@@ -178,38 +117,42 @@ class InfoContainer extends StatelessWidget {
         ),
         child: Row(children: [
           Container(
-              width: 105,
-              child: Text(attribute, style: const TextStyle(fontSize: 17))),
-          Container(
-            width: 300,
+              width: 70,
+              child: Text(attribute,
+                  style: const TextStyle(
+                      fontSize: 17, color: Color.fromARGB(146, 67, 67, 67)))),
+          Flexible(
+              child: Container(
+            width: double.infinity,
             height: 100,
             child: Align(
               alignment: Alignment.centerLeft,
               child: Text(
                 content,
-                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
                 textAlign: TextAlign.left,
                 style:
-                    const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    const TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
               ),
             ),
-          ),
+          )),
         ]));
   }
 }
 
 class User {
-  String username;
+  // Build a User class that contains the userinfo in string (returned by getUser)
+  // and prepared the string to be a Map<String, String>;
+  String userinfo;
   late Map _user;
 
-  User(
-    this.username,
-  ) {
+  User(this.userinfo) {
     // with help of https://regex101.com/:
-    String s = username.substring(1, username.length - 1);
+    String s = userinfo.substring(1, userinfo.length - 1);
 
     // Remove some information
-    final RegExp toRemove = RegExp("('password'.*?\", )" // password
+    final RegExp toRemove = RegExp(r"('password'.*?, )" // password
         "|"
         "('_id'.*?, )"); // _id
     s = s.replaceAll(toRemove, '');
@@ -221,18 +164,57 @@ class User {
     // change all ' to " for json.convert
     s = s.replaceAll(RegExp("'"), '"');
     _user = json.decode(s);
+    print(_user);
   }
 
   String operator [](String key) {
-    return _user[key].toString();
+    switch (key) {
+      case 'preferences':
+        switch (_user[key].length) {
+          case 0:
+            return 'No preferences';
+          case 1:
+            String first = _user[key][0];
+            return first[0].toUpperCase() +
+                first.substring(1, first.length - 1);
+          default:
+            String first = _user[key][0];
+            return first[0].toUpperCase() +
+                first.substring(1, first.length) +
+                '...';
+        }
+      case 'phone':
+        print(_user[key]);
+        return '+34 ' + _user[key].toString();
+      case 'gender':
+        switch (_user[key]) {
+          case 'M':
+            return 'Man';
+          case 'F':
+            return 'Woman';
+          default:
+            return _user[key];
+        }
+      case 'birthday':
+        return DateTime.fromMillisecondsSinceEpoch(_user[key].toInt() * 1000)
+            .toString()
+            .substring(0, 10);
+      default:
+        return _user[key].toString();
+    }
   }
 }
 
-Future<String> getUser() async {
+Future<String> getUser(String username) async {
   // https://stackoverflow.com/questions/65291888/flutter-web-http-error-uncaught-in-promise-error-xmlhttprequest-error/67830000#67830000
   try {
-    var r = await http.get(Uri.parse('http://18.219.12.116/user_info/user1'));
-    print(r.body);
+    var r =
+        await http.get(Uri.parse('http://18.219.12.116/user_info/' + username));
+    print("<\n" + r.body + "\n>");
+    if (r.body == '{"message":"User not found"}\n') {
+      // this error message should not be treated in such a special way...
+      throw Exception('User does not exist');
+    }
     return r.body;
   } catch (e) {
     print('--------------------------------Errrrrrrrrrror:');
