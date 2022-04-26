@@ -131,7 +131,7 @@ def login():
     return {"message": "success", "user_id": user["_id"]}, 200
 
 # Write user to database
-@app.route('/api/register_user', methods=['POST'])
+@app.route('/register_user', methods=['POST'])
 @validate_unique_username
 def register_user():
     """
