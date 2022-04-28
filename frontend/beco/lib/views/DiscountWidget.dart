@@ -6,6 +6,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import 'package:beco/Stores.dart';
+import 'package:beco/tools/Discounts.dart';
 
 class DiscountWidget extends StatefulWidget {
   const DiscountWidget({Key? key}) : super(key: key);
@@ -47,7 +48,7 @@ class _DiscountWidgetState extends State<DiscountWidget> {
                         for (var i = 0; i < 20; i++)
                           Column(
                             children: [
-                              ShopButton(
+                              Button(
                                   shopName: snapshot.data!.stores[i].shopname,
                                   imgPath: snapshot.data!.stores[i].photo,
                                   shortDescr: snapshot.data!.stores[i].type,
@@ -65,14 +66,6 @@ class _DiscountWidgetState extends State<DiscountWidget> {
                   return const CircularProgressIndicator();
                 },
               ),
-              //       ShopButton(
-              //           shopName: storeList[i],
-              //           imgPath: "assets/images/logo.png",
-              //           shortDescr: "Ice cream shop",
-              //           icons: ['accessible_sharp', "child_friendly"]),
-              //       const SizedBox(height: 20),
-              //   ],
-              // )
             )
           ]))
     ]);
@@ -81,19 +74,17 @@ class _DiscountWidgetState extends State<DiscountWidget> {
 
 List<String> options = ['Active', 'Saved', 'Recommended'];
 
-class ShopButton extends StatelessWidget {
-  const ShopButton({
+class Button extends StatelessWidget {
+  const Button({
     required this.shopName,
-    required this.imgPath,
-    required this.shortDescr,
-    required this.icons,
+    required this.description,
+    required this.becoins,
     Key? key,
   }) : super(key: key);
 
   final String shopName; //= "Unknown";
-  final String imgPath; //= "assets/images/logo.png";
-  final String shortDescr; //= "No description available";
-  final List<dynamic> icons; //= [];
+  final String description; //= "assets/images/logo.png";
+  final int becoint; //= "No description available";
 
   @override
   Widget build(context) {
@@ -127,16 +118,11 @@ class ShopButton extends StatelessWidget {
                                 fontWeight: FontWeight.bold, fontSize: 15)),
                         SizedBox(height: 5),
                         Text(
-                          shortDescr,
+                          description,
                         ),
                         SizedBox(height: 10),
                       ]),
                   const Spacer(),
-                  Image.network(
-                    imgPath,
-                    width: 150, //s'ha de fer fit
-                    fit: BoxFit.cover,
-                  )
                 ]),
               ))),
     );
