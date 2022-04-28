@@ -9,6 +9,7 @@ from tools import setShop, updateShop, getShop
 import csv
 import pymongo
 # import random
+import json
 from shops_nearest_stations import get_shops_nearest_stations
 
 def populate_shops(src):

@@ -1,8 +1,17 @@
 import sys
+print("Python version")
+print (sys.version)
+print("Version info.")
+print (sys.version_info)
+
+
+
+import sys
 import os
 from datetime import datetime, timedelta
-from bson.objectid import ObjectId
+import pymongo
 from bson import json_util
+from bson.objectid import ObjectId
 
 sys.path.append(os.getcwd())
 
