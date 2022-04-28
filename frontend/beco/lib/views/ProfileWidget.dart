@@ -115,7 +115,7 @@ class InfoContainer extends StatelessWidget {
 Future<String> getUser() async {
   // https://stackoverflow.com/questions/65291888/flutter-web-http-error-uncaught-in-promise-error-xmlhttprequest-error/67830000#67830000
   try {
-    final r = await http.get(Uri.parse('http://18.219.12.116/user_info/user1'));
+    final r = await http.get(Uri.parse('http://34.252.26.132/user_info/user1'));
     print('-----------------------------');
     print(r.body);
     print(r.statusCode);

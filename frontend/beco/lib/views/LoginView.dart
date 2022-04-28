@@ -86,6 +86,8 @@ class _LoginViewState extends State<LoginView> {
                           final email = _email.text;
                           final password = _password.text;
                           try {
+                            FirebaseAuth.instance
+                                .setPersistence(Persistence.LOCAL);
                             final userCredential = await FirebaseAuth.instance
                                 .signInWithEmailAndPassword(
                               email: email,
@@ -98,7 +100,7 @@ class _LoginViewState extends State<LoginView> {
 
                             // Send user to backend
                             final r = await http.post(
-                                Uri.parse('http://18.219.12.116/'),
+                                Uri.parse('http://34.252.26.132/'),
                                 body: {
                                   'username': email,
                                   'password': password,

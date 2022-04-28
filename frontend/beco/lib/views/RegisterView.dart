@@ -229,7 +229,7 @@ class _RegisterViewState extends State<RegisterView> {
                                 await FirebaseAuth.instance.currentUser!.uid;
                             // Send user to backend
                             final r = await http.post(
-                                Uri.parse('http://18.219.12.116/register_user'),
+                                Uri.parse('http://34.252.26.132/register_user'),
                                 body: user.toJson());
 
                             print(r.body);

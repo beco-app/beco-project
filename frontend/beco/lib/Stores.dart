@@ -52,7 +52,7 @@ class Stores {
 }
 
 Future<Stores> getMapStores() async {
-  const shopLocationsURL = 'http://18.219.12.116/load_map';
+  const shopLocationsURL = 'http://34.252.26.132/load_map';
   final voidStore = Store(
     id: "",
     address: "",
@@ -91,7 +91,7 @@ Future<Stores> getMapStores() async {
 }
 
 Future<Stores> getHomepageStores() async {
-  const shopButtonsURL = 'http://18.219.12.116/recommended_shops/';
+  const shopButtonsURL = 'http://34.252.26.132/recommended_shops/';
   final voidStore = Store(
     id: "",
     address: "",
