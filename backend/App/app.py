@@ -253,5 +253,33 @@ def load_map():
 
     return response, 200
 
+# Get info from username
+@app.route('/user_edit/<username>/<parameter>/<value>')
+def update_user(username, parameter, value):
+    usr = tools.getUser(username=username)
+    if not usr:
+        return {'message': 'User not found'}, 404
+    else:
+        userid = usr[0]['_id']
+        if parameter == 'preferences':
+            """
+            tags = 
+            ['Restaurant', 'Bar', 'Supermarket', 'Bakery', 'Vegan food',
+             'Beverages', 'Local products', 'Green space', 'Plastic free',
+             'Herbalist', 'Second hand', 'Cosmetics', 'Pharmacy', 'Fruits & vegetables', 
+             'Recycled material', 'Accessible', 'For children', 'Allows pets']
+            """
+            preferences = value.split(',')
+            return tools.updateUser(userid, *{parameter:preferences})
+        elif parameter == 'gender':
+            gender = 'F' if value == 'Female' else 'M'
+            return tools.updateUser(userid, *{parameter:gender})
+        elif parameter == 'birthday':
+            from time import mktime
+            year, month, day = value.split('-')
+            birthday = mktime(datetime(year, month, day).timetuple())
+            return tools.updateUser(userid, *{parameter:birthday})
+        return tools.updateUser(userid, *{parameter:value})
+
 if __name__ == '__main__':
     app.run(debug=True)
