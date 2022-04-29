@@ -41,15 +41,9 @@ def validate_promotion(f):
 
         # Check if the promotion is valid
         now = time()
-<<<<<<< HEAD
-        #assert promotion['valid_interval']['from'] < now < promotion['valid_interval']['to']
-        if now <= promotion['valid_interval']['from'] or promotion['valid_interval']['to'] <= now: abort(400)
-        #assert promotion['becoins'] <= user['becoins']
-=======
         if now <= promotion['valid_interval']['from'] or promotion['valid_interval']['to'] <= now: abort(400)
 
         # Check if user has enough becoins
->>>>>>> Solve error in promotion validation
         if user['becoins'] < promotion['becoins']: abort(400)
         return f(*args, **kwargs) 
     return wrapper
