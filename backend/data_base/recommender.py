@@ -13,7 +13,6 @@ def get_shop_count(uid):
     """
     Return all shops where uid has buyed and how many times (normalized)
     Return in a dict {shop_id: normalized_times}
-    Obsolete?
     """
     all_trans = getTransaction(['shop_id'], user_id=uid)
     all_shops = [t['shop_id'] for t in all_trans]
@@ -61,7 +60,7 @@ def recommend_new_user(user_id):
 def recommend(user_id):
     # Find most similar users
     all_trans = getTransaction(['shop_id', 'user_id'])
-
+    # CORRECT THIS
     u_shops = get_shop_count(user_id)
 
     # To new users, recommend shops in its zip code with preferences
@@ -94,10 +93,12 @@ def recommend(user_id):
 
     shops = dict(sorted(shops.items(), key=lambda x: -x[1])[:min(10, len(shops))])  # Hyperparameter 
     shop_info = [getShop(['location', 'tags'], _id=s)[0] for s in shops.keys()]
+    print(u_shops)
+    u_shop_info = [getShop(['location', 'tags'], _id=s)[0] for s in u_shops.keys()]
 
     # Compute approx ubication of user and ponderate by distance
     shop_ids = [s for s,_ in u_shops.items()]
-    u_locs = [getShop(['location'], _id=s)[0]['location'] for s in u_shops.keys()]
+    u_locs = [s['location'] for s in u_shop_info]
     lats, lons = [lat for lat, _ in u_locs], [lon for _, lon in u_locs]
     loc = np.mean(lats), np.mean(lons)
     s_locs = [s['location'] for s in shop_info]
@@ -106,13 +107,25 @@ def recommend(user_id):
     dist_scores = [np.pi / 2 - np.arctan(d) for d in dists]  # hyperparameter
     shops = {sh: sc * dist_scores[i] for i, (sh, sc) in enumerate(shops.items())}
 
-    # Sum if user interested in shop tags
-
-    preferences = getUser(['preferences'], _id=user_id)[0]['preferences']
+    # Sum if user interested in shop tags or bought in similar shops
+    preferences = {}
+    for s in u_shop_info:
+        shop_id, tags = s['_id'], s['tags']
+        for t in tags:
+            if t in preferences:
+                preferences[t] += u_shops[shop_id]
+    norm = sum(preferences.values())
+    preferences = {k: v / norm for k, v in preferences.items()}
+    explicit_prefs = getUser(['preferences'], _id=user_id)[0]['preferences']
+    for t in explicit_prefs:
+        if t in preferences:
+            preferences[t] += 1/len(explicit_prefs)  # hyperparameter
+        else:
+            preferences[t] = 1/len(explicit_prefs)  # hyperparameter
     for info, (sh, score) in zip(shop_info, shops.items()):
         for tag in info['tags']:
             if tag in preferences:
-                shops[sh] *= 1.25  # hyperparameter
+                shops[sh] *= preferences[tag] # hyperparameter
 
     return sorted(shops.items(), key=lambda x: -x[1])
 
