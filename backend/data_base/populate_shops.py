@@ -17,6 +17,9 @@ def populate_shops(src):
     Function that populates the the shop database.
     The input is the source file path
     """
+    photo_links = json.load(open("./backend/data_base/photos.json"))['photos']
+    random.seed(123456789)
+
     with open(src) as f:
         for row in csv.DictReader(f, skipinitialspace=True):
 
