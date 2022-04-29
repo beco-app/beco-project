@@ -13,9 +13,18 @@ class ProfileWidget extends StatefulWidget {
 }
 
 class _ProfileWidgetState extends State<ProfileWidget> {
+  late final TextEditingController _zipcontroller = TextEditingController();
+  @override
+  void dispose() {
+    _zipcontroller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    String username = 'user3';
+    String username = 'user1';
+
+    double screenwidth = MediaQuery.of(context).size.width;
     var userinfo = getUser(username);
     if (userinfo == null) {
       print('You have enterd!!!!!!!!!!!!!!!');
@@ -56,7 +65,63 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                 const SizedBox(height: 20),
                 infoContainerFromFuture('Phone', 'phone', userinfo),
                 const SizedBox(height: 20),
-                infoContainerFromFuture('Zipcode', 'zip_code', userinfo),
+                Container(
+                    padding: const EdgeInsets.only(left: 20.0),
+                    height: 55,
+                    width: screenwidth * 0.9,
+                    alignment: Alignment.bottomLeft,
+                    decoration: BoxDecoration(
+                      color: const Color.fromRGBO(217, 195, 220, 0.584),
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    child: Row(children: [
+                      Container(
+                          width: 70,
+                          child: const Text('Zipcode',
+                              style: TextStyle(
+                                  fontSize: 17,
+                                  color: Color.fromARGB(146, 67, 67, 67)))),
+                      Flexible(
+                          child: Container(
+                        width: double.infinity,
+                        height: 100,
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: FutureBuilder<String>(
+                              future: userinfo,
+                              builder: (context, snapshot) {
+                                String content = '';
+                                if (snapshot.hasData) {
+                                  User userinfo =
+                                      User(snapshot.data.toString());
+                                  content = userinfo['zip_code'].toString();
+                                } else {
+                                  content = 'Loading...';
+                                }
+                                return TextField(
+                                  controller: _zipcontroller,
+                                  enableSuggestions: false,
+                                  autocorrect: false,
+                                  keyboardType: TextInputType.number,
+                                  decoration: InputDecoration(
+                                    hintText: content,
+                                    hintStyle: const TextStyle(
+                                        fontSize: 19,
+                                        fontWeight: FontWeight.bold,
+                                        color: Color.fromARGB(255, 0, 0, 0)),
+
+                                    //labelText: 'Zip code',
+                                    floatingLabelBehavior:
+                                        FloatingLabelBehavior.always,
+                                    // border: const OutlineInputBorder(),
+                                    contentPadding: const EdgeInsets.symmetric(
+                                        vertical: 5, horizontal: 10),
+                                  ),
+                                );
+                              }),
+                        ),
+                      )),
+                    ])),
                 const SizedBox(height: 20),
                 infoContainerFromFuture('Pref.', 'preferences', userinfo),
                 const SizedBox(height: 20),
@@ -110,6 +175,7 @@ class InfoContainer extends StatelessWidget {
   Widget build(context) {
     double screenheight = MediaQuery.of(context).size.height;
     double screenwidth = MediaQuery.of(context).size.width;
+    if (attribute == 'Zipcode') {}
     return Container(
         padding: const EdgeInsets.only(left: 20.0),
         height: 55,

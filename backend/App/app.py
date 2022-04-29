@@ -280,7 +280,7 @@ def update_user(username, parameter, value):
         ]
         
         value = value.split(',')
-        if any(v for v in value not in tags):
+        if any(v for v in value if v not in tags):
             return {'message': 'Tag not defined'}, 404
         
     elif parameter == 'gender':
