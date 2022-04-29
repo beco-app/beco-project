@@ -8,9 +8,10 @@ import hashlib
 from tools import setShop, updateShop, getShop
 import csv
 import pymongo
-# import random
 import json
+import random
 from shops_nearest_stations import get_shops_nearest_stations
+import json
 
 def populate_shops(src):
     """
@@ -51,4 +52,4 @@ def populate_shops(src):
         print(updateShop(shop_id, nearest_stations=stations[shop_id]))
 
 if __name__ == '__main__':
-    populate_shops('./backend/data_base/shops.csv')
+    populate_shops('./backend/data_base/shops_upper.csv')

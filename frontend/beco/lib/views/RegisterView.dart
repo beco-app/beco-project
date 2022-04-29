@@ -4,25 +4,28 @@ import 'package:beco/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart' as intl;
+import 'package:multiselect/multiselect.dart';
 
 // Created to save the user data and send it to backend.
 class User {
+  late final String user_id;
   late final String email;
   late final String password;
   late final String phone;
   late final String zipcode;
   late final String gender;
-  late final int birthdate;
-  late final String diet;
+  late final int birthday;
+  late final List<String> preferences;
 
   Map<dynamic, String> toJson() => {
+        'user_id': user_id,
         'email': email,
         'password': password,
         'phone': phone,
         'zipcode': zipcode,
         'gender': gender,
-        'birthdate': birthdate.toString(),
-        'diet': diet,
+        'birthday': birthday.toString(),
+        'preferences': preferences.toString(),
       };
 }
 
@@ -39,8 +42,8 @@ class _RegisterViewState extends State<RegisterView> {
   late final TextEditingController _phone;
   late final TextEditingController _zipcode;
   String gender = 'Prefer not to answer';
-  String diet = 'Prefer not to answer';
   DateTime date = DateTime.now();
+  List<String> preferencesSelected = [];
 
   @override
   void initState() {
@@ -159,33 +162,42 @@ class _RegisterViewState extends State<RegisterView> {
                         );
                       }).toList(),
                     ),
-                    DropdownButtonFormField<String>(
+                    DropDownMultiSelect(
                       decoration: const InputDecoration(
-                        labelText: 'Diet',
+                        labelText: 'Preferences',
                         floatingLabelBehavior: FloatingLabelBehavior.always,
                         border: OutlineInputBorder(),
                         contentPadding:
                             EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                       ),
-                      isExpanded: true,
-                      value: diet,
-                      onChanged: (String? newValue) {
+                      onChanged: (List<String> x) {
                         setState(() {
-                          diet = newValue!;
+                          preferencesSelected = x;
                         });
                       },
-                      items: <String>[
-                        'Prefer not to answer',
-                        'Omnivore',
-                        'Vegetarian',
-                        'Vegan',
-                        'Other'
-                      ].map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
+                      // isDense: true,
+                      selectedValues: preferencesSelected,
+                      whenEmpty: 'Select your preferences',
+                      options: <String>[
+                        'Restaurant',
+                        'Bar',
+                        'Supermarket',
+                        'Bakery',
+                        'Vegan food',
+                        'Beverages',
+                        'Local products',
+                        'Green space',
+                        'Plastic free',
+                        'Herbalist',
+                        'Second hand',
+                        'Cosmetics',
+                        'Pharmacy',
+                        'Fruits & vegetables',
+                        'Recycled material',
+                        'Accessible',
+                        'For children',
+                        'Allows pets'
+                      ],
                     ),
                     _FormDatePicker(
                       date: date,
@@ -204,27 +216,34 @@ class _RegisterViewState extends State<RegisterView> {
                           user.password = _password.text;
                           user.phone = _phone.text;
                           user.zipcode = _zipcode.text;
-                          user.birthdate = date.millisecondsSinceEpoch;
+                          user.birthday = date.millisecondsSinceEpoch;
                           user.gender = gender;
-                          user.diet = diet;
+                          user.preferences = preferencesSelected;
                           try {
-                            // final userCredential = await FirebaseAuth.instance
-                            //     .createUserWithEmailAndPassword(
-                            //   email: user.email,
-                            //   password: user.password,
-                            // );
-                            // print(userCredential);
-
+                            final userCredential = await FirebaseAuth.instance
+                                .createUserWithEmailAndPassword(
+                              email: user.email,
+                              password: user.password,
+                            );
+                            user.user_id =
+                                await FirebaseAuth.instance.currentUser!.uid;
                             // Send user to backend
                             final r = await http.post(
-                                Uri.parse(
-                                    'http://18.219.12.116/api/register_user'),
+                                Uri.parse('http://34.252.26.132/register_user'),
                                 body: user.toJson());
+
                             print(r.body);
+
+                            Navigator.of(context).pushNamedAndRemoveUntil(
+                              '/login/',
+                              (route) => false,
+                            );
                           } on FirebaseAuthException catch (e) {
                             if (e.code == 'user-not-found') {
                               print('User not found');
                             }
+                            print("ERROR MESSAGE");
+                            print(e);
                           }
                         },
                         child: const Text('Sign Up',

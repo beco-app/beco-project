@@ -240,6 +240,9 @@ def setUser(data):
         'gender': data["gender"], 'birthday': data["birthday"], 'zip_code': data["zip_code"], 'preferences': data["preferences"],
         'becoins': data["becoins"], "saved_prom" : data["saved_prom"]
     }
+    if "_id" in data.keys():
+        document["_id"] = data["_id"] # firebase id
+
     response = db_handler.queryInsert(db_name, db_users, document, one=True)
     return response.acknowledged, response.inserted_id
 
