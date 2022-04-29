@@ -22,6 +22,7 @@ class _DiscountWidgetState extends State<DiscountWidget> {
   void initState() {
     super.initState();
     discountList = getDiscounts();
+    print(discountList);
   }
 
   @override
@@ -44,7 +45,9 @@ class _DiscountWidgetState extends State<DiscountWidget> {
                   if (snapshot.hasData) {
                     return Column(
                       children: [
-                        for (var i = 0; i < 1; i++)
+                        for (var i = 0;
+                            i < snapshot.data!.discounts.length;
+                            i++)
                           Column(
                             children: [
                               Button(
@@ -121,6 +124,7 @@ class Button extends StatelessWidget {
                           description,
                         ),
                         SizedBox(height: 10),
+                        Text("$becoins becoins"),
                       ]),
                   const Spacer(),
                 ]),

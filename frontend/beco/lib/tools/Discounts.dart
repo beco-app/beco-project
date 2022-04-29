@@ -14,7 +14,7 @@ class Discount {
     required this.shopname,
     required this.description,
     required this.becoins,
-    required this.validInterval,
+    // required this.validInterval,
   });
 
   factory Discount.fromJson(Map<String, dynamic> json) =>
@@ -25,7 +25,7 @@ class Discount {
   final String shopname;
   final String description;
   final int becoins;
-  final String validInterval; // TODO: Canviar a datetime o format apropiat
+  // final String validInterval; // TODO: Canviar a datetime o format apropiat
 }
 
 @JsonSerializable()
@@ -36,6 +36,7 @@ class Discounts {
 
   factory Discounts.fromJson(Map<String, dynamic> json) =>
       _$DiscountsFromJson(json);
+
   Map<String, dynamic> toJson() => _$DiscountsToJson(this);
 
   final List<Discount> discounts;
@@ -48,19 +49,21 @@ Future<Discounts> getDiscounts() async {
     shopname: "",
     description: "",
     becoins: 0,
-    validInterval: "",
+    // validInterval: "",
   );
   final noDiscount = Discounts(discounts: [voidDiscount]);
 
   try {
-    // final response = await http.post(Uri.parse(discountsURL),
-    //     body: {"user_id": await FirebaseAuth.instance.currentUser!.uid});
     final response = await http.post(Uri.parse(discountsURL),
-        body: {"user_id": "626ad91ef86a6624c429e357"});
+        body: {"user_id": await FirebaseAuth.instance.currentUser!.uid});
+    // final response = await http.post(Uri.parse(discountsURL),
+    //     body: {"user_id": "626ad91ef86a6624c429e357"});
     print("RESPONSE");
-    print(response);
+    print(response.body);
     log(response.body);
     if (response.statusCode == 200) {
+      print(json.decode(response.body));
+      print(Discounts.fromJson(json.decode(response.body)));
       return Discounts.fromJson(json.decode(response.body));
     }
   } catch (err) {
