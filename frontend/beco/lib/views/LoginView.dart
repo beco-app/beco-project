@@ -92,15 +92,24 @@ class _LoginViewState extends State<LoginView> {
                               password: password,
                             );
 
+                            // final userid =
+                            //     FirebaseAuth.instance.currentUser!.getIdToken();
+                            // print(userid);
+
                             // Send user to backend
                             final r = await http.post(
-                                Uri.parse('http://18.219.12.116/'),
+                                Uri.parse('http://34.252.26.132/'),
                                 body: {
                                   'username': email,
                                   'password': password,
                                 });
 
                             print(userCredential);
+
+                            Navigator.of(context).pushNamedAndRemoveUntil(
+                              '/home/',
+                              (route) => false,
+                            );
                           } on FirebaseAuthException catch (e) {
                             print(e.code);
                           }

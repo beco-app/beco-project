@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
 import 'package:json_annotation/json_annotation.dart';
 import 'package:flutter/services.dart' show rootBundle;
@@ -51,7 +52,7 @@ class Stores {
 }
 
 Future<Stores> getMapStores() async {
-  const shopLocationsURL = 'http://18.219.12.116/load_map';
+  const shopLocationsURL = 'http://34.252.26.132/load_map';
   final voidStore = Store(
     id: "",
     address: "",
@@ -70,7 +71,6 @@ Future<Stores> getMapStores() async {
   try {
     final response = await http.get(Uri.parse(shopLocationsURL));
     print("RESPONSE");
-    print(response);
     log(response.body);
     if (response.statusCode == 200) {
       return Stores.fromJson(json.decode(response.body));
@@ -91,7 +91,7 @@ Future<Stores> getMapStores() async {
 }
 
 Future<Stores> getHomepageStores() async {
-  const shopButtonsURL = 'http://18.219.12.116/homepage';
+  const shopButtonsURL = 'http://34.252.26.132/recommended_shops/';
   final voidStore = Store(
     id: "",
     address: "",
@@ -108,8 +108,8 @@ Future<Stores> getHomepageStores() async {
   final noStores = Stores(stores: [voidStore]);
 
   try {
-    final response = await http.get(Uri.parse(shopButtonsURL));
-    print(response);
+    final response = await http.post(Uri.parse(shopButtonsURL),
+        body: {"user_id": await FirebaseAuth.instance.currentUser!.uid});
     print("RESPONSE");
     log(response.body);
     if (response.statusCode == 200) {
