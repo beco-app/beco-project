@@ -20,10 +20,7 @@ from backend.App.validate import validate_promotion, validate_user_exists, valid
 from backend.data_base.recommender import recommend
 
 
-#import firebase_admin
-#import pyrebase
 import json
-#from firebase_admin import credentials, auth
 from flask import Flask, request
 from functools import wraps
 from time import time
@@ -33,72 +30,11 @@ from backend.data_base.db_handler import queryFind
 # App configuration
 app = Flask(__name__)
 
-# Connect to firebase
-# cred = credentials.Certificate('backend/App/fbAdminConfig.json')
-# firebase = firebase_admin.initialize_app(cred)
-# pb = pyrebase.initialize_app(json.load(open('backend/App/fbconfig.json')))
-
-# Data source
-users = [{'uid': 1, 'name': 'Yikai Qiu'}]
-
-
-def check_token(f):
-    @wraps(f)
-    def wrap(*args,**kwargs):
-        if not request.headers.get('authorization'):
-            return {'message': 'No token provided'},400
-        try:
-            user = auth.verify_id_token(request.headers['authorization'])
-            request.user = user
-        except:
-            return {'message':'Invalid token provided.'},400
-        return f(*args, **kwargs)
-    return wrap
-
 
 # Test
 @app.route('/')
 def hello_world():
-    return 'Hello from Flask!', 200
-
-@app.route('/tommyG')
-def tommyG():
-    return 'tommyG', 200
-
-# Api route to get userso
-@app.route('/api/userinfo')
-@check_token
-def userinfo():
-    return {'data': users}, 200
-
-# Api route to sign up a new user
-@app.route('/api/signup')
-def signup():
-    email = request.form.get('email')
-    password = request.form.get('password')
-
-    if email is None or password is None:
-        return {'message': 'Error missing email or password'},400
-    try:
-        user = auth.create_user(
-            email=email,
-            password=password
-        )
-        return {'message': f'Successfully created user {user.uid}'},200
-    except:
-        return {'message': 'Invalid email or password'},400
-
-# Api route to get a new token for a valid user
-@app.route('/api/token')
-def token():
-    email = request.form.get('email')
-    password = request.form.get('password')
-    try:
-        # user = pb.auth().sign_in_with_email_and_password(email, password)
-        jwt = user['idToken']
-        return {'token': jwt}, 200
-    except:
-        return {'message': 'There was an error logging in'},400
+    return 'Hello from BECO!', 200
 
 
 @app.route("/api/login", methods=['POST'])
@@ -312,8 +248,16 @@ def unsave_promotion():
         200
     )
 
+def add_shop_name_in_proms_list(proms_list):
+    """
+    Adds the shop name to the list of promotions
+    """
+    for prom in proms_list:
+        prom['shopname'] = tools.getShop(['shopname'], _id = ObjectId(prom['shop_id']))[0]
+    return proms_list
+
 # Get saved promotions
-@app.route('/promotions/saved', methods=['GET'])
+@app.route('/promotions/saved', methods=['POST'])
 @validate_user_exists
 def saved_promotions():
     """
@@ -327,7 +271,7 @@ def saved_promotions():
     saved_prom = [
         prom_id
         for prom_id in saved_prom
-        if tools.getPromotion(['valid_interval'], _id = prom_id)[0]['valid_interval'][0] < now < tools.getPromotion(['valid_interval'], _id = prom_id)[0]['valid_interval'][1]
+        if tools.getPromotion(['valid_interval'], _id = prom_id)[0]['valid_interval']['from'] < now < tools.getPromotion(['valid_interval'], _id = prom_id)[0]['valid_interval']['to']
         
     ]
     tools.updateUser(ObjectId(user_id), saved_prom=saved_prom)
@@ -335,16 +279,34 @@ def saved_promotions():
     # user_saved_prom.remove(ObjectId(promotion_id))
     
     # Debug:
-    promotions = []
-    for prom_id in saved_prom:
-        promotions.append(tools.getPromotion(_id = prom_id))
-    
-
+    promotions = [tools.getPromotion(_id = prom_id)[0] for prom_id in saved_prom]
+    promotions = add_shop_name_in_proms_list(promotions)
     response = json.loads(json_util.dumps({"promotions": promotions}))
     return response, 200
 
+# Get activated promotions
+@app.route('/promotions/activated', methods=['GET'])
+@validate_user_exists
+def activated_promotions():
+    """
+    Returns activated promotions list for a given user.
+    """
+    user_id = request.form.get('user_id')
+
+    user_active_proms = queryFind(
+        'beco_db', 'active_promotions', {'user_id' : ObjectId(user_id)}
+    )
+    user_active_proms = [
+        tools.getPromotion(_id = prom['prom_id'])[0]
+        for prom in user_active_proms
+    ]
+    user_active_proms = add_shop_name_in_proms_list(user_active_proms)
+    response = json.loads(
+        json_util.dumps({'user_active_proms': user_active_proms})
+    )
+    return response, 200   
+
 # Get recent promotions
-# db.promotions.find({"valid_interval[1]":{$gte: new Date() }}).sort({"valid_interval[0]":-1})
 @app.route('/promotions/recent', methods=['GET'])
 def recent_promotions():
     """
@@ -352,11 +314,16 @@ def recent_promotions():
     """
 
     now = time()
-    print(now)
-    most_recent = queryFind('beco_db', 'promotions', {'valid_interval.to' : {'$gte': now}, 'valid_interval.from' : {'$lte': now}}).sort('valid_interval.from', -1).limit(10)
-    most_recent_ids = [prom['_id'] for prom in most_recent]
-
-    response = json.loads(json_util.dumps({'recent_proms': most_recent_ids}))
+    most_recent = queryFind(
+        'beco_db', 'promotions',
+        {
+            'valid_interval.to' : {'$gte': now},
+            'valid_interval.from' : {'$lte': now}
+        }
+    ).sort('valid_interval.from', -1).limit(10)
+    
+    most_recent = add_shop_name_in_proms_list(list(most_recent))
+    response = json.loads(json_util.dumps({'recent_proms': list(most_recent)}))
     return response, 200    
 
 # @app.route('/promotions/use', method=['POST'])
