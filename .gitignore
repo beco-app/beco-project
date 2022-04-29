@@ -14,3 +14,5 @@ i\+d/logs
 # Firebase credentials (ask @marcdmc for testing)
 backend/App/fbAdminConfig.json
 backend/App/fbconfig.json
+
+.vscode/

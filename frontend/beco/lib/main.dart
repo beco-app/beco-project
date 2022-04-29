@@ -19,7 +19,7 @@ void main() {
       theme: ThemeData(
           primarySwatch: Colors.deepPurple,
           primaryColor: Colors.deepPurple[900]),
-      home: const HomeView(),
+      home: const HomePage(), // Page shown when app is started.
       routes: {
         '/login/': (context) => const LoginView(),
         '/register/': (context) => const RegisterView(),
@@ -42,18 +42,18 @@ class HomePage extends StatelessWidget {
       builder: (context, snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.done:
-            // final user = FirebaseAuth.instance.currentUser;
-            // if (user != null) {
-            //   if (user.emailVerified) {
-            //     print('Email is verified');
-            //   } else {
-            //     return const VerifyEmailView();
-            //   }
-            // } else {
-            //   return const LoginView();
-            // }
-            // return const Text('Done');
-            return const LoginView();
+            final user = FirebaseAuth.instance.currentUser;
+            print(user);
+            if (user != null) {
+              // if (user.emailVerified) {
+              //   print('Email is verified');
+              // } else {
+              //   return const VerifyEmailView();
+              // }
+              return const HomeView();
+            } else {
+              return const LoginView();
+            }
           default:
             return const CircularProgressIndicator();
         }

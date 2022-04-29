@@ -3,6 +3,7 @@ import 'package:beco/views/ProfileWidget.dart';
 import 'package:beco/views/provaView.dart';
 import 'package:flutter/material.dart';
 import 'package:beco/views/HomeWidget.dart';
+import 'package:beco/views/DiscountWidget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:beco/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -26,7 +27,7 @@ class _HomeViewState extends State<HomeView> {
   static List<Widget> _pages = <Widget>[
     HomeWidget(),
     MapWidget(),
-    provaWidget(),
+    DiscountWidget(),
     ProfileWidget(),
   ];
 

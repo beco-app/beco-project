@@ -240,6 +240,9 @@ def setUser(data):
         'gender': data["gender"], 'birthday': data["birthday"], 'zip_code': data["zip_code"], 'preferences': data["preferences"],
         'becoins': data["becoins"], "saved_prom" : data["saved_prom"]
     }
+    if "_id" in data.keys():
+        document["_id"] = data["_id"] # firebase id
+
     response = db_handler.queryInsert(db_name, db_users, document, one=True)
     return response.acknowledged, response.inserted_id
 
@@ -280,7 +283,6 @@ def setShop(data):
         'address':  data["address"],    'district':     data["district"],     'neighbourhood':    data["neighbourhood"], 
         'zip_code': data["zip_code"],   'type':         data["type"],         'tags':             data["tags"],
         'phone':    data["phone"],      'product_list': data["product_list"], 'nearest_stations': data['nearest_stations']
-        
     }
     response = db_handler.queryInsert(db_name, db_shops, document, one=True)
     return response.acknowledged, response.inserted_id
@@ -296,7 +298,7 @@ def setPromotion(data):
         * `shop_id`:        ObjectId, should be in collection `shop`
         * `description`:    str
         * `becoins`:        int, positive
-        * `valid_interval`: [float, float], timestamp
+        * `valid_interval`: {'from': float, 'to': float}, timestamp
 
     Returns:
         * (True, ObjectId) if the insertion succeed

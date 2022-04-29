@@ -8,6 +8,8 @@ import 'ScannerView.dart';
 
 
 
+import 'package:beco/Stores.dart';
+
 class HomeWidget extends StatefulWidget {
   const HomeWidget({Key? key}) : super(key: key);
 

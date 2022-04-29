@@ -14,7 +14,7 @@ chmod 400 BECO.pem
 
 Connection command:
 ```
-ssh -i BECO.pem ubuntu@18.219.12.116
+ssh -i BECO.pem ubuntu@34.252.26.132
 ```
 
 ## Connection to remote mongo instance
@@ -22,7 +22,7 @@ ssh -i BECO.pem ubuntu@18.219.12.116
 - **Tunnel**: 
 
 ``` 
-ssh -i BECO.pem -N -L 27017:localhost:27017 ubuntu@18.219.12.116
+ssh -i BECO.pem -N -L 27017:localhost:27017 ubuntu@34.252.26.132
 ```
 
 
