@@ -34,12 +34,7 @@ void main() {
       theme: ThemeData(
           primarySwatch: Colors.deepPurple,
           primaryColor: Colors.deepPurple[900]),
-<<<<<<< HEAD
       home: const HomePage(), // Page shown when app is started.
-=======
-      // home: DetailView(store: voidStore), // Page shown when app is started.
-      home: const HomeView(),
->>>>>>> d3c545b (Unified all store classes)
       routes: {
         '/login/': (context) => const LoginView(),
         '/register/': (context) => const RegisterView(),
