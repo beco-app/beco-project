@@ -9,20 +9,22 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
-import 'ShopLocations.dart';
+import 'Stores.dart';
 import 'firebase_options.dart';
 
-// final voidStore = Store(
-//   address: "",
-//   id: "",
-//   image: "https://theibizan.com/wp-content/uploads/2019/03/eco.jpg",
-//   lat: 0,
-//   lng: 0,
-//   name: "",
-//   phone: "",
-//   region: "",
-//   description: "",
-// );
+final voidStore = Store(
+  id: "",
+  address: "",
+  shopname: "",
+  lat: 0,
+  lng: 0,
+  neighbourhood: "",
+  description: "",
+  photo: "https://theibizan.com/wp-content/uploads/2019/03/eco.jpg",
+  type: "",
+  tags: [""],
+  web: "",
+);
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,7 +34,7 @@ void main() {
       theme: ThemeData(
           primarySwatch: Colors.deepPurple,
           primaryColor: Colors.deepPurple[900]),
-      home: const HomeView(), // Page shown when app is started.
+      home: const HomePage(), // Page shown when app is started.
       routes: {
         '/login/': (context) => const LoginView(),
         '/register/': (context) => const RegisterView(),
@@ -55,18 +57,18 @@ class HomePage extends StatelessWidget {
       builder: (context, snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.done:
-            // final user = FirebaseAuth.instance.currentUser;
-            // if (user != null) {
-            //   if (user.emailVerified) {
-            //     print('Email is verified');
-            //   } else {
-            //     return const VerifyEmailView();
-            //   }
-            // } else {
-            //   return const LoginView();
-            // }
-            // return const Text('Done');
-            return const LoginView();
+            final user = FirebaseAuth.instance.currentUser;
+            print(user);
+            if (user != null) {
+              // if (user.emailVerified) {
+              //   print('Email is verified');
+              // } else {
+              //   return const VerifyEmailView();
+              // }
+              return const HomeView();
+            } else {
+              return const LoginView();
+            }
           default:
             return const CircularProgressIndicator();
         }
