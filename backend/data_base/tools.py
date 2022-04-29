@@ -283,7 +283,6 @@ def setShop(data):
         'address':  data["address"],    'district':     data["district"],     'neighbourhood':    data["neighbourhood"], 
         'zip_code': data["zip_code"],   'type':         data["type"],         'tags':             data["tags"],
         'phone':    data["phone"],      'product_list': data["product_list"], 'nearest_stations': data['nearest_stations']
-
     }
     response = db_handler.queryInsert(db_name, db_shops, document, one=True)
     return response.acknowledged, response.inserted_id

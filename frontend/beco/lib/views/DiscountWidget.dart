@@ -6,6 +6,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import 'package:beco/Stores.dart';
+import 'package:beco/tools/Discounts.dart';
 
 class DiscountWidget extends StatefulWidget {
   const DiscountWidget({Key? key}) : super(key: key);
@@ -15,12 +16,12 @@ class DiscountWidget extends StatefulWidget {
 }
 
 class _DiscountWidgetState extends State<DiscountWidget> {
-  late Future<Stores> storeList;
+  late Future<Discounts> discountList;
 
   @override
   void initState() {
     super.initState();
-    storeList = getHomepageStores();
+    discountList = getDiscounts();
   }
 
   @override
@@ -37,21 +38,21 @@ class _DiscountWidgetState extends State<DiscountWidget> {
             IconsRow(),
             Padding(
               padding: const EdgeInsets.all(20),
-              child: FutureBuilder<Stores>(
-                future: storeList,
+              child: FutureBuilder<Discounts>(
+                future: discountList,
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     return Column(
                       children: [
-                        // Text(snapshot.data!.stores[0].name.toString()),
-                        for (var i = 0; i < 20; i++)
+                        for (var i = 0; i < 1; i++)
                           Column(
                             children: [
-                              ShopButton(
-                                  shopName: snapshot.data!.stores[i].shopname,
-                                  imgPath: snapshot.data!.stores[i].photo,
-                                  shortDescr: snapshot.data!.stores[i].type,
-                                  icons: snapshot.data!.stores[i].tags),
+                              Button(
+                                shopName: snapshot.data!.discounts[i].shopname,
+                                description:
+                                    snapshot.data!.discounts[i].description,
+                                becoins: snapshot.data!.discounts[i].becoins,
+                              ),
                               const SizedBox(height: 20),
                             ],
                           ),
@@ -65,43 +66,25 @@ class _DiscountWidgetState extends State<DiscountWidget> {
                   return const CircularProgressIndicator();
                 },
               ),
-              //       ShopButton(
-              //           shopName: storeList[i],
-              //           imgPath: "assets/images/logo.png",
-              //           shortDescr: "Ice cream shop",
-              //           icons: ['accessible_sharp', "child_friendly"]),
-              //       const SizedBox(height: 20),
-              //   ],
-              // )
             )
           ]))
     ]);
   }
 }
 
-Map<String, IconData> myIcons = {
-  "accessible": Icons.accessible_sharp,
-  "or children": Icons.child_friendly,
-  "beverages": Icons.local_drink,
-  "restaurant": Icons.local_dining,
-  "herbalist": Icons.local_pharmacy,
-  "pharmacy": Icons.healing,
-  "bakery": Icons.healing,
-};
+List<String> options = ['Active', 'Saved', 'Recommended'];
 
-class ShopButton extends StatelessWidget {
-  const ShopButton({
+class Button extends StatelessWidget {
+  const Button({
     required this.shopName,
-    required this.imgPath,
-    required this.shortDescr,
-    required this.icons,
+    required this.description,
+    required this.becoins,
     Key? key,
   }) : super(key: key);
 
   final String shopName; //= "Unknown";
-  final String imgPath; //= "assets/images/logo.png";
-  final String shortDescr; //= "No description available";
-  final List<dynamic> icons; //= [];
+  final String description; //= "assets/images/logo.png";
+  final int becoins; //= "No description available";
 
   @override
   Widget build(context) {
@@ -135,26 +118,11 @@ class ShopButton extends StatelessWidget {
                                 fontWeight: FontWeight.bold, fontSize: 15)),
                         SizedBox(height: 5),
                         Text(
-                          shortDescr,
+                          description,
                         ),
                         SizedBox(height: 10),
-                        Row(
-                          //Icons
-                          children: [
-                            for (String word in icons)
-                              Icon(
-                                myIcons[word],
-                                size: 30,
-                              )
-                          ],
-                        ),
                       ]),
                   const Spacer(),
-                  Image.network(
-                    imgPath,
-                    width: 150, //s'ha de fer fit
-                    fit: BoxFit.cover,
-                  )
                 ]),
               ))),
     );
@@ -174,7 +142,7 @@ class IconsRow extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         child: Row(
           children: [
-            for (var word in myIcons.keys)
+            for (var word in options)
               Row(children: [
                 const SizedBox(width: 20),
                 Material(
@@ -195,16 +163,8 @@ class IconsRow extends StatelessWidget {
                               padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                               child: Row(// Everything inside the button
                                   children: [
-                                Icon(
-                                  myIcons[word],
-                                  size: 30,
-                                ),
-                                SizedBox(width: 10),
                                 Text(
                                   word,
-                                ),
-                                Text(
-                                  isSelected ? "True" : "False", // acabar
                                 ),
                               ]),
                             ))))
