@@ -243,7 +243,7 @@ def add_shop_name_in_proms_list(proms_list):
     return proms_list
 
 # Get saved promotions
-@app.route('/promotions/saved', methods=['GET'])
+@app.route('/promotions/saved', methods=['POST'])
 @validate_user_exists
 def saved_promotions():
     """
