@@ -34,14 +34,22 @@ def validate_promotion(f):
         user_id = request.form.get('user_id')
         promotions = tools.getPromotion(_id = ObjectId(promotion_id))
         users = tools.getUser(_id = ObjectId(user_id))
-        #assert len(promotions) == 1 and len(users) == 1
+
         if len(promotions) != 1 or len(users) != 1: abort(400)
         promotion = promotions[0]
         user = users[0]
+
+        # Check if the promotion is valid
         now = time()
+<<<<<<< HEAD
         #assert promotion['valid_interval']['from'] < now < promotion['valid_interval']['to']
         if now <= promotion['valid_interval']['from'] or promotion['valid_interval']['to'] <= now: abort(400)
         #assert promotion['becoins'] <= user['becoins']
+=======
+        if now <= promotion['valid_interval']['from'] or promotion['valid_interval']['to'] <= now: abort(400)
+
+        # Check if user has enough becoins
+>>>>>>> Solve error in promotion validation
         if user['becoins'] < promotion['becoins']: abort(400)
         return f(*args, **kwargs) 
     return wrapper
