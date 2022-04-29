@@ -4,9 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:beco/Stores.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 
-import 'ScannerView.dart';
-
-
+// import 'ScannerView.dart';
 
 import 'package:beco/Stores.dart';
 
@@ -50,18 +48,18 @@ class _HomeWidgetState extends State<HomeWidget> {
           child: Column(children: [
             const SizedBox(height: 20),
             InkWell(
-                onTap: () {
-                  scanBarcodeNormal(); 
-                },
-                child: Container ( //Button config     
-                        child: Icon(
-                          Icons.camera_alt,
-                          size:  30,
-                        ),
-                      ),
-                  ),
-            
-            const SizedBox(height: 20), 
+              onTap: () {
+                scanBarcodeNormal();
+              },
+              child: Container(
+                //Button config
+                child: Icon(
+                  Icons.camera_alt,
+                  size: 30,
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
             IconsRow(),
             Padding(
               padding: const EdgeInsets.all(20),
@@ -71,12 +69,12 @@ class _HomeWidgetState extends State<HomeWidget> {
                   if (snapshot.hasData) {
                     return Column(
                       children: [
-                        for (var i = 0; i < 20; i++)
+                        for (var i = 0; i < snapshot.data!.stores.length; i++)
                           Column(
                             children: [
                               ShopButton(
-                                  store: snapshot.data!.stores[i],
-                                ),
+                                store: snapshot.data!.stores[i],
+                              ),
                               const SizedBox(height: 20),
                             ],
                           ),
@@ -106,9 +104,9 @@ Map<String, IconData> myIcons = {
   "Bakery": Icons.bakery_dining,
   "Recycled material": Icons.recycling,
   "Green space": Icons.nature_people,
-  "Plastic free": Icons.panorama_outlined ,
+  "Plastic free": Icons.panorama_outlined,
   "Bar": Icons.local_cafe_outlined,
-  "Second hand":Icons.refresh,
+  "Second hand": Icons.refresh,
   "Others": Icons.question_mark,
   "Allows pets": Icons.pets_sharp,
   "Vegan food": Icons.emoji_nature,
@@ -160,38 +158,36 @@ class ShopButton extends StatelessWidget {
                     children: [
                   const SizedBox(width: 20),
                   ConstrainedBox(
-                  constraints: BoxConstraints(maxWidth: screenwidth*0.4),
-                  child: Column(
-                      //Text, short description and Icons
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(store.shopname,
-                            style: const TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 15)
-                            ),
-                        const SizedBox(height: 5),
-                        Text(
-                          store.type,
-                        ),
-                        const SizedBox(height: 10),
-                        Row(
-                          //Icons
-                          children: [
-                            for (String word in store.tags)
-                              Icon(
-                                myIcons[word],
-                                size: 20,
-                              )
-                          ],
-                        ),
-                      ]
-                    ),
+                    constraints: BoxConstraints(maxWidth: screenwidth * 0.4),
+                    child: Column(
+                        //Text, short description and Icons
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(store.shopname,
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 15)),
+                          const SizedBox(height: 5),
+                          Text(
+                            store.type,
+                          ),
+                          const SizedBox(height: 10),
+                          Row(
+                            //Icons
+                            children: [
+                              for (String word in store.tags)
+                                Icon(
+                                  myIcons[word],
+                                  size: 20,
+                                )
+                            ],
+                          ),
+                        ]),
                   ),
                   const Spacer(),
                   Image.network(
                     store.photo,
-                    width: screenwidth*0.4,
-                    height: screenheight*0.15,
+                    width: screenwidth * 0.4,
+                    height: screenheight * 0.15,
                     fit: BoxFit.cover,
                   )
                 ]),
@@ -212,29 +208,23 @@ class _IconsRow extends State<IconsRow> {
   @override
   Widget build(context) {
     return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(      
-        children: [
-          for (var word in myIcons.keys) Row(
-            children: [
-              const SizedBox(width: 20),
-              TagsButton(word: word)
-            ]
-          ),
-          const SizedBox(width: 20),
-        ],
-      )
-    );
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: [
+            for (var word in myIcons.keys)
+              Row(children: [
+                const SizedBox(width: 20),
+                TagsButton(word: word)
+              ]),
+            const SizedBox(width: 20),
+          ],
+        ));
   }
 }
 
 class TagsButton extends StatefulWidget {
-  const TagsButton({
-    required this.word,
-    Key? key}
-    ) : super(key: key);
+  const TagsButton({required this.word, Key? key}) : super(key: key);
   final String word; //= "Unknown";
-
 
   @override
   State<TagsButton> createState() => _TagsButton();
@@ -245,35 +235,38 @@ class _TagsButton extends State<TagsButton> {
   @override
   Widget build(BuildContext context) {
     return Material(
-      borderRadius: BorderRadius.circular(30),
-      clipBehavior: Clip.antiAliasWithSaveLayer,
-      child: InkWell(
-        onTap: () {
-          setState(() {myColor == Colors.grey[350] ? myColor = Colors.grey[500] : myColor = Colors.grey[350];});
-        },
-        //isSelected ? false : true;}, //acabar
-        child: Container ( //Button config
-          decoration: BoxDecoration(
-            color: myColor,//isSelected ? Colors.grey[350] : Colors.grey[950],
-            borderRadius: BorderRadius.circular(30),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(10,5,10,5), 
-            child: Row( // Everything inside the button
-              children: [
-                Icon(
-                  myIcons[widget.word],
-                  size: 30,
-                ),
-                const SizedBox(width: 10),
-                Text(
-                  widget.word,
-                ),
-              ]
-            ),
-          )
-        ),
-      )
-    );
+        borderRadius: BorderRadius.circular(30),
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        child: InkWell(
+          onTap: () {
+            setState(() {
+              myColor == Colors.grey[350]
+                  ? myColor = Colors.grey[500]
+                  : myColor = Colors.grey[350];
+            });
+          },
+          //isSelected ? false : true;}, //acabar
+          child: Container(
+              //Button config
+              decoration: BoxDecoration(
+                color:
+                    myColor, //isSelected ? Colors.grey[350] : Colors.grey[950],
+                borderRadius: BorderRadius.circular(30),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                child: Row(// Everything inside the button
+                    children: [
+                  Icon(
+                    myIcons[widget.word],
+                    size: 30,
+                  ),
+                  const SizedBox(width: 10),
+                  Text(
+                    widget.word,
+                  ),
+                ]),
+              )),
+        ));
   }
 }
