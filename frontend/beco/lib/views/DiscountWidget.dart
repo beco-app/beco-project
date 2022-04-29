@@ -16,12 +16,12 @@ class DiscountWidget extends StatefulWidget {
 }
 
 class _DiscountWidgetState extends State<DiscountWidget> {
-  late Future<Stores> storeList;
+  late Future<Discounts> discountList;
 
   @override
   void initState() {
     super.initState();
-    storeList = getHomepageStores();
+    discountList = getDiscounts();
   }
 
   @override
@@ -38,21 +38,21 @@ class _DiscountWidgetState extends State<DiscountWidget> {
             IconsRow(),
             Padding(
               padding: const EdgeInsets.all(20),
-              child: FutureBuilder<Stores>(
-                future: storeList,
+              child: FutureBuilder<Discounts>(
+                future: discountList,
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     return Column(
                       children: [
-                        // Text(snapshot.data!.stores[0].name.toString()),
-                        for (var i = 0; i < 20; i++)
+                        for (var i = 0; i < 1; i++)
                           Column(
                             children: [
                               Button(
-                                  shopName: snapshot.data!.stores[i].shopname,
-                                  imgPath: snapshot.data!.stores[i].photo,
-                                  shortDescr: snapshot.data!.stores[i].type,
-                                  icons: snapshot.data!.stores[i].tags),
+                                shopName: snapshot.data!.discounts[i].shopname,
+                                description:
+                                    snapshot.data!.discounts[i].description,
+                                becoins: snapshot.data!.discounts[i].becoins,
+                              ),
                               const SizedBox(height: 20),
                             ],
                           ),
@@ -84,7 +84,7 @@ class Button extends StatelessWidget {
 
   final String shopName; //= "Unknown";
   final String description; //= "assets/images/logo.png";
-  final int becoint; //= "No description available";
+  final int becoins; //= "No description available";
 
   @override
   Widget build(context) {

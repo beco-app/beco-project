@@ -42,7 +42,7 @@ class Discounts {
 }
 
 Future<Discounts> getDiscounts() async {
-  const discountsURL = 'http://13.38.62.160/promotions/saved';
+  const discountsURL = 'http://34.252.26.132/promotions/saved';
   final voidDiscount = Discount(
     id: "",
     shopname: "",
@@ -53,9 +53,10 @@ Future<Discounts> getDiscounts() async {
   final noDiscount = Discounts(discounts: [voidDiscount]);
 
   try {
-    // final response = await http.get(Uri.parse(discountsURL));
+    // final response = await http.post(Uri.parse(discountsURL),
+    //     body: {"user_id": await FirebaseAuth.instance.currentUser!.uid});
     final response = await http.post(Uri.parse(discountsURL),
-        body: {"user_id": await FirebaseAuth.instance.currentUser!.uid});
+        body: {"user_id": "626ad91ef86a6624c429e357"});
     print("RESPONSE");
     print(response);
     log(response.body);
