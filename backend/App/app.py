@@ -13,7 +13,19 @@ import pymongo
 from bson import json_util
 from bson.objectid import ObjectId
 
+<<<<<<< HEAD
 sys.path.append(os.getcwd())
+=======
+local = False
+if local:
+    sys.path.append("/Users/tomas.gadea/tomasgadea/ACADEMIC/GCED/q6/PE/beco/beco-project")
+else:
+    sys.path.append("/home/ubuntu/beco-project")
+    sys.path.append("/home/ubuntu/beco-project/backend/data_base")
+
+    import tools
+    from validate import validate_promotion, validate_user_exists
+>>>>>>> 1dfa0ee (global paths)
 
 from backend.data_base import tools
 from backend.App.validate import validate_promotion, validate_user_exists, validate_unique_username
@@ -46,7 +58,6 @@ def login():
         return {"message": "Invalid data fields"}, 400
 
     user = tools.getUser({"email": data["email"]}, attributes=["password"])
-    print(user)
     return user
 
     if data["password"] != user["password"]:
@@ -55,44 +66,53 @@ def login():
     return {"message": "success", "user_id": user["_id"]}, 200
 
 # Write user to database
-@app.route('/api/register_user', methods=['POST'])
+@app.route('/register_user', methods=['POST'])
 @validate_unique_username
 def register_user():
     """
         Register new user to the database, which also has been previously added to firestore
     """
 
-    data = request.form.to_dict()
+    req = request.form.to_dict()
     becoins = 0 # Initial becoins
 
-    fields = {"email", "password", "phone", "gender", "birthday", "zipcode", "diet"}
-    if fields != data.keys():
-        return {"message": "Invalid data fields"}, 400
 
-    if data["email"] is None:
+    print("this is the mf request", req)
+    #req = json.loads(list(req.keys())[0])
+
+    #fields = {"email", "password", "phone", "gender", "birthday", "zipcode", "preferences"}
+    #if fields != req.keys():
+    #    return {"message": "Invalid data fields"}, 400
+    print("this is the requests", type(req), req)
+
+    if req["email"] is None:
         return {'message': 'Invalid email'}, 400
 
-    if data["password"] is None:
+    if req["password"] is None:
         return {'message': 'Invalid password'}, 400
 
     data = {
-        'username': data["email"],
-        'email': data["email"],
-        'password': data["password"],
-        'phone': data["phone"],
-        'gender': data["gender"],
-        'birthday': data["birthday"],
-        'zip_code': data["zipcode"],
-        'diet': data["diet"],
+        'username': req["email"],
+        'email': req["email"],
+        'password': req["password"],
+        'phone': req["phone"],
+        'gender': req["gender"],
+        'birthday': req["birthday"],
+        'zip_code': req["zipcode"],
+        'preferences': req["preferences"],
         'becoins': becoins,
         'saved_prom' : None
     }
-    try:
+    #'preferences': data["preferences"],
+
+    if "user_id" in req.keys():
+        data["_id"] = req["user_id"] # firebase user_id
+    #try:
         # Afegir 
-        tools.setUser(data)
-        return {'message': 'Success'}, 200
-    except:
-        return {'message': 'Error in updating database'}, 400
+    tools.setUser(data)
+    return {'message': 'Success'}, 200
+    #except:
+    #    return {'message': 'Error in updating database'}, 400
 
 @app.route('/api/remove_user', methods=['POST'])
 @validate_user_exists
@@ -119,11 +139,17 @@ def get_user(username):
         return str(usr), 200
 
 # Get recommended shops
-@app.route('/recommended_shops/', methods=['GET'])
+@app.route('/recommended_shops/', methods=['POST'])
 def recommended_shops():
     data = request.form.to_dict()
     user_id = data['user_id']
-    resp = recommend(ObjectId(user_id))
+    try:
+        user_id = ObjectId(user_id)
+    except:
+        print("user_id from firebase")
+
+    resp = recommend(user_id)
+    print("the resp klk:", resp)
     shops = []
     for shop_id, score in resp:
         shop_content = tools.getShop(_id=shop_id)
@@ -322,8 +348,7 @@ def recent_promotions():
 @app.route("/homepage", methods=["GET"])
 def homepage():
     data = request.form.to_dict()
-    shops = tools.getShop(["_id", "shopname", "description", "photo", "type", "tags"])
-    #shops = tools.getShop(["_id", "shopname", "description"])
+    shops = tools.getShop(["_id", "address", "location", "shopname", "neighbourhood", "description", "photo", "type", "tags", "web"])
     shops_dict = {"shops": shops}
     response = json.loads(json_util.dumps(shops_dict))
 
@@ -334,11 +359,51 @@ def homepage():
 @app.route("/load_map", methods=["GET"])
 def load_map():
     data = request.form.to_dict()
-    shops = tools.getShop(["_id","address", "location", "shopname", "neighbourhood", "description", "photo"])
+    shops = tools.getShop(["_id","address", "location", "shopname", "neighbourhood", "description", "photo",  "type", "tags", "web"])
     shops_dict = {"shops": shops}
     response = json.loads(json_util.dumps(shops_dict))
 
     return response, 200
+
+# Get info from username
+@app.route('/user_update/<username>/<parameter>/<value>')
+def update_user(username, parameter, value):
+    """
+    Given the attributes, update a user from the endpoint.
+    Takes into account:
+        * 'preferences': a list of comma separeted tags (predefined)
+        * 'gender': 'Female' or 'Male'
+        * 'birthdat': kind of 2022-04-05, dash separated in YYYY-MM-DD
+    """
+
+    usr = tools.getUser(username=username)
+
+    if not usr:
+        return {'message': 'User not found'}, 404
+
+    userid = usr[0]['_id']
+
+    if parameter == 'preferences':
+        tags = [
+            'Restaurant', 'Bar', 'Supermarket', 'Bakery', 'Vegan food',
+            'Beverages', 'Local products', 'Green space', 'Plastic free',
+            'Herbalist', 'Second hand', 'Cosmetics', 'Pharmacy', 'Fruits & vegetables', 
+            'Recycled material', 'Accessible', 'For children', 'Allows pets'
+        ]
+        
+        value = value.split(',')
+        if any(v for v in value not in tags):
+            return {'message': 'Tag not defined'}, 404
+        
+    elif parameter == 'gender':
+        value = 'F' if value == 'Female' else 'M'
+    
+    elif parameter == 'birthday':
+        from time import mktime
+        year, month, day = value.split('-')
+        value = mktime(datetime(int(year), int(month), int(day)).timetuple())
+    
+    return str(tools.updateUser(userid, **{parameter:value}))
 
 if __name__ == '__main__':
     app.run(debug=True)
