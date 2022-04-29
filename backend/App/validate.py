@@ -12,7 +12,7 @@ from backend.data_base import tools
 def validate_user_exists(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
-        #user_id = request.form.get('user_id')
+        # user_id = request.form.get('user_id')
         data = request.form.to_dict()
         users = None
         if "user_id" in data.keys():
@@ -39,8 +39,8 @@ def validate_promotion(f):
         promotion = promotions[0]
         user = users[0]
         now = time()
-        #assert promotion['valid_interval'][0] < now < promotion['valid_interval'][1]
-        if now <= promotion['valid_interval'][0] or promotion['valid_interval'][1] <= now: abort(400)
+        #assert promotion['valid_interval']['from'] < now < promotion['valid_interval']['to']
+        if now <= promotion['valid_interval']['from'] or promotion['valid_interval']['to'] <= now: abort(400)
         #assert promotion['becoins'] <= user['becoins']
         if user['becoins'] < promotion['becoins']: abort(400)
         return f(*args, **kwargs) 
@@ -58,8 +58,8 @@ def validate_user(f):
         promotion = promotions[0]
         user = users[0]
         now = time()
-        #assert promotion['valid_interval'][0] < now < promotion['valid_interval'][1]
-        if now <= promotion['valid_interval'][0] or promotion['valid_interval'][1] <= now: abort(400)
+        #assert promotion['valid_interval']['from'] < now < promotion['valid_interval']['to']
+        if now <= promotion['valid_interval']['from'] or promotion['valid_interval']['to'] <= now: abort(400)
         #assert promotion['becoins'] <= user['becoins']
         if user['becoins'] < promotion['becoins']: abort(400)
         return f(*args, **kwargs) 

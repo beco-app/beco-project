@@ -294,7 +294,7 @@ def add_shop_name_in_proms_list(proms_list):
     Adds the shop name to the list of promotions
     """
     for prom in proms_list:
-        prom['shopname'] = tools.getShop(['shopname'], _id = ObjectId(prom['shop_id']))[0]['shopname']
+        prom['shopname'] = tools.getShop(['shopname'], _id = ObjectId(prom['shop_id']))[0]
     return proms_list
 
 # Get saved promotions
@@ -312,7 +312,7 @@ def saved_promotions():
     saved_prom = [
         prom_id
         for prom_id in saved_prom
-        if tools.getPromotion(['valid_interval'], _id = prom_id)[0]['valid_interval'][0] < now < tools.getPromotion(['valid_interval'], _id = prom_id)[0]['valid_interval'][1]
+        if tools.getPromotion(['valid_interval'], _id = prom_id)[0]['valid_interval']['from'] < now < tools.getPromotion(['valid_interval'], _id = prom_id)[0]['valid_interval']['to']
         
     ]
     tools.updateUser(ObjectId(user_id), saved_prom=saved_prom)
@@ -320,7 +320,7 @@ def saved_promotions():
     # user_saved_prom.remove(ObjectId(promotion_id))
     
     # Debug:
-    promotions = [tools.getPromotion(_id = prom_id) for prom_id in saved_prom]
+    promotions = [tools.getPromotion(_id = prom_id)[0] for prom_id in saved_prom]
     promotions = add_shop_name_in_proms_list(promotions)
     response = json.loads(json_util.dumps({"promotions": promotions}))
     return response, 200
@@ -338,10 +338,9 @@ def activated_promotions():
         'beco_db', 'active_promotions', {'user_id' : ObjectId(user_id)}
     )
     user_active_proms = [
-        tools.getPromotion(_id = prom['prom_id'])
+        tools.getPromotion(_id = prom['prom_id'])[0]
         for prom in user_active_proms
     ]
-
     user_active_proms = add_shop_name_in_proms_list(user_active_proms)
     response = json.loads(
         json_util.dumps({'user_active_proms': user_active_proms})
