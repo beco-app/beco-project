@@ -17,7 +17,7 @@ class User {
   late final int birthday;
   late final List<String> preferences;
 
-  Map<dynamic, String> toJson() => {
+  Map<dynamic, dynamic> toJson() => {
         'user_id': user_id,
         'email': email,
         'password': password,
@@ -25,7 +25,7 @@ class User {
         'zipcode': zipcode,
         'gender': gender,
         'birthday': birthday.toString(),
-        'preferences': preferences.toString(),
+        'preferences': preferences,
       };
 }
 
