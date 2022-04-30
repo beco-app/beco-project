@@ -74,62 +74,63 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                 // const SizedBox(height: 20),
                 // infoContainerFromFuture('Phone', 'phone', userinfo),
                 // const SizedBox(height: 20),
-                Container(
-                    padding: const EdgeInsets.only(left: 20.0),
-                    height: 55,
-                    width: screenwidth * 0.9,
-                    alignment: Alignment.bottomLeft,
-                    decoration: BoxDecoration(
-                      color: const Color.fromRGBO(217, 195, 220, 0.584),
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    child: Row(children: [
-                      Container(
-                          width: 70,
-                          child: const Text('Zipcode',
-                              style: TextStyle(
-                                  fontSize: 17,
-                                  color: Color.fromARGB(146, 67, 67, 67)))),
-                      Flexible(
-                          child: Container(
-                        width: double.infinity,
-                        height: 100,
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: FutureBuilder<User>(
-                              future: profileUser,
-                              builder: (context, snapshot) {
-                                late String content;
-                                if (snapshot.hasData) {
-                                  content = snapshot.data!.zipcode;
-                                } else {
-                                  content = 'Loading...';
-                                }
-                                print(content);
-                                return TextField(
-                                  controller: _zipcontroller,
-                                  enableSuggestions: false,
-                                  autocorrect: false,
-                                  keyboardType: TextInputType.number,
-                                  decoration: InputDecoration(
-                                    hintText: content,
-                                    hintStyle: const TextStyle(
-                                        fontSize: 19,
-                                        fontWeight: FontWeight.bold,
-                                        color: Color.fromARGB(255, 0, 0, 0)),
+                // Container(
+                //     padding: const EdgeInsets.only(left: 20.0),
+                //     height: 55,
+                //     width: screenwidth * 0.9,
+                //     alignment: Alignment.bottomLeft,
+                //     decoration: BoxDecoration(
+                //       color: const Color.fromRGBO(217, 195, 220, 0.584),
+                //       borderRadius: BorderRadius.circular(30),
+                //     ),
+                //     child: Row(children: [
+                //       Container(
+                //           width: 70,
+                //           child: const Text('Zipcode',
+                //               style: TextStyle(
+                //                   fontSize: 17,
+                //                   color: Color.fromARGB(146, 67, 67, 67)))),
+                //       Flexible(
+                //           child: Container(
+                //         width: double.infinity,
+                //         height: 100,
+                //         child: Align(
+                //           alignment: Alignment.centerLeft,
+                //           child: FutureBuilder<User>(
+                //               future: profileUser,
+                //               builder: (context, snapshot) {
+                //                 print(snapshot.data!.birthday);
+                //                 late String content;
+                //                 if (snapshot.hasData) {
+                //                   content = snapshot.data!.zipcode;
+                //                 } else {
+                //                   content = 'Loading...';
+                //                 }
+                //                 print(content);
+                //                 return TextField(
+                //                   controller: _zipcontroller,
+                //                   enableSuggestions: false,
+                //                   autocorrect: false,
+                //                   keyboardType: TextInputType.number,
+                //                   decoration: InputDecoration(
+                //                     hintText: content,
+                //                     hintStyle: const TextStyle(
+                //                         fontSize: 19,
+                //                         fontWeight: FontWeight.bold,
+                //                         color: Color.fromARGB(255, 0, 0, 0)),
 
-                                    //labelText: 'Zip code',
-                                    floatingLabelBehavior:
-                                        FloatingLabelBehavior.always,
-                                    // border: const OutlineInputBorder(),
-                                    contentPadding: const EdgeInsets.symmetric(
-                                        vertical: 5, horizontal: 10),
-                                  ),
-                                );
-                              }),
-                        ),
-                      )),
-                    ])),
+                //                     //labelText: 'Zip code',
+                //                     floatingLabelBehavior:
+                //                         FloatingLabelBehavior.always,
+                //                     // border: const OutlineInputBorder(),
+                //                     contentPadding: const EdgeInsets.symmetric(
+                //                         vertical: 5, horizontal: 10),
+                //                   ),
+                //                 );
+                //               }),
+                //         ),
+                //       )),
+                //     ])),
                 // const SizedBox(height: 20),
                 // infoContainerFromFuture('Pref.', 'preferences', userinfo),
                 // const SizedBox(height: 20),

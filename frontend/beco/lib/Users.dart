@@ -45,6 +45,7 @@ Future<User> getUser() async {
     zipcode: "",
     preferences: [],
   );
+  late final User user;
 
   try {
     final response = await http.post(Uri.parse(userinfoURL),
@@ -52,7 +53,10 @@ Future<User> getUser() async {
     print("RESPONSE");
     log(response.body);
     if (response.statusCode == 200) {
-      return User.fromJson(json.decode(response.body));
+      print("hola");
+      user = User.fromJson(json.decode(response.body));
+      print(user);
+      return user;
     }
   } catch (e) {
     print("ERROR");
