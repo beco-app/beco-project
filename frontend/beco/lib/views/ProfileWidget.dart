@@ -105,6 +105,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                                 } else {
                                   content = 'Loading...';
                                 }
+                                print(content);
                                 return TextField(
                                   controller: _zipcontroller,
                                   enableSuggestions: false,
