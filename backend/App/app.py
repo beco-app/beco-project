@@ -161,17 +161,17 @@ def remove_user():
 
 
 # Get info from username
-@app.route('/user_info/<username>')
+"""@app.route('/user_info/<username>')
 def get_user(username):
     usr = tools.getUser(username=username)
     if not usr:
         return {'message': 'User not found'}, 404
     else:
-        return str(usr), 200
+        return str(usr), 200"""
 
 # Get info from user id
 @app.route('/user_info/', methods=['POST'])
-def recommended_shops():
+def get_user():
     data = request.form.to_dict()
     user_id = data['user_id']
     try:

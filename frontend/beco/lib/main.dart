@@ -32,7 +32,7 @@ void main() {
       theme: ThemeData(
           primarySwatch: Colors.deepPurple,
           primaryColor: Colors.deepPurple[900]),
-      home: const HomeView(), // Page shown when app is started.
+      home: const HomePage(), // Page shown when app is started.
       routes: {
         '/login/': (context) => const LoginView(),
         '/register/': (context) => const RegisterView(),
@@ -66,7 +66,7 @@ class HomePage extends StatelessWidget {
             //   return const LoginView();
             // }
             // return const Text('Done');
-            return const LoginView();
+            return const HomeView();
           default:
             return const CircularProgressIndicator();
         }
