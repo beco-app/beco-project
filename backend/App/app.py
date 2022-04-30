@@ -27,6 +27,8 @@ from time import time
 
 from backend.data_base.db_handler import queryFind
 
+import ast
+
 # App configuration
 app = Flask(__name__)
 
@@ -87,7 +89,7 @@ def register_user():
         'gender': req["gender"],
         'birthday': req["birthday"],
         'zip_code': req["zipcode"],
-        'preferences': req["preferences"],
+        'preferences': ast.literal_eval(req["preferences"]),
         'becoins': becoins,
         'saved_prom' : None
     }

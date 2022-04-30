@@ -27,7 +27,7 @@ class User {
         'zipcode': zipcode,
         'gender': gender,
         'birthday': birthday.toString(),
-        'preferences': jsonEncode(preferences),
+        'preferences': preferences.toString(),
       };
 }
 
