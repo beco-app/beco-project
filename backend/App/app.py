@@ -169,6 +169,20 @@ def get_user(username):
     else:
         return str(usr), 200
 
+# Get info from user id
+@app.route('/user_info/', methods=['POST'])
+def recommended_shops():
+    data = request.form.to_dict()
+    user_id = data['user_id']
+    try:
+        user_id = ObjectId(user_id)
+    except:
+        print("user_id from firebase")
+
+    resp = tools.getUser(['email', 'password', 'phone', 'gender', 'birthday', 'zipcode', 'preferences'], _id = user_id)
+    print("the resp klk:", resp)
+    return str(resp), 200
+
 # Get recommended shops
 @app.route('/recommended/<username>')
 def recommended_shops(username):

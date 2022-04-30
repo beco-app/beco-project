@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import '../Users.dart';
+
 //    as mongo; // flutter pub add mongo_dart
 
 class ProfileWidget extends StatefulWidget {
@@ -13,7 +15,15 @@ class ProfileWidget extends StatefulWidget {
 }
 
 class _ProfileWidgetState extends State<ProfileWidget> {
+  late Future<User> profileUser;
   late final TextEditingController _zipcontroller = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    profileUser = getUser();
+  }
+
   @override
   void dispose() {
     _zipcontroller.dispose();
@@ -22,13 +32,12 @@ class _ProfileWidgetState extends State<ProfileWidget> {
 
   @override
   Widget build(BuildContext context) {
-    String username = 'user1';
+    // String username = 'user1';
 
     double screenwidth = MediaQuery.of(context).size.width;
-    var userinfo = getUser(username);
-    if (userinfo == null) {
-      print('You have enterd!!!!!!!!!!!!!!!');
-    }
+    // if (userinfo == null) {
+    //   print('You have enterd!!!!!!!!!!!!!!!');
+    // }
     return CustomScrollView(slivers: [
       SliverAppBar(
           //maybe sliverpersistentheader is better
@@ -59,12 +68,12 @@ class _ProfileWidgetState extends State<ProfileWidget> {
           child: Padding(
               padding: const EdgeInsets.all(32.0),
               child: Column(children: [
-                infoContainerFromFuture('User', 'username', userinfo),
-                const SizedBox(height: 20),
-                infoContainerFromFuture('Mail', 'email', userinfo),
-                const SizedBox(height: 20),
-                infoContainerFromFuture('Phone', 'phone', userinfo),
-                const SizedBox(height: 20),
+                // infoContainerFromFuture('User', 'username', userinfo),
+                // const SizedBox(height: 20),
+                // infoContainerFromFuture('Mail', 'email', userinfo),
+                // const SizedBox(height: 20),
+                // infoContainerFromFuture('Phone', 'phone', userinfo),
+                // const SizedBox(height: 20),
                 Container(
                     padding: const EdgeInsets.only(left: 20.0),
                     height: 55,
@@ -87,14 +96,12 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                         height: 100,
                         child: Align(
                           alignment: Alignment.centerLeft,
-                          child: FutureBuilder<String>(
-                              future: userinfo,
+                          child: FutureBuilder<User>(
+                              future: profileUser,
                               builder: (context, snapshot) {
-                                String content = '';
+                                late String content;
                                 if (snapshot.hasData) {
-                                  User userinfo =
-                                      User(snapshot.data.toString());
-                                  content = userinfo['zip_code'].toString();
+                                  content = snapshot.data!.zipcode;
                                 } else {
                                   content = 'Loading...';
                                 }
@@ -122,13 +129,13 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                         ),
                       )),
                     ])),
-                const SizedBox(height: 20),
-                infoContainerFromFuture('Pref.', 'preferences', userinfo),
-                const SizedBox(height: 20),
-                infoContainerFromFuture('Gender', 'gender', userinfo),
-                const SizedBox(height: 20),
-                infoContainerFromFuture('Birthday', 'birthday', userinfo),
-                const SizedBox(height: 20),
+                // const SizedBox(height: 20),
+                // infoContainerFromFuture('Pref.', 'preferences', userinfo),
+                // const SizedBox(height: 20),
+                // infoContainerFromFuture('Gender', 'gender', userinfo),
+                // const SizedBox(height: 20),
+                // infoContainerFromFuture('Birthday', 'birthday', userinfo),
+                // const SizedBox(height: 20),
                 ElevatedButton(
                     onPressed: () {
                       showAlertDialog(context);
@@ -145,21 +152,20 @@ class _ProfileWidgetState extends State<ProfileWidget> {
   }
 }
 
-Widget infoContainerFromFuture(
-    String attribute, String key, Future<String> userinfo) {
-  return FutureBuilder<String>(
-      future: userinfo,
-      builder: (context, snapshot) {
-        String content = '';
-        if (snapshot.hasData) {
-          User userinfo = User(snapshot.data.toString());
-          content = userinfo[key].toString();
-        } else {
-          content = 'Loading...';
-        }
-        return InfoContainer(attribute: attribute, content: content);
-      });
-}
+// Widget infoContainerFromFuture(
+//     String attribute, String key, Future<User> userinfo) {
+//   return FutureBuilder<User>(
+//       future: userinfo,
+//       builder: (context, snapshot) {
+//         late String content;
+//         if (snapshot.hasData) {
+//           content = snapshot.data!.;
+//         } else {
+//           content = 'Loading...';
+//         }
+//         return InfoContainer(attribute: attribute, content: content);
+//       });
+// }
 
 class InfoContainer extends StatelessWidget {
   const InfoContainer({
@@ -246,84 +252,4 @@ showAlertDialog(BuildContext context) {
       return alert;
     },
   );
-}
-
-class User {
-  // Build a User class that contains the userinfo in string (returned by getUser)
-  // and prepared the string to be a Map<String, String>;
-  String userinfo;
-  late Map _user;
-
-  User(this.userinfo) {
-    // with help of https://regex101.com/:
-    String s = userinfo.substring(1, userinfo.length - 1);
-
-    // Remove some information
-    final RegExp toRemove = RegExp(r"('password'.*?, )" // password
-        "|"
-        "('_id'.*?, )"); // _id
-    s = s.replaceAll(toRemove, '');
-
-    // treat ObjectIds (change from ObjectId('123') to 'ObjectId(123)')
-    s = s.replaceAllMapped(RegExp(r"(ObjectId\()(\')(.*?)(\')(\))"),
-        (Match m) => "'${m[1]}${m[3]}${m[5]}'");
-
-    // change all ' to " for json.convert
-    s = s.replaceAll(RegExp("'"), '"');
-    _user = json.decode(s);
-    //print(_user);
-  }
-
-  String operator [](String key) {
-    if (_user[key] == null) {
-      print('You have enterd!!!!!!!!!!!!!!!');
-      return '';
-    }
-    switch (key) {
-      case 'preferences':
-        switch (_user[key].length) {
-          case 0:
-            return 'No preferences';
-          default:
-            String preferences = _user[key].toString();
-            return preferences.substring(1, preferences.length - 1);
-        }
-      case 'phone':
-        //print(_user[key]);
-        return '+34 ' + _user[key].toString();
-      case 'gender':
-        switch (_user[key]) {
-          case 'M':
-            return 'Male';
-          case 'F':
-            return 'Female';
-          default:
-            return _user[key];
-        }
-      case 'birthday':
-        return DateTime.fromMillisecondsSinceEpoch(_user[key].toInt() * 1000)
-            .toString()
-            .substring(0, 10);
-      default:
-        return _user[key].toString();
-    }
-  }
-}
-
-Future<String> getUser(String username) async {
-  // https://stackoverflow.com/questions/65291888/flutter-web-http-error-uncaught-in-promise-error-xmlhttprequest-error/67830000#67830000
-  try {
-    var r =
-        await http.get(Uri.parse('http://34.252.26.132/user_info/' + username));
-    print("<\n" + r.body + "\n>");
-    if (r.body == '{"message":"User not found"}\n') {
-      // this error message should not be treated in such a special way...
-      throw Exception('User does not exist');
-    }
-    return r.body;
-  } catch (e) {
-    print('--------------------------------Errrrrrrrrrror:');
-    print(e);
-    return '';
-  }
 }
