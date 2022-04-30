@@ -181,7 +181,8 @@ def get_user():
     # Això de posar [0] està bé?
     resp = tools.getUser(["email", "password", "phone", "gender", "birthday", "zip_code", "preferences"], _id = user_id)[0]
     print("the resp klk:", resp)
-    return str(resp), 200
+    resp = json.loads(json_util.dumps(resp))
+    return resp, 200
 
 # Get recommended shops
 @app.route('/recommended/<username>')
