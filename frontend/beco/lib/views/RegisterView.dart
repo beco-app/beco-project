@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:beco/firebase_options.dart';
@@ -25,7 +27,7 @@ class User {
         'zipcode': zipcode,
         'gender': gender,
         'birthday': birthday.toString(),
-        'preferences': preferences,
+        'preferences': jsonEncode(preferences),
       };
 }
 
