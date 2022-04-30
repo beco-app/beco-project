@@ -13,7 +13,7 @@ User _$UserFromJson(Map<String, dynamic> json) => User(
       phone: json['phone'] as String,
       gender: json['gender'] as String,
       birthday: json['birthday'] as String,
-      zipcode: json['zipcode'] as String,
+      zipcode: json['zip_code'] as String,
       preferences: json['preferences'] as List<dynamic>,
     );
 
