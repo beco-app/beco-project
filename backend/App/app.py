@@ -80,7 +80,8 @@ def register_user():
 
     if req["password"] is None:
         return {'message': 'Invalid password'}, 400
-
+    print("these are the preferences", req["preferences"])
+    print("this is the type of the preferences", type(req["preferences"]))
     data = {
         'username': req["email"],
         'email': req["email"],
@@ -89,7 +90,7 @@ def register_user():
         'gender': req["gender"],
         'birthday': req["birthday"],
         'zip_code': req["zipcode"],
-        'preferences': ast.literal_eval(req["preferences"]),
+        'preferences': req["preferences"][1:-1].replace("'", "").split(", "),
         'becoins': becoins,
         'saved_prom' : None
     }
