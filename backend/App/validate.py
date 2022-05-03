@@ -3,20 +3,16 @@ from flask import request, abort
 from bson.objectid import ObjectId
 from time import time
 import sys
+import os
 
-local = False
-if local:
-    sys.path.append("/Users/tomas.gadea/tomasgadea/ACADEMIC/GCED/q6/PE/beco/beco-project")
-    from backend.data_base import tools
-else:
-    import sys
-    sys.path.append("./backend/data_base")
-    import tools
+sys.path.append(os.getcwd())
+from backend.data_base import tools
+
 
 def validate_user_exists(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
-        #user_id = request.form.get('user_id')
+        # user_id = request.form.get('user_id')
         data = request.form.to_dict()
         users = None
         if "user_id" in data.keys():
@@ -38,14 +34,16 @@ def validate_promotion(f):
         user_id = request.form.get('user_id')
         promotions = tools.getPromotion(_id = ObjectId(promotion_id))
         users = tools.getUser(_id = ObjectId(user_id))
-        #assert len(promotions) == 1 and len(users) == 1
+
         if len(promotions) != 1 or len(users) != 1: abort(400)
         promotion = promotions[0]
         user = users[0]
+
+        # Check if the promotion is valid
         now = time()
-        #assert promotion['valid_interval'][0] < now < promotion['valid_interval'][1]
-        if now <= promotion['valid_interval'][0] or promotion['valid_interval'][1] <= now: abort(400)
-        #assert promotion['becoins'] <= user['becoins']
+        if now <= promotion['valid_interval']['from'] or promotion['valid_interval']['to'] <= now: abort(400)
+
+        # Check if user has enough becoins
         if user['becoins'] < promotion['becoins']: abort(400)
         return f(*args, **kwargs) 
     return wrapper
@@ -62,8 +60,8 @@ def validate_user(f):
         promotion = promotions[0]
         user = users[0]
         now = time()
-        #assert promotion['valid_interval'][0] < now < promotion['valid_interval'][1]
-        if now <= promotion['valid_interval'][0] or promotion['valid_interval'][1] <= now: abort(400)
+        #assert promotion['valid_interval']['from'] < now < promotion['valid_interval']['to']
+        if now <= promotion['valid_interval']['from'] or promotion['valid_interval']['to'] <= now: abort(400)
         #assert promotion['becoins'] <= user['becoins']
         if user['becoins'] < promotion['becoins']: abort(400)
         return f(*args, **kwargs) 

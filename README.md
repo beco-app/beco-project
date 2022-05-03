@@ -20,3 +20,4 @@ count lines of code: (crec)
 ```
 git ls-files | xargs wc -l
 ```
+# quan fas autofill al register et posa un espai al final i no li mola. :(

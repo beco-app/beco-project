@@ -30,9 +30,9 @@ def prom_gen(n):
         shop_id = shop['_id']
         description = "This is a discount."
         becoins = random.randint(100, 300)
-        now = time.mktime(date.today().timetuple())
+        now  = time.mktime((date.today() - timedelta(days = random.randint(0,30))).timetuple()) # Generate a random date in the past
         till = time.mktime((date.today() + timedelta(weeks = random.randint(1,4))).timetuple())
-        valid_interval = [now, till]
+        valid_interval = {'from': now, 'to': till}
 
         prom = {
             'shop_id':shop_id, 'description':description, 'becoins':becoins, 'valid_interval':valid_interval
