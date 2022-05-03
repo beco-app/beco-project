@@ -1,6 +1,5 @@
 import 'package:beco/views/MapWidget.dart';
 import 'package:beco/views/ProfileWidget.dart';
-import 'package:beco/views/provaView.dart';
 import 'package:flutter/material.dart';
 import 'package:beco/views/HomeWidget.dart';
 import 'package:beco/views/DiscountWidget.dart';
@@ -28,7 +27,7 @@ class _HomeViewState extends State<HomeView> {
     HomeWidget(),
     MapWidget(),
     DiscountWidget(),
-    ProfileWidget(),
+    GlobalProfileWidget(),
   ];
 
   void _onItemTapped(int index) {

@@ -4,35 +4,61 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:multiselect/multiselect.dart';
+import './multiselectdropdownwidget.dart';
 import '../Users.dart';
 import 'package:intl/intl.dart' as intl;
 
 //    as mongo; // flutter pub add mongo_dart
 
+class GlobalProfileWidget extends StatefulWidget {
+  const GlobalProfileWidget({Key? key}) : super(key: key);
+
+  @override
+  State<GlobalProfileWidget> createState() => _GlobalProfileWidgetState();
+}
+
+class _GlobalProfileWidgetState extends State<GlobalProfileWidget> {
+  late Future<ProfileUser> futureUser;
+
+  @override
+  void initState() {
+    super.initState();
+    print("holaglobal");
+    futureUser = getUser();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<ProfileUser>(
+      future: futureUser,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          print(snapshot.data!);
+          return ProfileWidget(profileUser: snapshot.data!);
+        }
+        return Container(
+            child: Center(child: const CircularProgressIndicator()));
+      },
+    );
+  }
+}
+
 class ProfileWidget extends StatefulWidget {
-  const ProfileWidget({Key? key}) : super(key: key);
+  ProfileUser profileUser;
+  ProfileWidget({Key? key, required this.profileUser}) : super(key: key);
 
   @override
   State<ProfileWidget> createState() => _ProfileWidgetState();
 }
 
 class _ProfileWidgetState extends State<ProfileWidget> {
-  late ProfileUser profileUser;
   late final TextEditingController zipcode_controller =
-      TextEditingController(text: profileUser.zipcode);
-  asyncfunction() async {
-    getUser().then((ProfileUser user) {
-      setState(() {
-        profileUser = user;
-      });
-    });
-  }
+      TextEditingController(text: widget.profileUser.zipcode);
 
   @override
   void initState() {
     super.initState();
-    asyncfunction();
+    print("holis");
   }
 
   @override
@@ -43,6 +69,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
     // if (userinfo == null) {
     //   print('You have enterd!!!!!!!!!!!!!!!');
     // }
+    bool zip_code_editable = false;
     return CustomScrollView(slivers: [
       SliverAppBar(
           //maybe sliverpersistentheader is better
@@ -73,57 +100,14 @@ class _ProfileWidgetState extends State<ProfileWidget> {
           child: Padding(
               padding: const EdgeInsets.all(32.0),
               child: Column(children: [
-                InfoContainer(attribute: "User", content: profileUser.email),
+                InfoContainer(
+                    attribute: "User", content: widget.profileUser.email),
                 const SizedBox(height: 20),
-                InfoContainer(attribute: "Email", content: profileUser.email),
+                InfoContainer(
+                    attribute: "Email", content: widget.profileUser.email),
                 const SizedBox(height: 20),
-                InfoContainer(attribute: "Phone", content: profileUser.phone),
-                const SizedBox(height: 20),
-                Container(
-                    padding: const EdgeInsets.only(left: 20.0),
-                    height: 55,
-                    width: screenwidth * 0.9,
-                    alignment: Alignment.bottomLeft,
-                    decoration: BoxDecoration(
-                      color: const Color.fromRGBO(217, 195, 220, 0.584),
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    child: Row(children: [
-                      Container(
-                          width: 70,
-                          child: const Text('Zipcode',
-                              style: TextStyle(
-                                  fontSize: 17,
-                                  color: Color.fromARGB(146, 67, 67, 67)))),
-                      Flexible(
-                          child: Container(
-                        width: double.infinity,
-                        height: 100,
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: TextField(
-                            controller: zipcode_controller,
-                            enableSuggestions: false,
-                            autocorrect: false,
-                            keyboardType: TextInputType.number,
-                            decoration: InputDecoration.collapsed(
-                              hintText: "",
-                              hintStyle: const TextStyle(
-                                  fontSize: 19,
-                                  fontWeight: FontWeight.bold,
-                                  color: Color.fromARGB(255, 0, 0, 0)),
-
-                              //labelText: 'Zip code',
-                              floatingLabelBehavior:
-                                  FloatingLabelBehavior.always,
-                              // border: const OutlineInputBorder(),
-                              //contentPadding: const EdgeInsets.symmetric(
-                              //    vertical: 5, horizontal: 10),
-                            ),
-                          ),
-                        ),
-                      )),
-                    ])),
+                InfoContainer(
+                    attribute: "Phone", content: widget.profileUser.phone),
                 const SizedBox(height: 20),
                 Container(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -148,6 +132,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                         child: Align(
                           alignment: Alignment.centerLeft,
                           child: DropdownButtonFormField<String>(
+                            style: TextStyle(fontSize: 17, color: Colors.black),
                             decoration: const InputDecoration.collapsed(
                               hintText: 'Gender',
 
@@ -155,13 +140,14 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                                   FloatingLabelBehavior.always,
                               //border: OutlineInputBorder(),
                               //contentPadding: EdgeInsets.symmetric(
+
                               //    vertical: 5, horizontal: 10),
                             ),
                             isExpanded: true,
-                            value: profileUser.gender,
+                            value: widget.profileUser.gender,
                             onChanged: (String? newValue) {
                               setState(() {
-                                profileUser.gender = newValue!;
+                                widget.profileUser.gender = newValue!;
                               });
                             },
                             items: <String>[
@@ -214,12 +200,12 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                             ),
                             onChanged: (List<String> x) {
                               setState(() {
-                                profileUser.preferences = x;
+                                widget.profileUser.preferences = x;
                               });
                             },
                             // isDense: true,
                             //selectedValues: preferencesSelected,
-                            selectedValues: profileUser.preferences,
+                            selectedValues: widget.profileUser.preferences,
                             whenEmpty: 'Select your preferences',
                             options: <String>[
                               'Restaurant',
@@ -246,12 +232,74 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                       )),
                     ])),
                 const SizedBox(height: 20),
+                Container(
+                    padding: const EdgeInsets.only(left: 20.0, right: 9),
+                    height: 55,
+                    width: screenwidth * 0.9,
+                    alignment: Alignment.bottomLeft,
+                    decoration: BoxDecoration(
+                      color: const Color.fromRGBO(217, 195, 220, 0.584),
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    child: Row(children: [
+                      Container(
+                          width: 70,
+                          child: const Text('Zipcode',
+                              style: TextStyle(
+                                  fontSize: 17,
+                                  color: Color.fromARGB(146, 67, 67, 67)))),
+                      Flexible(
+                          child: Container(
+                        width: double.infinity,
+                        height: 100,
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: TextField(
+                            style: TextStyle(fontSize: 17),
+                            controller: zipcode_controller,
+                            enableSuggestions: false,
+                            autocorrect: false,
+                            enabled: true,
+                            keyboardType: TextInputType.number,
+                            decoration: const InputDecoration(
+                                suffixIcon: Icon(Icons.edit),
+                                border: InputBorder.none,
+                                hintText: "",
+                                hintStyle: TextStyle(
+                                    fontSize: 19,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color.fromARGB(255, 0, 0, 0)),
+                                //labelText: 'Zip code',
+                                floatingLabelBehavior:
+                                    FloatingLabelBehavior.always
+                                // border: const OutlineInputBorder(),
+                                //contentPadding: const EdgeInsets.symmetric(
+                                //    vertical: 5, horizontal: 10),
+                                ),
+                          ),
+                        ),
+                      )),
+                      // Spacer(),
+                      // TextButton(
+                      //   child: Text(
+                      //     'Edit',
+                      //     style:
+                      //         TextStyle(color: Theme.of(context).primaryColor),
+                      //   ),
+                      //   onPressed: () {
+                      //     setState(() {
+                      //       zip_code_editable = true;
+                      //     });
+                      //   },
+                      // )
+                    ])),
+                const SizedBox(height: 20),
                 _FormDatePicker(
                   date: DateTime.fromMillisecondsSinceEpoch(
-                      int.parse(profileUser.birthday) * 1000),
+                      int.parse(widget.profileUser.birthday) * 1000),
                   onChanged: (value) {
                     setState(() {
-                      profileUser.birthday =
+                      widget.profileUser.birthday =
                           (value.millisecondsSinceEpoch ~/ 1000).toString();
                     });
                   },
@@ -263,34 +311,16 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                       //   user.email = _email.text;
                       //   user.password = _password.text;
                       //   user.phone = _phone.text;
-                      profileUser.zipcode = zipcode_controller.text;
-                      //   user.birthday = date.millisecondsSinceEpoch;
-                      //   user.gender = profileUser.gender;
-                      //   user.preferences = preferencesSelected;
-                      try {
-                        // user.user_id =
-                        //     await FirebaseAuth.instance.currentUser!.uid;
-                        // Send user to backend
-                        final r = await http.post(
-                            Uri.parse('http://34.252.26.132/user_update'),
-                            body: profileUser.toJson());
-                        print(profileUser.toJson());
 
-                        print(r.body);
-                      } on FirebaseAuthException catch (e) {
-                        if (e.code == 'user-not-found') {
-                          print('User not found');
-                        }
-                        print("ERROR MESSAGE");
-                        print(e);
-                      }
+                      widget.profileUser.zipcode = zipcode_controller.text;
+                      showSaveAlertDialog(context, widget.profileUser);
                     },
                     child: const Text("Save",
                         style: TextStyle(
                             fontSize: 20,
                             color: Color.fromARGB(255, 64, 64, 64))),
                     style: ElevatedButton.styleFrom(
-                        primary: const Color.fromARGB(255, 213, 213, 213),
+                        primary: Theme.of(context).secondaryHeaderColor,
                         padding: const EdgeInsets.all(8.0))),
                 const SizedBox(height: 20),
                 ElevatedButton(
@@ -302,7 +332,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                             fontSize: 20,
                             color: Color.fromARGB(255, 64, 64, 64))),
                     style: ElevatedButton.styleFrom(
-                        primary: const Color.fromARGB(255, 213, 213, 213),
+                        primary: Theme.of(context).secondaryHeaderColor,
                         padding: const EdgeInsets.all(8.0)))
               ])))
     ]);
@@ -399,42 +429,54 @@ class _FormDatePicker extends StatefulWidget {
 class _FormDatePickerState extends State<_FormDatePicker> {
   @override
   Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            Text(
-              'Date of Birth',
-              style: Theme.of(context).textTheme.bodyText1,
-            ),
-            Text(
-              intl.DateFormat.yMMMMd().format(widget.date),
-              style: Theme.of(context).textTheme.subtitle1,
-            ),
-          ],
-        ),
-        TextButton(
-          child: const Text('Edit'),
-          onPressed: () async {
-            var newDate = await showDatePicker(
-              context: context,
-              initialDate: widget.date,
-              firstDate: DateTime(1900),
-              lastDate: DateTime(2100),
-            );
-            // Don't change the date if the date picker returns null.
-            if (newDate == null) {
-              return;
-            }
-
-            widget.onChanged(newDate);
-          },
-        )
-      ],
+    double screenwidth = MediaQuery.of(context).size.width;
+    return Container(
+      padding: const EdgeInsets.only(left: 20.0),
+      height: 55,
+      width: screenwidth * 0.9,
+      alignment: Alignment.centerLeft,
+      decoration: BoxDecoration(
+        color: const Color.fromRGBO(217, 195, 220, 0.584),
+        borderRadius: BorderRadius.circular(30),
+      ),
+      child: Row(
+        // crossAxisAlignment: CrossAxisAlignment.start,
+        // mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          Text(
+            'Birthday',
+            style:
+                TextStyle(fontSize: 17, color: Color.fromARGB(146, 67, 67, 67)),
+          ),
+          const SizedBox(width: 10),
+          Text(
+            intl.DateFormat.yMMMMd().format(widget.date),
+            style: TextStyle(fontSize: 17),
+          ),
+          Spacer(),
+          TextButton(
+            child: Icon(Icons.calendar_today,
+                color: Color.fromARGB(146, 67, 67, 67)),
+            // Text(
+            //   'Edit',
+            //   style: TextStyle(color: Theme.of(context).primaryColor),
+            // ),
+            onPressed: () async {
+              var newDate = await showDatePicker(
+                context: context,
+                initialDate: widget.date,
+                firstDate: DateTime(1900),
+                lastDate: DateTime(2100),
+              );
+              // Don't change the date if the date picker returns null.
+              if (newDate == null) {
+                return;
+              }
+              widget.onChanged(newDate);
+            },
+          )
+        ],
+      ),
     );
   }
 }
@@ -513,6 +555,60 @@ showAlertDialog(BuildContext context) {
   AlertDialog alert = AlertDialog(
     title: const Text("Warning"),
     content: const Text("Are you sure?"),
+    actions: [
+      cancelButton,
+      continueButton,
+    ],
+  );
+
+  // show the dialog
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
+}
+
+showSaveAlertDialog(BuildContext context, var profileUser) {
+  // set up the buttons
+  Widget cancelButton = TextButton(
+    child: const Text("Cancel"),
+    onPressed: () {
+      Navigator.of(context).pop();
+    },
+  );
+  Widget continueButton = TextButton(
+    child: const Text("Save"),
+    onPressed: () async {
+      //   user.birthday = date.millisecondsSinceEpoch;
+      //   user.gender = profileUser.gender;
+      //   user.preferences = preferencesSelected;
+      try {
+        // user.user_id =
+        //     await FirebaseAuth.instance.currentUser!.uid;
+        // Send user to backend
+        final r = await http.post(Uri.parse('http://34.252.26.132/user_update'),
+            body: profileUser.toJson());
+        print(profileUser.toJson());
+
+        print(r.body);
+      } on FirebaseAuthException catch (e) {
+        if (e.code == 'user-not-found') {
+          print('User not found');
+        }
+        print("ERROR MESSAGE");
+        print(e);
+      }
+
+      Navigator.of(context).pop();
+    },
+  );
+
+  // set up the AlertDialog
+  AlertDialog alert = AlertDialog(
+    title: const Text("Save"),
+    content: const Text("Are you sure to edit your information?"),
     actions: [
       cancelButton,
       continueButton,
