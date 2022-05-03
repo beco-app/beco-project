@@ -218,7 +218,7 @@ class _RegisterViewState extends State<RegisterView> {
                           user.password = _password.text;
                           user.phone = _phone.text;
                           user.zipcode = _zipcode.text;
-                          user.birthday = date.millisecondsSinceEpoch;
+                          user.birthday = date.millisecondsSinceEpoch * 1000;
                           user.gender = gender;
                           user.preferences = preferencesSelected;
                           try {
