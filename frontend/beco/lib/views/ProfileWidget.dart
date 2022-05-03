@@ -10,29 +10,55 @@ import 'package:intl/intl.dart' as intl;
 
 //    as mongo; // flutter pub add mongo_dart
 
+class GlobalProfileWidget extends StatefulWidget {
+  const GlobalProfileWidget({Key? key}) : super(key: key);
+
+  @override
+  State<GlobalProfileWidget> createState() => _GlobalProfileWidgetState();
+}
+
+class _GlobalProfileWidgetState extends State<GlobalProfileWidget> {
+  late Future<ProfileUser> futureUser;
+
+  @override
+  void initState() {
+    super.initState();
+    print("holaglobal");
+    futureUser = getUser();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<ProfileUser>(
+      future: futureUser,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          print(snapshot.data!);
+          return ProfileWidget(profileUser: snapshot.data!);
+        }
+        return Container(
+            child: Center(child: const CircularProgressIndicator()));
+      },
+    );
+  }
+}
+
 class ProfileWidget extends StatefulWidget {
-  const ProfileWidget({Key? key}) : super(key: key);
+  ProfileUser profileUser;
+  ProfileWidget({Key? key, required this.profileUser}) : super(key: key);
 
   @override
   State<ProfileWidget> createState() => _ProfileWidgetState();
 }
 
 class _ProfileWidgetState extends State<ProfileWidget> {
-  late ProfileUser profileUser;
   late final TextEditingController zipcode_controller =
-      TextEditingController(text: profileUser.zipcode);
-  asyncfunction() async {
-    getUser().then((ProfileUser user) {
-      setState(() {
-        profileUser = user;
-      });
-    });
-  }
+      TextEditingController(text: widget.profileUser.zipcode);
 
   @override
   void initState() {
     super.initState();
-    asyncfunction();
+    print("holis");
   }
 
   @override
@@ -73,11 +99,14 @@ class _ProfileWidgetState extends State<ProfileWidget> {
           child: Padding(
               padding: const EdgeInsets.all(32.0),
               child: Column(children: [
-                InfoContainer(attribute: "User", content: profileUser.email),
+                InfoContainer(
+                    attribute: "User", content: widget.profileUser.email),
                 const SizedBox(height: 20),
-                InfoContainer(attribute: "Email", content: profileUser.email),
+                InfoContainer(
+                    attribute: "Email", content: widget.profileUser.email),
                 const SizedBox(height: 20),
-                InfoContainer(attribute: "Phone", content: profileUser.phone),
+                InfoContainer(
+                    attribute: "Phone", content: widget.profileUser.phone),
                 const SizedBox(height: 20),
                 Container(
                     padding: const EdgeInsets.only(left: 20.0),
@@ -158,10 +187,10 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                               //    vertical: 5, horizontal: 10),
                             ),
                             isExpanded: true,
-                            value: profileUser.gender,
+                            value: widget.profileUser.gender,
                             onChanged: (String? newValue) {
                               setState(() {
-                                profileUser.gender = newValue!;
+                                widget.profileUser.gender = newValue!;
                               });
                             },
                             items: <String>[
@@ -214,12 +243,12 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                             ),
                             onChanged: (List<String> x) {
                               setState(() {
-                                profileUser.preferences = x;
+                                widget.profileUser.preferences = x;
                               });
                             },
                             // isDense: true,
                             //selectedValues: preferencesSelected,
-                            selectedValues: profileUser.preferences,
+                            selectedValues: widget.profileUser.preferences,
                             whenEmpty: 'Select your preferences',
                             options: <String>[
                               'Restaurant',
@@ -248,10 +277,10 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                 const SizedBox(height: 20),
                 _FormDatePicker(
                   date: DateTime.fromMillisecondsSinceEpoch(
-                      int.parse(profileUser.birthday) * 1000),
+                      int.parse(widget.profileUser.birthday) * 1000),
                   onChanged: (value) {
                     setState(() {
-                      profileUser.birthday =
+                      widget.profileUser.birthday =
                           (value.millisecondsSinceEpoch ~/ 1000).toString();
                     });
                   },
@@ -263,7 +292,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                       //   user.email = _email.text;
                       //   user.password = _password.text;
                       //   user.phone = _phone.text;
-                      profileUser.zipcode = zipcode_controller.text;
+                      widget.profileUser.zipcode = zipcode_controller.text;
                       //   user.birthday = date.millisecondsSinceEpoch;
                       //   user.gender = profileUser.gender;
                       //   user.preferences = preferencesSelected;
@@ -273,8 +302,8 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                         // Send user to backend
                         final r = await http.post(
                             Uri.parse('http://34.252.26.132/user_update'),
-                            body: profileUser.toJson());
-                        print(profileUser.toJson());
+                            body: widget.profileUser.toJson());
+                        print(widget.profileUser.toJson());
 
                         print(r.body);
                       } on FirebaseAuthException catch (e) {
