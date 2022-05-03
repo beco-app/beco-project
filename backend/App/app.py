@@ -269,17 +269,49 @@ def load_map():
     return response, 200
 
 # Get info from username
-@app.route('/user_update/<username>/<parameter>/<value>')
+@app.route('/user_update', method=['POST'])
 def update_user(username, parameter, value):
     """
-    Given the attributes, update a user from the endpoint.
-    Takes into account:
-        * 'preferences': a list of comma separeted tags (predefined)
-        * 'gender': 'Female' or 'Male'
-        * 'birthdat': kind of 2022-04-05, dash separated in YYYY-MM-DD
+    Given the attributes in POST, update a user.
     """
 
+
+    data = request.form.to_dict()
+
+    fields = {"id", "email", "password", "phone", "gender", "birthday", "zipcode", "preferences"}
+
+    if fields != data.keys():
+        return {"message": "Invalid data fields"}, 400
+
+    if data["email"] is None:
+        return {'message': 'Invalid email'}, 400
+
+    if data["password"] is None:
+        return {'message': 'Invalid password'}, 400
+
+    data = {
+        'phone': data["phone"],
+        'gender': data["gender"],
+        'birthday': data["birthday"],
+        'zip_code': data["zipcode"],
+        'preferences': data["preferences"],
+        'becoins': data["becoins"],
+        'saved_prom' : data["saved_prom"]
+    }
+    try:
+
+        matches, modified = tools.updateUser(request.form.to_dict()['id'], **data)
+        
+        if matches:
+            return {'message': 'Success'}, 200
+        else:
+            return {'message': 'No user found'}, 400
+    except:
+        return {'message': 'Error in updating database'}, 400
+
+
     usr = tools.getUser(username=username)
+
 
     if not usr:
         return {'message': 'User not found'}, 404
