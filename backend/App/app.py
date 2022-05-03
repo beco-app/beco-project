@@ -300,7 +300,7 @@ def update_user(username, parameter, value):
     }
     try:
 
-        matches, modified = tools.updateUser(request.form.to_dict()['id'], **data)
+        matches, _ = tools.updateUser(request.form.to_dict()['id'], gender='F')
 
         if matches:
             return {'message': 'Success'}, 200
