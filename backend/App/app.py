@@ -121,13 +121,28 @@ def remove_user():
 
 
 # Get info from username
-@app.route('/user_info/<username>')
+"""@app.route('/user_info/<username>')
 def get_user(username):
     usr = tools.getUser(username=username)
     if not usr:
         return {'message': 'User not found'}, 404
     else:
-        return str(usr), 200
+        return str(usr), 200"""
+
+# Get info from user id
+@app.route('/user_info/', methods=['POST'])
+def get_user():
+    data = request.form.to_dict()
+    user_id = data['user_id']
+    try:
+        user_id = ObjectId(user_id)
+    except:
+        print("user_id from firebase")
+    # Això de posar [0] està bé?
+    resp = tools.getUser(["email", "password", "phone", "gender", "birthday", "zip_code", "preferences"], _id = user_id)[0]
+    print("the resp klk:", resp)
+    resp = json.loads(json_util.dumps(resp))
+    return resp, 200
 
 # Get recommended shops
 @app.route('/recommended_shops/', methods=['POST'])
@@ -357,44 +372,46 @@ def load_map():
     return response, 200
 
 # Get info from username
-@app.route('/user_update/<username>/<parameter>/<value>')
-def update_user(username, parameter, value):
+@app.route('/user_update', methods=['POST'])
+def update_user():
     """
-    Given the attributes, update a user from the endpoint.
-    Takes into account:
-        * 'preferences': a list of comma separeted tags (predefined)
-        * 'gender': 'Female' or 'Male'
-        * 'birthdat': kind of 2022-04-05, dash separated in YYYY-MM-DD
+    Given the attributes in POST, update a user.
     """
 
-    usr = tools.getUser(username=username)
 
-    if not usr:
-        return {'message': 'User not found'}, 404
+    data = request.form.to_dict()
 
-    userid = usr[0]['_id']
+    fields = {"id", "email", "password", "phone", "gender", "birthday", "zipcode", "preferences"}
 
-    if parameter == 'preferences':
-        tags = [
-            'Restaurant', 'Bar', 'Supermarket', 'Bakery', 'Vegan food',
-            'Beverages', 'Local products', 'Green space', 'Plastic free',
-            'Herbalist', 'Second hand', 'Cosmetics', 'Pharmacy', 'Fruits & vegetables', 
-            'Recycled material', 'Accessible', 'For children', 'Allows pets'
-        ]
-        
-        value = value.split(',')
-        if any(v for v in value not in tags):
-            return {'message': 'Tag not defined'}, 404
-        
-    elif parameter == 'gender':
-        value = 'F' if value == 'Female' else 'M'
-    
-    elif parameter == 'birthday':
-        from time import mktime
-        year, month, day = value.split('-')
-        value = mktime(datetime(int(year), int(month), int(day)).timetuple())
-    
-    return str(tools.updateUser(userid, **{parameter:value}))
+    if fields != data.keys():
+        return {"message": "Invalid data fields"}, 400
+
+    if data["email"] is None:
+        return {'message': 'Invalid email'}, 400
+
+    if data["password"] is None:
+        return {'message': 'Invalid password'}, 400
+
+    data = {
+        'phone': data["phone"],
+        'gender': data["gender"],
+        'birthday': data["birthday"],
+        'zip_code': data["zipcode"],
+        'preferences': data["preferences"][1:-1].replace('"', "").split(", ") 
+                        if data['preferences'] != '[]'
+                        else [],
+    }
+    try:
+
+        matches, _ = tools.updateUser(request.form.to_dict()['id'], **data)
+
+
+        if matches:
+            return {'message': 'Success'}, 200
+        else:
+            return {'message': 'No user found'}, 400
+    except:
+        return {'message': 'Error in updating database'}, 400
 
 if __name__ == '__main__':
     app.run(debug=True)
