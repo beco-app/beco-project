@@ -7,6 +7,7 @@ from geopy.distance import distance
 import numpy as np
 from bson.objectid import ObjectId
 from time import time
+import random
 
 
 def get_shop_count(uid, all_trans):
@@ -91,7 +92,7 @@ def recommend(user_id):
 
     t2 = time()
     print(t2-t1)
-    shops = dict(sorted(shops.items(), key=lambda x: -x[1])[:min(10, len(shops))])  # Hyperparameter
+    shops = dict(sorted(shops.items(), key=lambda x: -x[1])[:min(20, len(shops))])  # Hyperparameter
     all_shops = getShop(['location', 'tags'])
     shop_info = [s for s in all_shops if s['_id'] in shops.keys()]
     u_shop_info = [s for s in all_shops if s['_id'] in u_shops.keys()]
@@ -131,7 +132,7 @@ def recommend(user_id):
 
     t4 = time()
     print(t4 - t3)
-    return sorted(shops.items(), key=lambda x: -x[1])
+    return random.sample(shops.items(), k=min(10, len(shops)))
 
     # Factors: visited or not, air pollution...
 
