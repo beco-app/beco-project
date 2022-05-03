@@ -269,7 +269,7 @@ def load_map():
     return response, 200
 
 # Get info from username
-@app.route('/user_update', method=['POST'])
+@app.route('/user_update', methods=['POST'])
 def update_user(username, parameter, value):
     """
     Given the attributes in POST, update a user.
@@ -301,7 +301,7 @@ def update_user(username, parameter, value):
     try:
 
         matches, modified = tools.updateUser(request.form.to_dict()['id'], **data)
-        
+
         if matches:
             return {'message': 'Success'}, 200
         else:
