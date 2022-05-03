@@ -294,7 +294,9 @@ def update_user():
         'gender': data["gender"],
         'birthday': data["birthday"],
         'zip_code': data["zipcode"],
-        'preferences': data["preferences"][1:-1].replace('"', "").split(", "),
+        'preferences': data["preferences"][1:-1].replace('"', "").split(", ") 
+                        if data['preferences'] != '[]'
+                        else [],
     }
     try:
 
