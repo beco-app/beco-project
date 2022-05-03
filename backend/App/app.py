@@ -294,11 +294,12 @@ def update_user():
         'gender': data["gender"],
         'birthday': data["birthday"],
         'zip_code': data["zipcode"],
-        'preferences': data["preferences"],
+        'preferences': data["preferences"][1:-1].replace('"', "").split(", "),
     }
     try:
 
         matches, _ = tools.updateUser(request.form.to_dict()['id'], **data)
+
 
         if matches:
             return {'message': 'Success'}, 200
@@ -306,37 +307,6 @@ def update_user():
             return {'message': 'No user found'}, 400
     except:
         return {'message': 'Error in updating database'}, 400
-
-
-    usr = tools.getUser(username=username)
-
-
-    if not usr:
-        return {'message': 'User not found'}, 404
-
-    userid = usr[0]['_id']
-
-    if parameter == 'preferences':
-        tags = [
-            'Restaurant', 'Bar', 'Supermarket', 'Bakery', 'Vegan food',
-            'Beverages', 'Local products', 'Green space', 'Plastic free',
-            'Herbalist', 'Second hand', 'Cosmetics', 'Pharmacy', 'Fruits & vegetables', 
-            'Recycled material', 'Accessible', 'For children', 'Allows pets'
-        ]
-        
-        value = value.split(',')
-        if any(v for v in value if v not in tags):
-            return {'message': 'Tag not defined'}, 404
-        
-    elif parameter == 'gender':
-        value = 'F' if value == 'Female' else 'M'
-    
-    elif parameter == 'birthday':
-        from time import mktime
-        year, month, day = value.split('-')
-        value = mktime(datetime(int(year), int(month), int(day)).timetuple())
-    
-    return str(tools.updateUser(userid, **{parameter:value}))
 
 if __name__ == '__main__':
     app.run(debug=True)
