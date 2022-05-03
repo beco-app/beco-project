@@ -11,6 +11,8 @@ import numpy as np
 # payment
 # becoins_gained
 
+
+
 def transaction_gen(n):
     all_users = getUser()
     all_shops = getShop()
