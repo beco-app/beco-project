@@ -295,8 +295,6 @@ def update_user():
         'birthday': data["birthday"],
         'zip_code': data["zipcode"],
         'preferences': data["preferences"],
-        'becoins': data["becoins"],
-        'saved_prom' : data["saved_prom"]
     }
     try:
 
