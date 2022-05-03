@@ -3,6 +3,7 @@ import 'package:beco/views/DetailView.dart';
 import 'package:beco/views/HomeView.dart';
 import 'package:beco/views/LoginView.dart';
 import 'package:beco/views/RegisterView.dart';
+import 'package:beco/views/QRView.dart';
 import 'package:beco/views/VerifyEmailView.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -19,12 +20,13 @@ void main() {
       theme: ThemeData(
           primarySwatch: Colors.deepPurple,
           primaryColor: Colors.deepPurple[900]),
-      home: const HomeView(),
+      home: QRView(),
       routes: {
         '/login/': (context) => const LoginView(),
         '/register/': (context) => const RegisterView(),
         '/home/': (context) => const HomeView(),
         DetailView.routeName: (context) => const DetailView(),
+        QRView.routeName: (context) => const QRView(),
       },
     ),
   );
