@@ -25,5 +25,5 @@ Map<String, dynamic> _$UserToJson(ProfileUser instance) => <String, dynamic>{
       'gender': instance.gender,
       'birthday': instance.birthday,
       'zipcode': instance.zipcode,
-      'preferences': instance.preferences,
+      'preferences': instance.preferences.toString(),
     };
