@@ -1,11 +1,9 @@
 import 'package:beco/views/DetailView.dart';
+import 'package:beco/views/QRView.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:beco/Stores.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
-
-// import 'ScannerView.dart';
-
 import 'package:beco/Stores.dart';
 
 class HomeWidget extends StatefulWidget {
@@ -48,18 +46,28 @@ class _HomeWidgetState extends State<HomeWidget> {
           child: Column(children: [
             const SizedBox(height: 20),
             InkWell(
-              onTap: () {
-                scanBarcodeNormal();
-              },
-              child: Container(
-                //Button config
-                child: Icon(
-                  Icons.camera_alt,
-                  size: 30,
-                ),
-              ),
-            ),
-            const SizedBox(height: 20),
+                onTap: () {
+                  scanBarcodeNormal(); 
+                },
+                child: Container ( //Button config     
+                        child: Icon(
+                          Icons.camera_alt,
+                          size:  30,
+                        ),
+                      ),
+                  ),
+            InkWell(
+                onTap: () {
+                  QRView(); 
+                },
+                child: Container ( //Button config     
+                        child: Icon(
+                          Icons.qr_code,
+                          size:  30,
+                        ),
+                      ),
+                  ),
+            const SizedBox(height: 20), 
             IconsRow(),
             Padding(
               padding: const EdgeInsets.all(20),
@@ -83,7 +91,6 @@ class _HomeWidgetState extends State<HomeWidget> {
                   } else if (snapshot.hasError) {
                     return Text('${snapshot.error}');
                   }
-
                   // By default, show a loading spinner.
                   return const CircularProgressIndicator();
                 },

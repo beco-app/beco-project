@@ -22,15 +22,12 @@ class _DiscountWidgetState extends State<DiscountWidget> {
   void initState() {
     super.initState();
     discountList = getDiscounts();
+    print(discountList);
   }
 
   @override
   Widget build(BuildContext context) {
     return CustomScrollView(slivers: <Widget>[
-      SliverAppBar(floating: true, actions: <Widget>[
-        SizedBox(height: 20),
-        IconsRow(),
-      ]),
       SliverFillRemaining(
           hasScrollBody: false,
           child: Column(children: [
@@ -44,10 +41,12 @@ class _DiscountWidgetState extends State<DiscountWidget> {
                   if (snapshot.hasData) {
                     return Column(
                       children: [
-                        for (var i = 0; i < 1; i++)
+                        for (var i = 0;
+                            i < snapshot.data!.discounts.length;
+                            i++)
                           Column(
                             children: [
-                              Button(
+                              DiscountButton(
                                 shopName: snapshot.data!.discounts[i].shopname,
                                 description:
                                     snapshot.data!.discounts[i].description,
@@ -72,10 +71,8 @@ class _DiscountWidgetState extends State<DiscountWidget> {
   }
 }
 
-List<String> options = ['Active', 'Saved', 'Recommended'];
-
-class Button extends StatelessWidget {
-  const Button({
+class DiscountButton extends StatelessWidget {
+  const DiscountButton({
     required this.shopName,
     required this.description,
     required this.becoins,
@@ -113,14 +110,42 @@ class Button extends StatelessWidget {
                       //Text, short description and Icons
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(shopName,
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 15)),
-                        SizedBox(height: 5),
-                        Text(
-                          description,
-                        ),
                         SizedBox(height: 10),
+                        Row(children: [
+                          Column(crossAxisAlignment: CrossAxisAlignment.start,
+                              // Name and description
+                              children: [
+                                Text(shopName,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 15)),
+                                SizedBox(height: 5),
+                                Text(
+                                  description,
+                                ),
+                              ]),
+                          SizedBox(width: 70),
+                          Row(children: [
+                            Text("$becoins becoins"),
+                            SizedBox(width: 5),
+                            Image.asset(
+                              'assets/images/Hands Coin.png',
+                              height: 20,
+                              width: 20,
+                            ),
+                          ]),
+                        ]),
+                        SizedBox(height: 10),
+                        // Buttons
+                        Row(children: [
+                          SizedBox(width: 30),
+                          Button(option: "Redeem"),
+                          SizedBox(width: 15),
+                          Button(option: "Unsave"),
+                          SizedBox(width: 15),
+                          Button(option: "Go to shop"),
+                        ]),
+                        SizedBox(height: 5),
                       ]),
                   const Spacer(),
                 ]),
@@ -129,13 +154,17 @@ class Button extends StatelessWidget {
   }
 }
 
-class IconsRow extends StatelessWidget {
-  IconsRow({
-    this.isSelected = false, //acabar
-    Key? key,
-  }) : super(key: key);
+List<String> options = ['Active', 'Saved', 'Recommended'];
 
-  bool isSelected;
+class IconsRow extends StatefulWidget {
+  const IconsRow({Key? key}) : super(key: key);
+
+  @override
+  State<IconsRow> createState() => _IconsRow();
+}
+
+class _IconsRow extends State<IconsRow> {
+  Color? myColor = Colors.grey[350];
   @override
   Widget build(context) {
     return SingleChildScrollView(
@@ -145,32 +174,99 @@ class IconsRow extends StatelessWidget {
             for (var word in options)
               Row(children: [
                 const SizedBox(width: 20),
-                Material(
-                    borderRadius: BorderRadius.circular(30),
-                    clipBehavior: Clip.antiAliasWithSaveLayer,
-                    child: InkWell(
-                        onTap: () {
-                          isSelected ? false : true;
-                        }, //acabar
-                        child: Container(
-                            //Button config
-                            decoration: BoxDecoration(
-                              color: Colors.grey[
-                                  350], //isSelected ? Colors.grey[350] : Colors.grey[950],
-                              borderRadius: BorderRadius.circular(30),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                              child: Row(// Everything inside the button
-                                  children: [
-                                Text(
-                                  word,
-                                ),
-                              ]),
-                            ))))
+                TagsButton(word: word)
               ]),
-            SizedBox(width: 20),
+            const SizedBox(width: 20),
           ],
+        ));
+  }
+}
+
+class TagsButton extends StatefulWidget {
+  const TagsButton({required this.word, Key? key}) : super(key: key);
+  final String word; //= "Unknown";
+
+  @override
+  State<TagsButton> createState() => _TagsButton();
+}
+
+class _TagsButton extends State<TagsButton> {
+  Color? myColor = Colors.grey[350];
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+        borderRadius: BorderRadius.circular(30),
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        child: InkWell(
+          // onTap: () {
+          //   setState(() {
+          //     myColor == Colors.grey[350]
+          //         ? myColor = Colors.grey[500]
+          //         : myColor = Colors.grey[350];
+          //   });
+          // },
+          //isSelected ? false : true;}, //acabar
+          child: Container(
+              //Button config
+              decoration: BoxDecoration(
+                color:
+                    myColor, //isSelected ? Colors.grey[350] : Colors.grey[950],
+                borderRadius: BorderRadius.circular(30),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                child: Row(// Everything inside the button
+                    children: [
+                  Text(
+                    widget.word,
+                  ),
+                ]),
+              )),
+        ));
+  }
+}
+
+// Button
+class Button extends StatefulWidget {
+  const Button({required this.option, Key? key}) : super(key: key);
+  final String option;
+
+  @override
+  State<Button> createState() => _Button();
+}
+
+class _Button extends State<Button> {
+  Color? myColor = Colors.grey[350];
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+        borderRadius: BorderRadius.circular(30),
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        child: InkWell(
+          // onTap: () {
+          //   setState(() {
+          //     myColor == Colors.grey[350]
+          //         ? myColor = Colors.grey[500]
+          //         : myColor = Colors.grey[350];
+          //   });
+          // },
+          //isSelected ? false : true;}, //acabar
+          child: Container(
+              //Button config
+              decoration: BoxDecoration(
+                color:
+                    myColor, //isSelected ? Colors.grey[350] : Colors.grey[950],
+                borderRadius: BorderRadius.circular(30),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                child: Row(// Everything inside the button
+                    children: [
+                  Text(
+                    widget.option,
+                  ),
+                ]),
+              )),
         ));
   }
 }
