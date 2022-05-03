@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:beco/Stores.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 
+import 'package:beco/Stores.dart';
+
 class HomeWidget extends StatefulWidget {
   const HomeWidget({Key? key}) : super(key: key);
 

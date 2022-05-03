@@ -53,10 +53,10 @@ def user_gen(n):
     random.seed(123456789)
 
     # https://barbend.com/types-of-diets/#PD
-    tags = ['restaurant', 'bar', 'supermarket', 'bakery', 'vegan food', 'vegetarian food',
-         'beverages', 'alimentation', 'local products', 'green space', 'plastic free',
-         'zero waste', 'herbalist', 'second hand', 'in bulk', 'cosmetics', 'pharmacy',
-         'fruits & vegetables', 'recycled material', 'others']
+    tags = ['Restaurant', 'Bar', 'Supermarket', 'Bakery', 'Vegan food',
+            'Beverages', 'Local products', 'Green space', 'Plastic free',
+            'Herbalist', 'Second hand', 'Cosmetics', 'Pharmacy', 'Fruits & vegetables', 
+            'Recycled material', 'Accessible', 'For children', 'Allows pets']
     username_gen = next_username()
     proms = getPromotion('_id')
     first_birthday = date(1970,1,1)
