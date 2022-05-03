@@ -9,13 +9,12 @@ from bson.objectid import ObjectId
 from time import time
 
 
-def get_shop_count(uid):
+def get_shop_count(uid, all_trans):
     """
     Return all shops where uid has buyed and how many times (normalized)
     Return in a dict {shop_id: normalized_times}
     """
-    all_trans = getTransaction(['shop_id'], user_id=uid)
-    all_shops = [t['shop_id'] for t in all_trans]
+    all_shops = [t['shop_id'] for t in all_trans if t['user_id'] == uid]
     count_shops = Counter(all_shops)
     norm = sum([v ** 2 for v in count_shops.values()])
     norm_shops = {k: v ** 2 / norm for k, v in count_shops.items()}
@@ -58,23 +57,22 @@ def recommend_new_user(user_id):
 
 
 def recommend(user_id):
+    t0 = time()
     # Find most similar users
     all_trans = getTransaction(['shop_id', 'user_id'])
-    # CORRECT THIS
-    u_shops = get_shop_count(user_id)
+    u_shops = get_shop_count(user_id, all_trans)
 
+    t1 = time()
+    print(t1 - t0)
     # To new users, recommend shops in its zip code with preferences
-    if len(u_shops) == 0:
+    if len(u_shops) < 2:
         return recommend_new_user(user_id)
 
     users = getUser(['_id'])
     sims = []
     for v in users:
         v = v['_id']
-        v_shops = [t['shop_id'] for t in all_trans if t['user_id'] == v]
-        v_shops = Counter(v_shops)
-        norm = sum([v ** 2 for v in v_shops.values()])
-        v_shops = {k: v ** 2 / norm for k, v in v_shops.items()}
+        v_shops = get_shop_count(v, all_trans)
         uv_sim = shop_count_sim(u_shops, v_shops)
         sims.append((v, uv_sim))
     sims = sorted(sims, key=lambda x: -x[1])
@@ -83,7 +81,7 @@ def recommend(user_id):
     # Find most similar shops
     shops = {}
     for v, sim in sims:
-        v_shops = get_shop_count(v)
+        v_shops = get_shop_count(v, all_trans)
         for shop, count in v_shops.items():
             score = sim * count
             if shop in shops.keys():
@@ -91,10 +89,14 @@ def recommend(user_id):
             else:
                 shops[shop] = score
 
-    shops = dict(sorted(shops.items(), key=lambda x: -x[1])[:min(10, len(shops))])  # Hyperparameter 
-    shop_info = [getShop(['location', 'tags'], _id=s)[0] for s in shops.keys()]
-    print(u_shops)
-    u_shop_info = [getShop(['location', 'tags'], _id=s)[0] for s in u_shops.keys()]
+    t2 = time()
+    print(t2-t1)
+    shops = dict(sorted(shops.items(), key=lambda x: -x[1])[:min(10, len(shops))])  # Hyperparameter
+    all_shops = getShop(['location', 'tags'])
+    shop_info = [s for s in all_shops if s['_id'] in shops.keys()]
+    u_shop_info = [s for s in all_shops if s['_id'] in u_shops.keys()]
+    t3 = time()
+    print(t3 - t2)
 
     # Compute approx ubication of user and ponderate by distance
     shop_ids = [s for s,_ in u_shops.items()]
@@ -127,6 +129,8 @@ def recommend(user_id):
             if tag in preferences:
                 shops[sh] *= preferences[tag] # hyperparameter
 
+    t4 = time()
+    print(t4 - t3)
     return sorted(shops.items(), key=lambda x: -x[1])
 
     # Factors: visited or not, air pollution...
