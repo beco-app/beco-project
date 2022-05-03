@@ -3,6 +3,7 @@ import 'package:beco/views/DetailView.dart';
 import 'package:beco/views/HomeView.dart';
 import 'package:beco/views/LoginView.dart';
 import 'package:beco/views/RegisterView.dart';
+import 'package:beco/views/QRView.dart';
 import 'package:beco/views/VerifyEmailView.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -25,6 +26,7 @@ void main() {
         '/register/': (context) => const RegisterView(),
         '/home/': (context) => const HomeView(),
         DetailView.routeName: (context) => const DetailView(),
+        QRView.routeName: (context) => const QRView(),
       },
     ),
   );
