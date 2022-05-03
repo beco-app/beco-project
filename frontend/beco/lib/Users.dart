@@ -8,8 +8,8 @@ import 'dart:developer';
 part 'Users.g.dart';
 
 @JsonSerializable()
-class User {
-  User({
+class ProfileUser {
+  ProfileUser({
     required this.id,
     required this.email,
     required this.password,
@@ -20,22 +20,23 @@ class User {
     required this.preferences,
   });
 
-  factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
+  factory ProfileUser.fromJson(Map<String, dynamic> json) =>
+      _$UserFromJson(json);
   Map<String, dynamic> toJson() => _$UserToJson(this);
 
-  var id;
-  var email;
-  var password;
-  var phone;
-  var gender;
-  var birthday;
-  var zipcode;
-  var preferences;
+  late String id;
+  late String email;
+  late String password;
+  late String phone;
+  late String gender;
+  late String birthday;
+  late String zipcode;
+  late List<String> preferences;
 }
 
-Future<User> getUser() async {
+Future<ProfileUser> getUser() async {
   const userinfoURL = 'http://34.252.26.132/user_info/';
-  final voidUser = User(
+  final voidUser = ProfileUser(
     id: "",
     email: "",
     password: "",
@@ -45,7 +46,7 @@ Future<User> getUser() async {
     zipcode: "",
     preferences: [],
   );
-  late final User user;
+  late final ProfileUser user;
 
   try {
     final response = await http.post(Uri.parse(userinfoURL),
@@ -54,7 +55,7 @@ Future<User> getUser() async {
     log(response.body);
     if (response.statusCode == 200) {
       print("hola");
-      user = User.fromJson(json.decode(response.body));
+      user = ProfileUser.fromJson(json.decode(response.body));
       print(user);
       return user;
     }
@@ -65,15 +66,3 @@ Future<User> getUser() async {
 
   return voidUser;
 }
-
-// User reformatUser(User user) {
-//   switch (user.gender) {
-//     case "M":
-//       user.gender = "Male";
-//       break;
-//     case "F":
-//       user.gender = "Female";
-
-//   }
-//   return user;
-// }
