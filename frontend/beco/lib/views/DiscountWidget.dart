@@ -8,6 +8,8 @@ import 'package:http/http.dart' as http;
 import 'package:beco/Stores.dart';
 import 'package:beco/tools/Discounts.dart';
 
+import 'QRView.dart';
+
 class DiscountWidget extends StatefulWidget {
   const DiscountWidget({Key? key}) : super(key: key);
 
@@ -51,6 +53,7 @@ class _DiscountWidgetState extends State<DiscountWidget> {
                                 description:
                                     snapshot.data!.discounts[i].description,
                                 becoins: snapshot.data!.discounts[i].becoins,
+                                discount: snapshot.data!.discounts[i],
                               ),
                               const SizedBox(height: 20),
                             ],
@@ -76,12 +79,14 @@ class DiscountButton extends StatelessWidget {
     required this.shopName,
     required this.description,
     required this.becoins,
+    required this.discount,
     Key? key,
   }) : super(key: key);
 
   final String shopName; //= "Unknown";
   final String description; //= "assets/images/logo.png";
-  final int becoins; //= "No description available";
+  final int becoins;
+  final Discount discount; //= "No description available";
 
   @override
   Widget build(context) {
@@ -93,15 +98,23 @@ class DiscountButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(10),
           clipBehavior: Clip.antiAliasWithSaveLayer,
           child: InkWell(
-              onTap: () {},
+              onTap: () {
+                //showAlertDialog(context);
+                Navigator.pushNamed(
+                  context,
+                  QRView.routeName,
+                  arguments: discount,
+                  ); 
+              },
               child: Container(
+                
                 //Button config
                 width: screenwidth * 0.95,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
                   color: Colors.transparent,
-                  // border: Border.all(color: Colors.black, width: 1),
-                  borderRadius: BorderRadius.circular(30),
+                  border: Border.all(color: Colors.black, width: 1),
+                  borderRadius: BorderRadius.circular(9),
                 ),
                 child: Row(// Everything inside the button
                     children: [
@@ -112,7 +125,9 @@ class DiscountButton extends StatelessWidget {
                       children: [
                         SizedBox(height: 10),
                         Row(children: [
-                          Column(crossAxisAlignment: CrossAxisAlignment.start,
+                          ConstrainedBox(
+                            constraints: BoxConstraints(maxWidth: screenwidth*0.4, minWidth: screenwidth*0.4),
+                            child: Column(crossAxisAlignment: CrossAxisAlignment.start,
                               // Name and description
                               children: [
                                 Text(shopName,
@@ -123,29 +138,38 @@ class DiscountButton extends StatelessWidget {
                                 Text(
                                   description,
                                 ),
-                              ]),
-                          SizedBox(width: 70),
+                              ])),
+                          SizedBox(width: screenwidth*0.1),
+
+                          ConstrainedBox(
+                            constraints: BoxConstraints(maxWidth: screenwidth*0.3),
+                            child: 
                           Row(children: [
                             Text("$becoins becoins"),
                             SizedBox(width: 5),
                             Image.asset(
-                              'assets/images/Hands Coin.png',
+                              'assets/images/becoin.png',
                               height: 20,
                               width: 20,
                             ),
-                          ]),
+                          ])),
                         ]),
                         SizedBox(height: 10),
                         // Buttons
-                        Row(children: [
-                          SizedBox(width: 30),
+                        ConstrainedBox(
+                            constraints: BoxConstraints(maxWidth: screenwidth*0.8),
+                            child:
+                        Row(
+                          children: [
+                          Spacer(),
                           Button(option: "Redeem"),
-                          SizedBox(width: 15),
+                          Spacer(),
                           Button(option: "Unsave"),
-                          SizedBox(width: 15),
+                          Spacer(),
                           Button(option: "Go to shop"),
-                        ]),
-                        SizedBox(height: 5),
+                          Spacer(),
+                        ])),
+                        SizedBox(height: 15),
                       ]),
                   const Spacer(),
                 ]),
@@ -270,3 +294,40 @@ class _Button extends State<Button> {
         ));
   }
 }
+
+// showAlertDialog(BuildContext context) {
+//   // set up the buttons
+//   Widget cancelButton = TextButton(
+//     child: const Text("Cancel"),
+//     onPressed: () {
+//       Navigator.of(context).pop();
+//     },
+//   );
+//   Widget continueButton = TextButton(
+//     child: const Text("Continue"),
+//     onPressed: () {
+//       Navigator.of(context).pushNamedAndRemoveUntil(
+//         '/login/',
+//         (route) => false,
+//       );
+//     },
+//   );
+
+//   // set up the AlertDialog
+//   AlertDialog alert = AlertDialog(
+//     title: const Text("Warning"),
+//     content: const Text("Are you sure?"),
+//     actions: [
+//       cancelButton,
+//       continueButton,
+//     ],
+//   );
+
+//   // show the dialog
+//   showDialog(
+//     context: context,
+//     builder: (BuildContext context) {
+//       return alert;
+//     },
+//   );
+// }

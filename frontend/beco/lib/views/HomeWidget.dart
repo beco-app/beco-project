@@ -4,7 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:beco/Stores.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
-
 import 'package:beco/Stores.dart';
 
 class HomeWidget extends StatefulWidget {
@@ -59,7 +58,10 @@ class _HomeWidgetState extends State<HomeWidget> {
                   ),
             InkWell(
                 onTap: () {
-                  QRView(); 
+                  Navigator.pushNamed(
+                  context,
+                  QRView.routeName,
+                  ); 
                 },
                 child: Container ( //Button config     
                         child: Icon(
