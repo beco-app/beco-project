@@ -44,6 +44,7 @@ class _MapWidgetState extends State<MapWidget> {
         zoom: 12.0,
       ),
       markers: _markers.values.toSet(),
+      myLocationButtonEnabled: true,
     );
   }
 }
