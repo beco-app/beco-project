@@ -1,5 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="es.beco.beco">
+   <queries>
+    <package android:name="com.google.android.apps.maps" />
+  </queries>
    <application
         android:label="beco"
         android:name="${applicationName}"
