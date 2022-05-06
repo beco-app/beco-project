@@ -99,15 +99,14 @@ class DiscountButton extends StatelessWidget {
           clipBehavior: Clip.antiAliasWithSaveLayer,
           child: InkWell(
               onTap: () {
-                //showAlertDialog(context);
-                Navigator.pushNamed(
-                  context,
-                  QRView.routeName,
-                  arguments: discount,
-                  ); 
-              },
+                showAlertDialog(context, discount);
+                // Navigator.pushNamed(
+                //   context,
+                //   QRView.routeName,
+                //   arguments: discount,
+                //   ); 
+                },
               child: Container(
-                
                 //Button config
                 width: screenwidth * 0.95,
                 alignment: Alignment.center,
@@ -222,19 +221,11 @@ class _TagsButton extends State<TagsButton> {
         borderRadius: BorderRadius.circular(30),
         clipBehavior: Clip.antiAliasWithSaveLayer,
         child: InkWell(
-          // onTap: () {
-          //   setState(() {
-          //     myColor == Colors.grey[350]
-          //         ? myColor = Colors.grey[500]
-          //         : myColor = Colors.grey[350];
-          //   });
-          // },
-          //isSelected ? false : true;}, //acabar
           child: Container(
               //Button config
               decoration: BoxDecoration(
                 color:
-                    myColor, //isSelected ? Colors.grey[350] : Colors.grey[950],
+                    myColor,
                 borderRadius: BorderRadius.circular(30),
               ),
               child: Padding(
@@ -267,19 +258,11 @@ class _Button extends State<Button> {
         borderRadius: BorderRadius.circular(30),
         clipBehavior: Clip.antiAliasWithSaveLayer,
         child: InkWell(
-          // onTap: () {
-          //   setState(() {
-          //     myColor == Colors.grey[350]
-          //         ? myColor = Colors.grey[500]
-          //         : myColor = Colors.grey[350];
-          //   });
-          // },
-          //isSelected ? false : true;}, //acabar
           child: Container(
               //Button config
               decoration: BoxDecoration(
                 color:
-                    myColor, //isSelected ? Colors.grey[350] : Colors.grey[950],
+                    myColor,
                 borderRadius: BorderRadius.circular(30),
               ),
               child: Padding(
@@ -295,39 +278,41 @@ class _Button extends State<Button> {
   }
 }
 
-// showAlertDialog(BuildContext context) {
-//   // set up the buttons
-//   Widget cancelButton = TextButton(
-//     child: const Text("Cancel"),
-//     onPressed: () {
-//       Navigator.of(context).pop();
-//     },
-//   );
-//   Widget continueButton = TextButton(
-//     child: const Text("Continue"),
-//     onPressed: () {
-//       Navigator.of(context).pushNamedAndRemoveUntil(
-//         '/login/',
-//         (route) => false,
-//       );
-//     },
-//   );
+showAlertDialog(BuildContext context, Discount discount) {
+  // set up the buttons
+  Widget cancelButton = TextButton(
+    child: const Text("Cancel"),
+    onPressed: () {
+      Navigator.of(context).pop();
+    },
+  );
+  Widget continueButton = TextButton(
+    child: const Text("Continue"),
+    onPressed: () {
+      Navigator.of(context).pop();
+      Navigator.pushNamed(
+                  context,
+                  QRView.routeName,
+                  arguments: discount,
+                  ); 
+    },
+  );
 
-//   // set up the AlertDialog
-//   AlertDialog alert = AlertDialog(
-//     title: const Text("Warning"),
-//     content: const Text("Are you sure?"),
-//     actions: [
-//       cancelButton,
-//       continueButton,
-//     ],
-//   );
+  // set up the AlertDialog
+  AlertDialog alert = AlertDialog(
+    title: const Text("Are you sure you want to use this discount?"),
+    content: Text("It costs ${discount.becoins.toString()} becoins"),
+    actions: [
+      cancelButton,
+      continueButton,
+    ],
+  );
 
-//   // show the dialog
-//   showDialog(
-//     context: context,
-//     builder: (BuildContext context) {
-//       return alert;
-//     },
-//   );
-// }
+  // show the dialog
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
+}
