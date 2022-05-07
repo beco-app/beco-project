@@ -56,6 +56,7 @@ def recommend(user_id):
 
     t1 = time()
     print(t1 - t0)
+    
     # To new users, recommend shops in its zip code with preferences
     #if len(u_shops) < 2:
     #    return recommend_new_user(user_id)
