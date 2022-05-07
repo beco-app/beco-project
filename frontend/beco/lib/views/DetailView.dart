@@ -47,16 +47,16 @@ class DetailView extends StatelessWidget {
                   child: Column(children: [
                     Text(args.shopname,
                         style: const TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 20)),
+                            fontWeight: FontWeight.bold, fontSize: 25)),
                     SizedBox(height: 10),
-                    Text(args.type, style: const TextStyle(fontSize: 15)),
+                    Text(args.type, style: const TextStyle(fontSize: 18)),
                     SizedBox(height: 20),
                     Text("Description",
                         style: const TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 12)),
                     SizedBox(height: 10),
                     Text(
-                      args.description.replaceAll("<br />", ""),
+                      args.description,
                     ),
                     SizedBox(height: 20),
                     Text("Features",
@@ -69,16 +69,28 @@ class DetailView extends StatelessWidget {
                           myIcons[word],
                           size: 30,
                         ),
-                        SizedBox(width: 20),
-                        Text(word.toString())
-                      ]),
-                    SizedBox(height: 20),
-                    Text("Where are we?",
-                        style: const TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 12)),
-                    SizedBox(height: 10),
-                    Text(args.address),
-                    const SizedBox(height: 2000)
+                        SizedBox(height: 20),
+                        Text("Features",
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 12)),
+                        SizedBox(height: 10),
+                        for (var word in args.tags)
+                          Row(children: [
+                            Icon(
+                              myIcons[word],
+                              size: 30,
+                            ),
+                            SizedBox(width: 20),
+                            Text(word.toString())
+                          ]),
+                        SizedBox(height: 20),
+                        Text("Where are we?",
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 12)),
+                        SizedBox(height: 10),
+                        Text(args.address),
+                        const SizedBox(height: 2000)
+                      ])
                   ])))
         ]));
   }
