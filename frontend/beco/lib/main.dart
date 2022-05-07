@@ -10,7 +10,6 @@ import 'package:flutter/material.dart';
 import 'Stores.dart';
 import 'firebase_options.dart';
 
-
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(
@@ -52,7 +51,7 @@ class HomePage extends StatelessWidget {
               // }
               return const HomeView();
             } else {
-              return const LoginView();
+              return const HomeView();
             }
           default:
             return const CircularProgressIndicator();

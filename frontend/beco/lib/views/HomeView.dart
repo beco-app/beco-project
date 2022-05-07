@@ -39,11 +39,43 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   Widget build(BuildContext context) {
+    double screenwidth = MediaQuery.of(context).size.width;
     return Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
-        title: const Text('BECO'),
-        // backgroundColor: Colors.purple[800],
+        centerTitle: true,
+        flexibleSpace: Container(
+            margin: const EdgeInsets.all(5),
+            padding: const EdgeInsets.only(left: 5, bottom: 8),
+            alignment: Alignment.centerLeft,
+            //decoration: BoxDecoration(
+            //borderRadius: BorderRadius.circular(30),
+            //border: Border.all(
+            //color: Color.fromARGB(255, 41, 41, 41), width: 1.2)),
+            child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+              Container(
+                  child: Image.asset('assets/images/becoin.png',
+                      height: kToolbarHeight * 0.5),
+                  alignment: Alignment.bottomLeft),
+              const SizedBox(width: 5),
+              Container(
+                  width: screenwidth * 0.22,
+                  child: Text(
+                    '1930dfdf', //canviar
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                    textAlign: TextAlign.left,
+                    style: const TextStyle(
+                        fontSize: 24, color: Color.fromARGB(255, 41, 41, 41)),
+                  ),
+                  alignment: Alignment.bottomLeft),
+            ])),
+        title: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+          Image.asset('assets/images/BECO_nom-removebg-preview 1.png',
+              height: kToolbarHeight * 0.6),
+        ]),
+        backgroundColor: Color.fromARGB(255, 235, 228, 233),
+        elevation: 0.0,
       ),
       body: _pages.elementAt(_selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
