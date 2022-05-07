@@ -8,9 +8,10 @@ import 'package:beco/views/VerifyEmailView.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'Stores.dart';
 import 'firebase_options.dart';
-
+import 'globals.dart' as globals;
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,8 +33,25 @@ void main() {
   );
 }
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  late final Stores storeList;
+  @override
+  void initState() {
+    super.initState();
+    _initStores();
+  }
+
+  void _initStores() async {
+    globals.storeList = await getStores();
+    FlutterNativeSplash.remove();
+  }
 
   @override
   Widget build(BuildContext context) {

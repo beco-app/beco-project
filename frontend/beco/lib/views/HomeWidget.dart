@@ -6,6 +6,7 @@ import 'package:beco/Stores.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:beco/Stores.dart';
 import 'package:filter_list/filter_list.dart';
+import 'package:beco/globals.dart' as globals;
 
 Map<String, IconData> myIcons = {
   "Accessible": Icons.accessible_sharp,
@@ -116,6 +117,18 @@ class _HomeWidgetState extends State<HomeWidget> {
           hasScrollBody: false,
           child: Column(children: [
             const SizedBox(height: 20),
+            InkWell(
+              onTap: () {
+                showSearch(context: context, delegate: MySearchDelegate());
+              },
+              child: Container(
+                //Button config
+                child: const Icon(
+                  Icons.search,
+                  size: 30,
+                ),
+              ),
+            ),
             InkWell(
               onTap: () {
                 scanBarcodeNormal();
@@ -347,5 +360,91 @@ class _TagsButton extends State<TagsButton> {
                 ]),
               )),
         ));
+  }
+}
+
+class MySearchDelegate extends SearchDelegate {
+  Stores searchTerms = globals.storeList;
+  @override
+  List<Widget> buildActions(BuildContext context) {
+    return [
+      IconButton(
+          onPressed: () {
+            if (query.isEmpty) {
+              close(context, null);
+            } else {
+              query = '';
+            }
+          },
+          icon: const Icon(Icons.clear)),
+    ];
+  }
+
+  @override
+  Widget buildLeading(BuildContext context) {
+    return IconButton(
+      icon: const Icon(Icons.arrow_back),
+      onPressed: () {
+        close(context, null);
+      },
+    );
+  }
+
+  @override
+  Widget buildResults(BuildContext context) {
+    List<String> matchQuery = [];
+    List<Store> matchStores = [];
+    for (var store in searchTerms.stores) {
+      var term = store.shopname;
+      if (term.toLowerCase().contains(query.toLowerCase())) {
+        matchQuery.add(term);
+        matchStores.add(store);
+      }
+    }
+    return ListView.builder(
+        itemCount: matchQuery.length,
+        itemBuilder: (context, index) {
+          var result = matchQuery[index];
+          var store = matchStores[index];
+          return ListTile(
+            title: Text(result),
+            onTap: () {
+              Navigator.pushNamed(
+                context,
+                DetailView.routeName,
+                arguments: store,
+              );
+            },
+          );
+        });
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    List<String> matchQuery = [];
+    List<Store> matchStores = [];
+    for (var store in searchTerms.stores) {
+      var term = store.shopname;
+      if (term.toLowerCase().contains(query.toLowerCase())) {
+        matchQuery.add(term);
+        matchStores.add(store);
+      }
+    }
+    return ListView.builder(
+        itemCount: matchQuery.length,
+        itemBuilder: (context, index) {
+          var result = matchQuery[index];
+          var store = matchStores[index];
+          return ListTile(
+            title: Text(result),
+            onTap: () {
+              Navigator.pushNamed(
+                context,
+                DetailView.routeName,
+                arguments: store,
+              );
+            },
+          );
+        });
   }
 }
