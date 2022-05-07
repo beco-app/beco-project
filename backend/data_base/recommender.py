@@ -4,6 +4,7 @@ sys.path.append("./backend/data_base")
 from tools import *
 from collections import Counter
 from geopy.distance import distance
+from geopy.geocoders import Nominatim
 import numpy as np
 from bson.objectid import ObjectId
 from time import time
@@ -41,34 +42,25 @@ def shop_count_sim(u_shops, v_shops):
     return dot
 
 
-def recommend_new_user(user_id):
-    resp = getUser(_id=user_id)
-    print("this is the mf response:", resp)
-    u_zipcode = getUser(_id=user_id)[0]['zip_code']
-    shops = getShop(['_id'], zip_code=u_zipcode)
-    shops = {s['_id']: 1 for s in shops}
-
-    for sh, score in shops.items():
-        preferences = getUser(_id=user_id)[0]['preferences']
-        for tag in getShop(_id=sh)[0]['tags']:
-            if tag in preferences:
-                shops[sh] *= 1.25  # hyperparameter
-
-    return sorted(shops.items(), key=lambda x: -x[1])
-
-
 def recommend(user_id):
     t0 = time()
-    # Find most similar users
+    # Get necessary info
+    u_info = getUser(['preferences', 'zip_code'], _id=user_id)[0]
     all_trans = getTransaction(['shop_id', 'user_id'])
+    all_shops = getShop(['location', 'tags'])
+    shop_ids = [s["_id"] for s in all_shops]
     u_shops = get_shop_count(user_id, all_trans)
+    geolocator = Nominatim(user_agent="beco")
+    u_loc = geolocator.geocode({"country": "Spain", "postalcode": u_info["zip_code"]})
+    u_loc = (u_loc.latitude, u_loc.longitude)
 
     t1 = time()
     print(t1 - t0)
     # To new users, recommend shops in its zip code with preferences
-    if len(u_shops) < 2:
-        return recommend_new_user(user_id)
+    #if len(u_shops) < 2:
+    #    return recommend_new_user(user_id)
 
+    # Find similar users and shops where they buy
     users = getUser(['_id'])
     sims = []
     for v in users:
@@ -79,33 +71,27 @@ def recommend(user_id):
     sims = sorted(sims, key=lambda x: -x[1])
     sims = sims[0:20]  # Hyperparameter
 
-    # Find most similar shops
-    shops = {}
+    shops = {s: 1 for s in shop_ids}
     for v, sim in sims:
         v_shops = get_shop_count(v, all_trans)
         for shop, count in v_shops.items():
             score = sim * count
-            if shop in shops.keys():
-                shops[shop] += score
-            else:
-                shops[shop] = score
+            shops[shop] += score
 
     t2 = time()
     print(t2-t1)
-    shops = dict(sorted(shops.items(), key=lambda x: -x[1])[:min(20, len(shops))])  # Hyperparameter
-    all_shops = getShop(['location', 'tags'])
     shop_info = [s for s in all_shops if s['_id'] in shops.keys()]
     u_shop_info = [s for s in all_shops if s['_id'] in u_shops.keys()]
-    t3 = time()
-    print(t3 - t2)
 
-    # Compute approx ubication of user and ponderate by distance
+    # Ponderate by distance
+    """
     shop_ids = [s for s,_ in u_shops.items()]
     u_locs = [s['location'] for s in u_shop_info]
     lats, lons = [lat for lat, _ in u_locs], [lon for _, lon in u_locs]
-    loc = np.mean(lats), np.mean(lons)
+    u_loc = np.mean(lats), np.mean(lons)
+    """
     s_locs = [s['location'] for s in shop_info]
-    dists = [distance(loc, s_loc).km for s_loc in s_locs]
+    dists = [distance(u_loc, s_loc).km for s_loc in s_locs]
     dists = np.array(dists) / max(dists)
     dist_scores = [np.pi / 2 - np.arctan(d) for d in dists]  # hyperparameter
     shops = {sh: sc * dist_scores[i] for i, (sh, sc) in enumerate(shops.items())}
@@ -119,7 +105,7 @@ def recommend(user_id):
                 preferences[t] += u_shops[shop_id]
     norm = sum(preferences.values())
     preferences = {k: v / norm for k, v in preferences.items()}
-    explicit_prefs = getUser(['preferences'], _id=user_id)[0]['preferences']
+    explicit_prefs = u_info['preferences']
     for t in explicit_prefs:
         if t in preferences:
             preferences[t] += 1/len(explicit_prefs)  # hyperparameter
@@ -130,11 +116,9 @@ def recommend(user_id):
             if tag in preferences:
                 shops[sh] *= preferences[tag] # hyperparameter
 
-    t4 = time()
-    print(t4 - t3)
-    return random.sample(shops.items(), k=min(10, len(shops)))
+    t3 = time()
+    print(t3 - t2)
+    shops = sorted(shops.items(), key=lambda x: -x[1])[:20]  # Hyperparameter
+    return random.sample(shops, k=10)
 
     # Factors: visited or not, air pollution...
-
-#resp = recommend(ObjectId("626051ddc20304614ca55e4b"))
-#print(resp)
