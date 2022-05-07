@@ -72,7 +72,7 @@ class _HomePageState extends State<HomePage> {
               // }
               return const HomeView();
             } else {
-              return const LoginView();
+              return const HomeView();
             }
           default:
             return const CircularProgressIndicator();
