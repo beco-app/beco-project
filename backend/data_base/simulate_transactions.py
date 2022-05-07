@@ -34,22 +34,34 @@ def computeScores(all_shops, user, u_transactions, u_latent):
     return scores
 
 def addLocation(user, geolocator):
+    """
+    Args:
+        user: dict conatining user0s info from db
+        geolocator:
+
+    Returns: the user dict with location field [lat, long]
+    """
     resp = user.copy()
     loc_obj = geolocator.geocode({"country": "Spain", "postalcode": user["zip_code"]})
-    resp["location"] = [loc_obj.latitude, loc_obj.longitude]
+    print(f"loc_obj: {loc_obj}")
+    try:
+        resp["location"] = [loc_obj.latitude, loc_obj.longitude]
+    except:
+        print(f"lat,long not found for zipcode: {user['zip_code']}")
     return resp
 
 def transaction_gen(n_days):
     now = time()
 
     geolocator = Nominatim(user_agent="beco")
-    all_users = getUser()
-    all_users = {user["_id"]: addLocation(user, geolocator) for user in all_users}
+    all_users = getUser() # all users from db with all fields
+    all_users = {user["_id"]: addLocation(user, geolocator) for user in all_users} # index users by id and add location field
 
-    all_shops = getShop()
-    all_shops = {shop["_id"]: shop for shop in all_shops}
-    transactions = {uid: [] for uid in all_users.keys()}
+    all_shops = getShop() # all shops from db with all fields
+    all_shops = {shop["_id"]: shop for shop in all_shops} # index shops by id
+    transactions = {uid: [] for uid in all_users.keys()} # init empty lists of shop_ids for each user indexed by user_id
 
+    # generate random latent vars for each user (uniform random [0,1])
     latent = {}
     for uid in all_users.keys():
         freq = random.random()
@@ -58,18 +70,21 @@ def transaction_gen(n_days):
         pickiness = random.random()
         latent[uid] = {"freq": freq, "fidelity": fidelity, "laziness": laziness, "pickiness": pickiness}
 
+    # days from previous n_days until yesterday (n_days,...,3,2,1)
     days = range(n_days, 0, -1)
     for day in days:
+        # decide which users are going to buy that day
         buying_users = []
         for uid in all_users.keys():
             buys = np.random.binomial(n=1, p=latent[uid]["freq"])
             if buys: buying_users.append(uid)
 
         for uid in buying_users:
-            # score for each shop and set record
+            # compute score for each shop and then set record
             scores = computeScores(all_shops=all_shops, user=all_users[uid], u_transactions=transactions[uid], u_latent=latent[uid]) # dict(shop_id: score)
-            shop_chosen = random.choices(scores.keys(), weights=scores.values(), k=1)[0]
+            shop_chosen = random.choices(list(scores.keys()), weights=scores.values(), k=1)[0] # shop_id
 
+            # NOTE: try to limit the timestamps to the shop opening interval (avoid smth like transactions at 3am xd)
             timestamp = random.uniform(now - day * 3600 * 24, now - (day - 1) * 3600 * 24)
             promotion_used = None
             payment = round(random.uniform(5, 60), 2)
@@ -85,5 +100,6 @@ def transaction_gen(n_days):
 
 
 if __name__ == '__main__':
+    print("computing transactions")
     transaction_gen(n_days=1)
 
