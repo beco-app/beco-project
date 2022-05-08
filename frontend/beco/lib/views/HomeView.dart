@@ -9,6 +9,7 @@ import 'package:firebase_core/firebase_core.dart';
 //import 'package:flutter_textfield_search/search.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart' as intl;
+import 'package:beco/globals.dart' as globals;
 
 class HomeView extends StatefulWidget {
   const HomeView({Key? key}) : super(key: key);
@@ -60,7 +61,7 @@ class _HomeViewState extends State<HomeView> {
               Container(
                   width: screenwidth * 0.22,
                   child: Text(
-                    '1930dfdf', //canviar
+                    globals.user.becoins.toString(), //canviar
                     overflow: TextOverflow.ellipsis,
                     maxLines: 1,
                     textAlign: TextAlign.left,

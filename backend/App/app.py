@@ -139,7 +139,7 @@ def get_user():
     except:
         print("user_id from firebase")
     # Això de posar [0] està bé?
-    resp = tools.getUser(["email", "password", "phone", "gender", "birthday", "zip_code", "preferences"], _id = user_id)[0]
+    resp = tools.getUser(["email", "password", "phone", "gender", "birthday", "zip_code", "preferences", "becoins"], _id = user_id)[0]
     print("the resp klk:", resp)
     resp = json.loads(json_util.dumps(resp))
     return resp, 200

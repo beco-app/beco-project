@@ -15,6 +15,7 @@ ProfileUser _$UserFromJson(Map<String, dynamic> json) => ProfileUser(
       birthday: json['birthday'] as String,
       zipcode: json['zip_code'] as String,
       preferences: json['preferences'].cast<String>() as List<String>,
+      becoins: json['becoins'] as int,
     );
 
 Map<String, dynamic> _$UserToJson(ProfileUser instance) => <String, dynamic>{
@@ -26,4 +27,5 @@ Map<String, dynamic> _$UserToJson(ProfileUser instance) => <String, dynamic>{
       'birthday': instance.birthday,
       'zipcode': instance.zipcode,
       'preferences': instance.preferences.toString(),
+      'becoins': instance.becoins,
     };

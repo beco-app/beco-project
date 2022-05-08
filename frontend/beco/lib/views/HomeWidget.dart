@@ -154,7 +154,6 @@ class _HomeWidgetState extends State<HomeWidget> {
               ),
             ),
             const SizedBox(height: 20),
-            const IconsRow(),
             TextButton(
                 onPressed: _openFilterDialog,
                 child: const Text(
@@ -281,31 +280,31 @@ class ShopButton extends StatelessWidget {
   }
 }
 
-class IconsRow extends StatefulWidget {
-  const IconsRow({Key? key}) : super(key: key);
+// class IconsRow extends StatefulWidget {
+//   const IconsRow({Key? key}) : super(key: key);
 
-  @override
-  State<IconsRow> createState() => _IconsRow();
-}
+//   @override
+//   State<IconsRow> createState() => _IconsRow();
+// }
 
-class _IconsRow extends State<IconsRow> {
-  Color? myColor = Colors.grey[350];
-  @override
-  Widget build(context) {
-    return SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          children: [
-            for (var word in myIcons.keys)
-              Row(children: [
-                const SizedBox(width: 20),
-                TagsButton(word: word)
-              ]),
-            const SizedBox(width: 20),
-          ],
-        ));
-  }
-}
+// class _IconsRow extends State<IconsRow> {
+//   Color? myColor = Colors.grey[350];
+//   @override
+//   Widget build(context) {
+//     return SingleChildScrollView(
+//         scrollDirection: Axis.horizontal,
+//         child: Row(
+//           children: [
+//             for (var word in myIcons.keys)
+//               Row(children: [
+//                 const SizedBox(width: 20),
+//                 TagsButton(word: word)
+//               ]),
+//             const SizedBox(width: 20),
+//           ],
+//         ));
+//   }
+// }
 
 class TagsButton extends StatefulWidget {
   const TagsButton({required this.word, Key? key}) : super(key: key);

@@ -18,6 +18,7 @@ class ProfileUser {
     required this.birthday,
     required this.zipcode,
     required this.preferences,
+    required this.becoins,
   });
 
   factory ProfileUser.fromJson(Map<String, dynamic> json) =>
@@ -32,6 +33,7 @@ class ProfileUser {
   late String birthday;
   late String zipcode;
   late List<String> preferences;
+  late int becoins;
 }
 
 Future<ProfileUser> getUser() async {
@@ -45,6 +47,7 @@ Future<ProfileUser> getUser() async {
     birthday: "",
     zipcode: "",
     preferences: [],
+    becoins: 0,
   );
   late final ProfileUser user;
 
