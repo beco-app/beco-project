@@ -237,7 +237,8 @@ def setUser(data):
 
     document = {
         'username': data["username"], 'email': data["email"], 'password': data["password"], 'phone': data["phone"],
-        'gender': data["gender"], 'birthday': data["birthday"], 'zip_code': data["zip_code"], 'preferences': data["preferences"],
+        'gender': data["gender"], 'birthday': data["birthday"], 'zip_code': data["zip_code"],
+        'neighbourhood': data["neighbourhood"], 'location': data["location"], 'preferences': data["preferences"],
         'becoins': data["becoins"], "saved_prom" : data["saved_prom"]
     }
     if "_id" in data.keys():
