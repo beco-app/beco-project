@@ -1,7 +1,7 @@
 from populate_active_prom  import populate_active_prom
 from populate_prom import populate_prom
 from populate_shops import populate_shops
-from populate_transactions import populate_transactions
+from simulate_transactions import transaction_gen
 from populate_users import populate_users
 from tools import *
 
@@ -15,7 +15,7 @@ def populate_db(s, nu, np, nap, nt) :
     print('-'*50, '-'*50, '-'*50, f"{len(getPromotion())} proms inserted", "inserting active proms", sep='\n')
     populate_active_prom(nap)
     print('-'*50, '-'*50, '-'*50, f"{len(getActivePromotion())} active proms inserted", "inserting transaction", sep='\n')
-    populate_transactions(nt)
+    transaction_gen(n_days=10, hard=True, n_hard=5)
     print('-'*50, '-'*50, '-'*50, f"{len(getTransaction())} transactions inserted", sep='\n')
 
 if __name__ == '__main__':

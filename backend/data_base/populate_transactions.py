@@ -36,5 +36,5 @@ def populate_transactions(n):
         print(setTransaction(t))
 
 if __name__ == '__main__':
-    populate_transactions(5000)
+    populate_transactions(500)
         
