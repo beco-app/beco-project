@@ -3,6 +3,8 @@ import random
 from hashlib import pbkdf2_hmac
 from datetime import date, timedelta
 import time
+from collections import Counter
+from geopy.geocoders import Nominatim
 
 ## Definition of users
 ## Each user has attributes:  
@@ -52,6 +54,12 @@ def user_gen(n):
 
     random.seed(123456789)
 
+    def hood2loc(geolocator, hood):
+        if hood == "Sant Antoni":
+            hood = "Barri " + hood
+        loc_obj = geolocator.geocode(hood)
+        return [loc_obj.latitude, loc_obj.longitude]
+
     # https://barbend.com/types-of-diets/#PD
     tags = ['Restaurant', 'Bar', 'Supermarket', 'Bakery', 'Vegan food',
             'Beverages', 'Local products', 'Green space', 'Plastic free',
@@ -61,6 +69,15 @@ def user_gen(n):
     proms = getPromotion('_id')
     first_birthday = date(1970,1,1)
     last_birthday  = date(2008, 12, 31)
+
+    # hood distributions
+    geolocator = Nominatim(user_agent="beco")
+    all_shops = getShop()
+    hoods = [shop["neighbourhood"] for shop in all_shops]
+    hood_distribution = Counter(hoods)
+    hood_loc = {}
+    for hood in hood_distribution.keys():
+        hood_loc[hood] = hood2loc(geolocator, hood)
 
     for _ in range(n):
         username    = next(username_gen)
@@ -72,14 +89,16 @@ def user_gen(n):
             (min(first_birthday + timedelta(int(random.gauss(mu=365*30, sigma=365*10))), last_birthday)).timetuple()
         )  # for age: max(int(random.gauss(mu=20, sigma=5)), 10)
         zip_code    = '080' + str(random.randint(10,42))
+        hood = random.choices(list(hood_distribution.keys()), weights=hood_distribution.values(), k=1)[0]
+        location = hood_loc[hood]
         preferences = random.sample(tags, k=5)
         becoins     = random.randint(0, 1000)
         saved_prom  = random.choices(proms, k=random.randint(0,len(proms))) if len(proms) else []
 
         user = {
             'username':username, 'email':email,           'password':password, 'phone':phone,
-            'gender':gender,     'birthday':birthday,     'zip_code':zip_code, 'preferences':preferences, 
-            'becoins':becoins,   'saved_prom':saved_prom
+            'gender':gender,     'birthday':birthday,     'zip_code':zip_code, 'neighbourhood': hood,
+            'location': location, 'preferences':preferences, 'becoins':becoins,   'saved_prom':saved_prom
         }
 
         yield user 
@@ -93,5 +112,5 @@ def populate_users(n):
         # print(user)
 
 if __name__ == '__main__':
-    populate_users(10)
+    populate_users(100)
 
