@@ -42,7 +42,7 @@ db_products = config["db_products"]
 collection_attributes = {
     db_users: [
         '_id','username','email', 'password', 'phone','gender',
-        'birthday', 'zip_code', 'preferences', 'becoins', 'saved_prom'
+        'birthday', 'zip_code', 'neighbourhood', 'location', 'preferences', 'becoins', 'saved_prom'
     ],
     db_shops:[
         '_id', 'shopname','description','web', 'timetable',  'photo',
