@@ -71,30 +71,30 @@ class _ProfileWidgetState extends State<ProfileWidget> {
     // }
     bool zip_code_editable = false;
     return CustomScrollView(slivers: [
-      SliverAppBar(
-          //maybe sliverpersistentheader is better
-          floating: false,
-          expandedHeight: 150,
-          flexibleSpace:
-              //child: Column(
-              //mainAxisAlignment: MainAxisAlignment.end,
-              Stack(children: [
-            Positioned.fill(
-                child: Image.asset("assets/images/media_4.png",
-                    fit: BoxFit.cover)),
-            Align(
-                alignment: Alignment.bottomCenter,
-                child: Material(
-                    shape: const CircleBorder(),
-                    clipBehavior: Clip.antiAliasWithSaveLayer,
-                    child: InkWell(
-                        onTap: () {},
-                        child: Image.asset(
-                          "assets/images/logo.png",
-                          width: 150, //s'ha de fer fit
-                          //fit: BoxFit.cover,
-                        )))),
-          ])),
+      // SliverAppBar(
+      //     //maybe sliverpersistentheader is better
+      //     floating: false,
+      //     expandedHeight: 150,
+      //     flexibleSpace:
+      //         //child: Column(
+      //         //mainAxisAlignment: MainAxisAlignment.end,
+      //         Stack(children: [
+      //       Positioned.fill(
+      //           child: Image.asset("assets/images/media_4.png",
+      //               fit: BoxFit.cover)),
+      //       Align(
+      //           alignment: Alignment.bottomCenter,
+      //           child: Material(
+      //               shape: const CircleBorder(),
+      //               clipBehavior: Clip.antiAliasWithSaveLayer,
+      //               child: InkWell(
+      //                   onTap: () {},
+      //                   child: Image.asset(
+      //                     "assets/images/logo.png",
+      //                     width: 150, //s'ha de fer fit
+      //                     //fit: BoxFit.cover,
+      //                   )))),
+      //     ])),
       SliverFillRemaining(
           hasScrollBody: false,
           child: Padding(
@@ -305,35 +305,42 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                   },
                 ),
                 const SizedBox(height: 20),
-                ElevatedButton(
-                    onPressed: () async {
-                      //   var user = ProfileUser();
-                      //   user.email = _email.text;
-                      //   user.password = _password.text;
-                      //   user.phone = _phone.text;
+                Row(
+                  children: [
+                    Spacer(),
+                    ElevatedButton(
+                        onPressed: () async {
+                          //   var user = ProfileUser();
+                          //   user.email = _email.text;
+                          //   user.password = _password.text;
+                          //   user.phone = _phone.text;
 
-                      widget.profileUser.zipcode = zipcode_controller.text;
-                      showSaveAlertDialog(context, widget.profileUser);
-                    },
-                    child: const Text("Save",
-                        style: TextStyle(
-                            fontSize: 20,
-                            color: Color.fromARGB(255, 64, 64, 64))),
-                    style: ElevatedButton.styleFrom(
-                        primary: Theme.of(context).secondaryHeaderColor,
-                        padding: const EdgeInsets.all(8.0))),
+                          widget.profileUser.zipcode = zipcode_controller.text;
+                          showSaveAlertDialog(context, widget.profileUser);
+                        },
+                        child: const Text("Save",
+                            style: TextStyle(
+                                fontSize: 20,
+                                color: Color.fromARGB(255, 64, 64, 64))),
+                        style: ElevatedButton.styleFrom(
+                            primary: Theme.of(context).secondaryHeaderColor,
+                            padding: const EdgeInsets.all(8.0))),
+                    Spacer(),
+                    ElevatedButton(
+                        onPressed: () {
+                          showAlertDialog(context);
+                        },
+                        child: const Text("Log out",
+                            style: TextStyle(
+                                fontSize: 20,
+                                color: Color.fromARGB(255, 64, 64, 64))),
+                        style: ElevatedButton.styleFrom(
+                            primary: Theme.of(context).secondaryHeaderColor,
+                            padding: const EdgeInsets.all(8.0))),
+                    Spacer(),
+                  ],
+                ),
                 const SizedBox(height: 20),
-                ElevatedButton(
-                    onPressed: () {
-                      showAlertDialog(context);
-                    },
-                    child: const Text("Log out",
-                        style: TextStyle(
-                            fontSize: 20,
-                            color: Color.fromARGB(255, 64, 64, 64))),
-                    style: ElevatedButton.styleFrom(
-                        primary: Theme.of(context).secondaryHeaderColor,
-                        padding: const EdgeInsets.all(8.0)))
               ])))
     ]);
   }

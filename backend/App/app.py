@@ -381,7 +381,7 @@ def update_user():
 
     data = request.form.to_dict()
 
-    fields = {"id", "email", "password", "phone", "gender", "birthday", "zipcode", "preferences"}
+    fields = {"id", "email", "password", "phone", "gender", "birthday", "zipcode", "preferences", "becoins"}
 
     if fields != data.keys():
         return {"message": "Invalid data fields"}, 400
