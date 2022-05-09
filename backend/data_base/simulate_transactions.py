@@ -38,6 +38,7 @@ def transaction_gen(n_days, hard=False, n_hard=None):
 
     # generate random latent vars for each user (uniform random [0,1])
     latent = {}
+    f = open('./backend/data_base/latent.csv', 'w')
     for uid in (t:=tqdm(all_users.keys())):
         t.set_description("generating latent")
         freq = random.random()
@@ -45,6 +46,9 @@ def transaction_gen(n_days, hard=False, n_hard=None):
         laziness = random.random()
         pickiness = random.random()
         latent[uid] = {"freq": freq, "fidelity": fidelity, "laziness": laziness, "pickiness": pickiness}
+        f.write(f'{uid},{freq},{fidelity},{laziness},{pickiness}\n')
+    f.close()
+
 
     # days from previous n_days until yesterday (n_days,...,3,2,1)
     days = range(n_days, 0, -1)
