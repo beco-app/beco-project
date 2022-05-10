@@ -122,7 +122,7 @@ Future<Stores> getHomepageStores() async {
 }
 
 Future<Store> getStore(String storeId) async {
-  const shopURL = 'http://34.252.26.132/shop_info/';
+  const shopURL = 'http://34.252.26.132/shop_info';
   final voidStore = Store(
     id: "",
     address: "",
@@ -143,6 +143,7 @@ Future<Store> getStore(String storeId) async {
     print("RESPONSE");
     log(response.body);
     if (response.statusCode == 200) {
+      print(Store.fromJson(json.decode(response.body)));
       return Store.fromJson(json.decode(response.body));
     }
   } catch (error) {

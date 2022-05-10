@@ -105,8 +105,8 @@ class DiscountButton extends StatelessWidget {
                 //   context,
                 //   QRView.routeName,
                 //   arguments: discount,
-                //   ); 
-                },
+                //   );
+              },
               child: Container(
                 //Button config
                 width: screenwidth * 0.95,
@@ -126,50 +126,52 @@ class DiscountButton extends StatelessWidget {
                         SizedBox(height: 10),
                         Row(children: [
                           ConstrainedBox(
-                            constraints: BoxConstraints(maxWidth: screenwidth*0.4, minWidth: screenwidth*0.4),
-                            child: Column(crossAxisAlignment: CrossAxisAlignment.start,
-                              // Name and description
-                              children: [
-                                Text(shopName,
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 15)),
-                                SizedBox(height: 5),
-                                Text(
-                                  description,
+                              constraints: BoxConstraints(
+                                  maxWidth: screenwidth * 0.4,
+                                  minWidth: screenwidth * 0.4),
+                              child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  // Name and description
+                                  children: [
+                                    Text(shopName,
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 15)),
+                                    SizedBox(height: 5),
+                                    Text(
+                                      description,
+                                    ),
+                                  ])),
+                          SizedBox(width: screenwidth * 0.1),
+                          ConstrainedBox(
+                              constraints:
+                                  BoxConstraints(maxWidth: screenwidth * 0.3),
+                              child: Row(children: [
+                                Text("$becoins becoins"),
+                                SizedBox(width: 5),
+                                Image.asset(
+                                  'assets/images/becoin.png',
+                                  height: 20,
+                                  width: 20,
                                 ),
                               ])),
-                          SizedBox(width: screenwidth*0.1),
-
-                          ConstrainedBox(
-                            constraints: BoxConstraints(maxWidth: screenwidth*0.3),
-                            child: 
-                          Row(children: [
-                            Text("$becoins becoins"),
-                            SizedBox(width: 5),
-                            Image.asset(
-                              'assets/images/becoin.png',
-                              height: 20,
-                              width: 20,
-                            ),
-                          ])),
                         ]),
                         SizedBox(height: 10),
                         // Buttons
                         ConstrainedBox(
-                            constraints: BoxConstraints(maxWidth: screenwidth*0.8),
-                            child:
-                        Row(
-                          children: [
-                          Spacer(),
-                          UnsaveButton(
+                            constraints:
+                                BoxConstraints(maxWidth: screenwidth * 0.8),
+                            child: Row(children: [
+                              Spacer(),
+                              UnsaveButton(
                                 userId: "627a279fd29f58dbc575baf7",
                                 discountId: discount.id,
                               ),
-                          Spacer(),
-                          GoToShopButton(option: "Go to shop", discount: discount),
-                          Spacer(),
-                        ])),
+                              Spacer(),
+                              GoToShopButton(
+                                  option: "Go to shop", discount: discount),
+                              Spacer(),
+                            ])),
                         SizedBox(height: 15),
                       ]),
                   const Spacer(),
@@ -226,8 +228,7 @@ class _TagsButton extends State<TagsButton> {
           child: Container(
               //Button config
               decoration: BoxDecoration(
-                color:
-                    myColor,
+                color: myColor,
                 borderRadius: BorderRadius.circular(30),
               ),
               child: Padding(
@@ -245,10 +246,8 @@ class _TagsButton extends State<TagsButton> {
 
 // Button
 class GoToShopButton extends StatefulWidget {
-  const GoToShopButton({
-    required this.discount,
-    required this.option, 
-    Key? key}) : super(key: key);
+  const GoToShopButton({required this.discount, required this.option, Key? key})
+      : super(key: key);
   final String option;
   final Discount discount;
 
@@ -266,49 +265,49 @@ class _GoToShopButton extends State<GoToShopButton> {
     print("polla");
     print(widget.discount.shop_id);
   }
-  
+
   @override
   Widget build(BuildContext context) {
-    return  FutureBuilder<Store>(
-              future: store,
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  print(store);
-                  print(snapshot.data!.shopname);
-                  print('hola hola');
-                  return Material(
-        borderRadius: BorderRadius.circular(30),
-        clipBehavior: Clip.antiAliasWithSaveLayer,
-        child: InkWell(
-          onTap: () {
-                Navigator.pushNamed(
-                  context,
-                  DetailView.routeName,
-                  arguments: snapshot.data!,
-                );    
-          },
-          child: Container(
-              //Button config
-              decoration: BoxDecoration(
-                color:
-                    myColor,
+    return FutureBuilder<Store>(
+        future: store,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            print(snapshot.data!);
+            print(snapshot.data!.shopname);
+            print('hola hola');
+            return Material(
                 borderRadius: BorderRadius.circular(30),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                child: Row(// Everything inside the button
-                    children: [
-                  Text(
-                    widget.option,
-                  ),
-                ]),
-              )),
-            ));
+                clipBehavior: Clip.antiAliasWithSaveLayer,
+                child: InkWell(
+                  onTap: () {
+                    Navigator.pushNamed(
+                      context,
+                      DetailView.routeName,
+                      arguments: snapshot.data!,
+                    );
+                  },
+                  child: Container(
+                      //Button config
+                      decoration: BoxDecoration(
+                        color: myColor,
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                        child: Row(// Everything inside the button
+                            children: [
+                          Text(
+                            widget.option,
+                          ),
+                        ]),
+                      )),
+                ));
           } else {
-            return Text("Loading...");
-        }}
-  );
-}}
+            return Text("Loading.....s");
+          }
+        });
+  }
+}
 
 showAlertDialog(BuildContext context, Discount discount) {
   // set up the buttons
@@ -323,10 +322,10 @@ showAlertDialog(BuildContext context, Discount discount) {
     onPressed: () {
       Navigator.of(context).pop();
       Navigator.pushNamed(
-                  context,
-                  QRView.routeName,
-                  arguments: discount,
-                  ); 
+        context,
+        QRView.routeName,
+        arguments: discount,
+      );
     },
   );
 
