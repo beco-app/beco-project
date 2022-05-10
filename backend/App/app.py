@@ -17,6 +17,7 @@ sys.path.append(os.getcwd())
 
 from backend.data_base import tools
 from backend.App.validate import validate_promotion, validate_user_exists, validate_unique_username
+
 from backend.data_base.recommender import recommend
 
 
@@ -128,6 +129,19 @@ def get_user(username):
         return {'message': 'User not found'}, 404
     else:
         return str(usr), 200"""
+
+# Get shop info from shopid
+@app.route('/shop_info', methods=['POST'])
+def get_shop_info():
+    """
+    Given the shopid, returns the shop info.
+    """
+    shopid = request.form.get('shopid')
+    shop = tools.getShop(["_id","address", "location", "shopname", "neighbourhood", "description", "photo",  "type", "tags", "web"], _id=ObjectId(shopid))
+    dict = {"shop": shop}
+    response = json.loads(json_util.dumps(dict))
+
+    return response, 200
 
 # Get info from user id
 @app.route('/user_info/', methods=['POST'])
