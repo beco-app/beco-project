@@ -13,7 +13,7 @@ from bson.objectid import ObjectId
 def evaluate():
     f = open('./backend/data_base/latent.csv', 'r')
     latent = [r[:-1].split(',') for r in f.readlines()]
-    print(latent)
+    f.close()
 
     for r in latent:
         user_id = r[0]
@@ -35,7 +35,7 @@ def evaluate():
     all_transactions = getTransaction()
 
     scores = []
-    for u in latent.keys():
+    for u in tqdm(latent.keys()):
         recom = recommend(u)
         u_trans = [t['shop_id'] for t in all_transactions if t['user_id'] == u]
         u_scores = computeScores(all_shops, all_users[u], u_trans, latent[u])
@@ -46,6 +46,7 @@ def evaluate():
     avg_recom_score = np.mean([s[0] for s in scores])
     avg_max_score = np.mean([s[1] for s in scores])
     ratio = np.mean([s[0] / s[1] for s in scores])
+    print("ratio:", ratio)
     return ratio
 
 
@@ -146,5 +147,4 @@ def transaction_gen(n_days, hard=False, n_hard=None, eval=False):
 
 if __name__ == '__main__':
     print("computing transactions")
-    transaction_gen(n_days=70, hard=True, n_hard=5, eval=False)
-
+    transaction_gen(n_days=70, hard=True, n_hard=5, eval=True)

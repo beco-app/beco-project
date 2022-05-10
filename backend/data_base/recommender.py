@@ -9,6 +9,7 @@ import numpy as np
 from bson.objectid import ObjectId
 from time import time
 import random
+import matplotlib.pyplot as plt
 
 
 def get_shop_count(uid, all_trans):
@@ -42,7 +43,7 @@ def shop_count_sim(u_shops, v_shops):
     return dot
 
 
-def recommend(user_id):
+def recommend(user_id, plot=False):
     t0 = time()
     # Get necessary info
     u_info = getUser(['preferences', 'zip_code'], _id=user_id)[0]
@@ -72,12 +73,19 @@ def recommend(user_id):
     sims = sorted(sims, key=lambda x: -x[1])
     sims = sims[0:20]  # Hyperparameter
 
-    shops = {s: 1 for s in shop_ids}
+    shops = {s: 0.1 for s in shop_ids}
     for v, sim in sims:
         v_shops = get_shop_count(v, all_trans)
         for shop, count in v_shops.items():
             score = sim * count
             shops[shop] += score
+    
+    #return sorted(shops.items(), key=lambda x: -x[1])[:20]
+
+    if plot:
+        plt.plot(sorted(shops.values())[::-1])
+        plt.title('user to user')
+        plt.show()
 
     t2 = time()
     #print(t2-t1)
@@ -91,11 +99,20 @@ def recommend(user_id):
     lats, lons = [lat for lat, _ in u_locs], [lon for _, lon in u_locs]
     u_loc = np.mean(lats), np.mean(lons)
     """
-    s_locs = [s['location'] for s in shop_info]
-    dists = [distance(u_loc, s_loc).km for s_loc in s_locs]
-    dists = np.array(dists) / max(dists)
-    dist_scores = [np.pi / 2 - np.arctan(d) for d in dists]  # hyperparameter
-    shops = {sh: sc * dist_scores[i] for i, (sh, sc) in enumerate(shops.items())}
+    s_locs = {s['_id']: s['location'] for s in shop_info}
+    dists = {s_id: distance(u_loc, s_loc).km for s_id, s_loc in s_locs.items()}
+    max_dist = max(dists.values())
+    dists = {s_id: s_dist / max_dist for s_id, s_dist in dists.items()}
+    dist_scores = {s_id: np.pi / 2 - np.arctan(s_dist) for s_id, s_dist in dists.items()}  # hyperparameter
+    shops = {sh: sc * dist_scores[sh] for sh, sc in shops.items()}
+
+    if plot:
+        plt.plot(sorted(dist_scores.values())[::-1])
+        plt.title("dist scores")
+        plt.show()
+        plt.plot(sorted(shops.values())[::-1])
+        plt.title("dist ponderated")
+        plt.show()
 
     # Sum if user interested in shop tags or bought in similar shops
     preferences = {}
@@ -119,7 +136,14 @@ def recommend(user_id):
 
     t3 = time()
     #print(t3 - t2)
-    shops = sorted(shops.items(), key=lambda x: -x[1])[:20]  # Hyperparameter
-    return random.sample(shops, k=10)
+
+    if plot:
+        plt.plot(sorted(shops.values())[::-1])
+        plt.title("tag ponderated")
+        plt.show()
+
+    shops = sorted(shops.items(), key=lambda x: -x[1])[:30]  # Hyperparameter
+    #return shops[:20]
+    return random.sample(shops, k=20)
 
     # Factors: visited or not, air pollution...
