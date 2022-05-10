@@ -3,8 +3,40 @@ import random
 from time import time
 import numpy as np
 from geopy.distance import distance
-from collections import Counter
+from recommender import recommend
 from tqdm import tqdm
+from collections import Counter
+import matplotlib.pyplot as plt
+
+
+def evaluate():
+    f = open('./backend/data_base/latent.csv', 'r')
+    latent = [r[:-1].split(',') for r in f.readlines()]
+    print(latent)
+    latent = {ObjectId(r[0]): {'freq': float(r[1]), 
+                               'fidelity': float(r[2]),
+                               'laziness': float(r[3]),
+                               'pickiness': float(r[4])} for r in latent}
+    all_users = getUser() # all users from db with all fields
+    all_users = {user["_id"]: user for user in all_users} # index users by id
+    all_shops = getShop() # all shops from db with all fields
+    all_shops = {shop["_id"]: shop for shop in all_shops} # index shops by id
+    all_transactions = getTransaction()
+
+    scores = []
+    for u in latent.keys():
+        recom = recommend(u)
+        u_trans = [t['shop_id'] for t in all_transactions if t['user_id'] == u]
+        u_scores = computeScores(all_shops, all_users[u], u_trans, latent[u])
+        max_score = sum(sorted(u_scores.values())[-10:])
+        recom_score = sum([u_scores[s[0]] for s in recom])
+        scores.append((recom_score, max_score))
+    
+    avg_recom_score = np.mean([s[0] for s in scores])
+    avg_max_score = np.mean([s[1] for s in scores])
+    ratio = np.mean([s[0] / s[1] for s in scores])
+    return ratio
+
 
 def computeScores(all_shops, user, u_transactions, u_latent):
     n_transactions = Counter(u_transactions)
@@ -25,7 +57,7 @@ def computeScores(all_shops, user, u_transactions, u_latent):
     return scores
 
 
-def transaction_gen(n_days, hard=False, n_hard=None):
+def transaction_gen(n_days, hard=False, n_hard=None, eval=False):
     now = time()
 
     all_users = getUser() # all users from db with all fields
@@ -41,7 +73,7 @@ def transaction_gen(n_days, hard=False, n_hard=None):
     f = open('./backend/data_base/latent.csv', 'w')
     for uid in (t:=tqdm(all_users.keys())):
         t.set_description("generating latent")
-        freq = random.random()
+        freq = random.random() / 7
         fidelity = random.random()
         laziness = random.random()
         pickiness = random.random()
@@ -52,6 +84,7 @@ def transaction_gen(n_days, hard=False, n_hard=None):
 
     # days from previous n_days until yesterday (n_days,...,3,2,1)
     days = range(n_days, 0, -1)
+    ratios = []
     for day in days:
         # decide which users are going to buy that day
         buying_users = []
@@ -77,8 +110,11 @@ def transaction_gen(n_days, hard=False, n_hard=None):
             record = {'shop_id': shop_chosen, 'user_id': uid, 'timestamp': timestamp,
              'promotion_used': promotion_used, 'payment': payment, 'becoin_gained': becoin_gained}
 
-            print(setTransaction(record))
+            if not eval:
+                print(setTransaction(record))
             transactions[uid].append(shop_chosen)
+        if eval:
+            ratios.append(evaluate())
 
     total_trans = 0
     for k,v in transactions.items():
@@ -86,8 +122,11 @@ def transaction_gen(n_days, hard=False, n_hard=None):
 
     print(f"total transactions {total_trans}")
 
+    if eval:
+        plt.plot(range(days), ratios)
+        plt.show()
 
 if __name__ == '__main__':
     print("computing transactions")
-    transaction_gen(n_days=10, hard=True, n_hard=5)
+    transaction_gen(n_days=70, hard=True, n_hard=5, eval=True)
 

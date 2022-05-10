@@ -55,7 +55,7 @@ def recommend(user_id):
     u_loc = (u_loc.latitude, u_loc.longitude)
 
     t1 = time()
-    print(t1 - t0)
+    #print(t1 - t0)
     
     # To new users, recommend shops in its zip code with preferences
     #if len(u_shops) < 2:
@@ -80,7 +80,7 @@ def recommend(user_id):
             shops[shop] += score
 
     t2 = time()
-    print(t2-t1)
+    #print(t2-t1)
     shop_info = [s for s in all_shops if s['_id'] in shops.keys()]
     u_shop_info = [s for s in all_shops if s['_id'] in u_shops.keys()]
 
@@ -118,7 +118,7 @@ def recommend(user_id):
                 shops[sh] *= preferences[tag] # hyperparameter
 
     t3 = time()
-    print(t3 - t2)
+    #print(t3 - t2)
     shops = sorted(shops.items(), key=lambda x: -x[1])[:20]  # Hyperparameter
     return random.sample(shops, k=10)
 

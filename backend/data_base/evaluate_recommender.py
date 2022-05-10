@@ -5,7 +5,7 @@ from time import time
 import numpy as np
 from bson.objectid import ObjectId
 
-if __name__ == '__main__':
+def evaluate():
     f = open('./backend/data_base/latent.csv', 'r')
     latent = [r[:-1].split(',') for r in f.readlines()]
     print(latent)
@@ -30,7 +30,5 @@ if __name__ == '__main__':
     
     avg_recom_score = np.mean([s[0] for s in scores])
     avg_max_score = np.mean([s[1] for s in scores])
-    print("Average recommendation score:", avg_recom_score)
-    print("Average maximum score:", avg_max_score)
-    print("Ratio of averages:", avg_recom_score / avg_max_score)
-    print("Average ratio:",  np.mean([s[0]/s[1] for s in scores]))
+    ratio = np.mean([s[0] / s[1] for s in scores])
+    return ratio
