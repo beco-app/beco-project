@@ -136,11 +136,11 @@ def get_shop_info():
     """
     Given the shopid, returns the shop info.
     """
-    shopid = request.form.get('shopid')
-    shop = tools.getShop(["_id","address", "location", "shopname", "neighbourhood", "description", "photo",  "type", "tags", "web"], _id=ObjectId(shopid))
-    dict = {"shop": shop}
-    response = json.loads(json_util.dumps(dict))
-
+    shopid = request.form.get('shop_id')
+    shop = tools.getShop(["_id","address", "location", "shopname", "neighbourhood", "description", "photo",  "type", "tags", "web"], _id=ObjectId(shopid))[0]
+    # dict = {"shop": shop}
+    response = json.loads(json_util.dumps(shop))
+    print("This is the response: ", response)
     return response, 200
 
 # Get info from user id
