@@ -16,7 +16,7 @@ __status__ = 'Dev'
 
 available_stations = set()
 
-def get_store_aqi(store_id):
+def get_shop_aqi(store_id):
     calling_time = time.time()
 
     with open('./stores.json', 'r') as json_file:
