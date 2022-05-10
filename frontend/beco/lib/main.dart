@@ -51,7 +51,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _initStores() async {
-    globals.storeList = await getStores();
+    globals.storeList = await getMapStores();
     FlutterNativeSplash.remove();
   }
 
