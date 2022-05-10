@@ -122,3 +122,31 @@ Future<Stores> getHomepageStores() async {
 
   return noStores;
 }
+
+Future<Store> getStore(String storeId) async {
+  const shopURL = 'http://34.252.26.132/shop_info/';
+  final voidStore = Store(
+    id: "",
+    address: "",
+    shopname: "",
+    lat: 0,
+    lng: 0,
+    neighbourhood: "",
+    description: "",
+    photo: "https://theibizan.com/wp-content/uploads/2019/03/eco.jpg",
+    type: "",
+    tags: [],
+    web: "",
+  );
+
+  try {
+    final response =
+        await http.post(Uri.parse(shopURL), body: {"shop_id": storeId});
+    if (response.statusCode == 200) {
+      return Store.fromJson(json.decode(response.body));
+    }
+  } catch (error) {
+    print(error);
+  }
+  return voidStore;
+}

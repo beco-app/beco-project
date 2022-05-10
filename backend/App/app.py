@@ -392,5 +392,19 @@ def update_user(username, parameter, value):
     
     return str(tools.updateUser(userid, **{parameter:value}))
 
+# Get shop info from shopid
+@app.route('/shop_info', methods=['POST'])
+def get_shop_info(shopid):
+    """
+    Given the shopid, returns the shop info.
+    """
+    shopid = request.form.get('shopid')
+    shop = tools.getShop(["_id","address", "location", "shopname", "neighbourhood", "description", "photo",  "type", "tags", "web"],shopid=shopid)
+    dict = {"shop": shop}
+    response = json.loads(json_util.dumps(dict))
+
+    return response, 200
+    
+
 if __name__ == '__main__':
     app.run(debug=True)
