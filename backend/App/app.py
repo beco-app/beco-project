@@ -370,7 +370,13 @@ def homepage():
 def load_map():
     data = request.form.to_dict()
     shops = tools.getShop(["_id","address", "location", "shopname", "neighbourhood", "description", "photo",  "type", "tags", "web"])
-    shops_dict = {"shops": shops}
+    shops_aqi = []
+    for shop in shops:
+        shop['aqi'] = get_shop_aqi(shop['_id'])
+        shops_aqi.append(shop)
+    
+    print("shop_aqi", shops_aqi)
+    shops_dict = {"shops": shops_aqi}
     response = json.loads(json_util.dumps(shops_dict))
 
     return response, 200
