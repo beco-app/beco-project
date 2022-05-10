@@ -199,7 +199,6 @@ def activate_promotion():
 # Save promotion
 @app.route('/promotions/save', methods=['POST'])
 @validate_user_exists
-@validate_promotion
 def save_promotion():
     """
     Saves a promotion for a given user.
