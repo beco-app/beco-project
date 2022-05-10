@@ -1,13 +1,9 @@
 import 'package:beco/views/DetailView.dart';
+import 'package:beco/views/QRView.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:beco/Stores.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
-
-import 'ScannerView.dart';
-
-
-
 import 'package:beco/Stores.dart';
 
 class HomeWidget extends StatefulWidget {
@@ -60,7 +56,20 @@ class _HomeWidgetState extends State<HomeWidget> {
                         ),
                       ),
                   ),
-            
+            InkWell(
+                onTap: () {
+                  Navigator.pushNamed(
+                  context,
+                  QRView.routeName,
+                  ); 
+                },
+                child: Container ( //Button config     
+                        child: Icon(
+                          Icons.qr_code,
+                          size:  30,
+                        ),
+                      ),
+                  ),
             const SizedBox(height: 20), 
             IconsRow(),
             Padding(
@@ -85,7 +94,6 @@ class _HomeWidgetState extends State<HomeWidget> {
                   } else if (snapshot.hasError) {
                     return Text('${snapshot.error}');
                   }
-
                   // By default, show a loading spinner.
                   return const CircularProgressIndicator();
                 },

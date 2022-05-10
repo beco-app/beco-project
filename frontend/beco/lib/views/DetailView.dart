@@ -49,13 +49,13 @@ class DetailView extends StatelessWidget {
                 Text(
                   args.shopname,
                   style: const TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 20)
+                                fontWeight: FontWeight.bold, fontSize: 25)
                 ),
                 SizedBox(height: 10),
                 Text(
                   args.type,
                   style: const TextStyle(
-                    fontSize: 15)
+                    fontSize: 18)
                 ),
                 SizedBox(height: 20),
                 Text("Description",

@@ -54,10 +54,10 @@ Future<Discounts> getDiscounts() async {
   final noDiscount = Discounts(discounts: [voidDiscount]);
 
   try {
-    final response = await http.post(Uri.parse(discountsURL),
-        body: {"user_id": await FirebaseAuth.instance.currentUser!.uid});
     // final response = await http.post(Uri.parse(discountsURL),
-    //     body: {"user_id": "626ad91ef86a6624c429e357"});
+    // body: {"user_id": await FirebaseAuth.instance.currentUser!.uid});
+    final response = await http.post(Uri.parse(discountsURL),
+        body: {"user_id": "626ad91ef86a6624c429e394"});
     print("RESPONSE");
     print(response.body);
     log(response.body);
