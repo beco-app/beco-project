@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'package:beco/Users.dart';
 import 'package:beco/views/DetailView.dart';
 import 'package:beco/views/HomeView.dart';
 import 'package:beco/views/LoginView.dart';
@@ -8,9 +9,10 @@ import 'package:beco/views/VerifyEmailView.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'Stores.dart';
 import 'firebase_options.dart';
-
+import 'globals.dart' as globals;
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,8 +34,31 @@ void main() {
   );
 }
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  late final Stores storeList;
+  @override
+  void initState() {
+    super.initState();
+    _initStores();
+    _initUser();
+  }
+
+  void _initStores() async {
+    globals.storeList = await getStores();
+    FlutterNativeSplash.remove();
+  }
+
+  void _initUser() async {
+    globals.user = await getUser();
+    FlutterNativeSplash.remove();
+  }
 
   @override
   Widget build(BuildContext context) {
