@@ -49,7 +49,8 @@ class DetailView extends StatelessWidget {
                       style: const TextStyle(
                           fontWeight: FontWeight.bold, fontSize: 25)),
                   SizedBox(height: 10),
-                  Text(args.type, style: const TextStyle(fontSize: 18)),
+                  Text("${args.type[0].toUpperCase()}${args.type.substring(1)}",
+                      style: const TextStyle(fontSize: 18)),
                   SizedBox(height: 20),
                   Text("Description",
                       style: const TextStyle(
