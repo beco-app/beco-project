@@ -61,7 +61,7 @@ class _HomeViewState extends State<HomeView> {
               Container(
                   width: screenwidth * 0.22,
                   child: Text(
-                    globals.user.becoins.toString(), //canviar
+                    globals.user.becoins.toString(), 
                     overflow: TextOverflow.ellipsis,
                     maxLines: 1,
                     textAlign: TextAlign.left,

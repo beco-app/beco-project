@@ -108,6 +108,7 @@ class _HomeWidgetState extends State<HomeWidget> {
 
   @override
   Widget build(BuildContext context) {
+    double screenwidth = MediaQuery.of(context).size.width;
     return CustomScrollView(slivers: <Widget>[
       // SliverAppBar(floating: true, actions: <Widget>[
       //   SizedBox(height: 20), //sliver app bar doesnt work with stateful widget
@@ -117,51 +118,69 @@ class _HomeWidgetState extends State<HomeWidget> {
           hasScrollBody: false,
           child: Column(children: [
             const SizedBox(height: 20),
-            InkWell(
-              onTap: () {
-                showSearch(context: context, delegate: MySearchDelegate());
-              },
-              child: Container(
-                //Button config
-                child: const Icon(
-                  Icons.search,
-                  size: 30,
+            Row(children: [
+              InkWell(
+                  onTap: () {
+                    showSearch(context: context, delegate: MySearchDelegate());
+                  },
+                  child: Container(
+                      padding: const EdgeInsets.only(left: 3.0),
+                      margin: const EdgeInsets.only(left: 15.0),
+                      height: 55,
+                      width: screenwidth * 0.81,
+                      alignment: Alignment.bottomLeft,
+                      decoration: BoxDecoration(
+                        color: Color.fromARGB(147, 231, 231, 231),
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      child: Row(children: [
+                        Container(
+                            width: 70,
+                            child: const Icon(Icons.search, size: 30)),
+                        Flexible(
+                            child: Container(
+                          width: double.infinity,
+                          height: 100,
+                          child: const Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              'Search...',
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                              textAlign: TextAlign.left,
+                              style: TextStyle(
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.normal,
+                                  color: Color.fromARGB(255, 63, 63, 63)),
+                            ),
+                          ),
+                        )),
+                      ]))),
+              SizedBox(width: 12.0),
+              InkWell(
+                onTap: () {
+                  scanBarcodeNormal();
+                },
+                child: Container(
+                  //Button config
+                  child: const Icon(
+                    Icons.camera_alt,
+                    size: 30,
+                  ),
                 ),
-              ),
-            ),
-            InkWell(
-              onTap: () {
-                scanBarcodeNormal();
-              },
-              child: Container(
-                //Button config
-                child: const Icon(
-                  Icons.camera_alt,
-                  size: 30,
-                ),
-              ),
-            ),
-            InkWell(
-              onTap: () {
-                const QRView();
-              },
-              child: Container(
-                //Button config
-                child: const Icon(
-                  Icons.qr_code,
-                  size: 30,
-                ),
-              ),
-            ),
-            const SizedBox(height: 20),
+              )
+            ]),
+            const SizedBox(height: 10),
             TextButton(
                 onPressed: _openFilterDialog,
                 child: const Text(
-                  "Filter Dialog",
-                  style: TextStyle(color: Colors.white),
+                  "Filter by",
+                  style: TextStyle(
+                      color: Color.fromARGB(255, 0, 0, 0), fontSize: 15),
                 ),
-                style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(Colors.blue))),
+                style: TextButton.styleFrom(
+                    backgroundColor: Color.fromARGB(255, 235, 228, 233),
+                    fixedSize: Size.fromWidth(screenwidth * 0.8))),
             Padding(
               padding: const EdgeInsets.all(20),
               child: FutureBuilder<Stores>(

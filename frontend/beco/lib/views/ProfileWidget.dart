@@ -101,9 +101,6 @@ class _ProfileWidgetState extends State<ProfileWidget> {
               padding: const EdgeInsets.all(32.0),
               child: Column(children: [
                 InfoContainer(
-                    attribute: "User", content: widget.profileUser.email),
-                const SizedBox(height: 20),
-                InfoContainer(
                     attribute: "Email", content: widget.profileUser.email),
                 const SizedBox(height: 20),
                 InfoContainer(
@@ -115,7 +112,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                     width: screenwidth * 0.9,
                     alignment: Alignment.bottomLeft,
                     decoration: BoxDecoration(
-                      color: const Color.fromRGBO(217, 195, 220, 0.584),
+                      color: const Color.fromARGB(255, 235, 228, 233),
                       borderRadius: BorderRadius.circular(30),
                     ),
                     child: Row(children: [
@@ -172,7 +169,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                     width: screenwidth * 0.9,
                     alignment: Alignment.bottomLeft,
                     decoration: BoxDecoration(
-                      color: const Color.fromRGBO(217, 195, 220, 0.584),
+                      color: const Color.fromARGB(255, 235, 228, 233),
                       borderRadius: BorderRadius.circular(30),
                     ),
                     child: Row(children: [
@@ -238,7 +235,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                     width: screenwidth * 0.9,
                     alignment: Alignment.bottomLeft,
                     decoration: BoxDecoration(
-                      color: const Color.fromRGBO(217, 195, 220, 0.584),
+                      color: const Color.fromARGB(255, 235, 228, 233),
                       borderRadius: BorderRadius.circular(30),
                     ),
                     child: Row(children: [
@@ -323,8 +320,9 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                                 fontSize: 20,
                                 color: Color.fromARGB(255, 64, 64, 64))),
                         style: ElevatedButton.styleFrom(
-                            primary: Theme.of(context).secondaryHeaderColor,
-                            padding: const EdgeInsets.all(8.0))),
+                            primary: const Color.fromARGB(255, 224, 224, 224),
+                            padding: const EdgeInsets.all(8.0),
+                            elevation: 2.0)),
                     Spacer(),
                     ElevatedButton(
                         onPressed: () {
@@ -335,8 +333,9 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                                 fontSize: 20,
                                 color: Color.fromARGB(255, 64, 64, 64))),
                         style: ElevatedButton.styleFrom(
-                            primary: Theme.of(context).secondaryHeaderColor,
-                            padding: const EdgeInsets.all(8.0))),
+                            primary: Color.fromARGB(255, 224, 224, 224),
+                            padding: const EdgeInsets.all(8.0),
+                            elevation: 2.0)),
                     Spacer(),
                   ],
                 ),
@@ -443,7 +442,7 @@ class _FormDatePickerState extends State<_FormDatePicker> {
       width: screenwidth * 0.9,
       alignment: Alignment.centerLeft,
       decoration: BoxDecoration(
-        color: const Color.fromRGBO(217, 195, 220, 0.584),
+        color: const Color.fromARGB(255, 235, 228, 233),
         borderRadius: BorderRadius.circular(30),
       ),
       child: Row(
@@ -502,14 +501,13 @@ class InfoContainer extends StatelessWidget {
   Widget build(context) {
     double screenheight = MediaQuery.of(context).size.height;
     double screenwidth = MediaQuery.of(context).size.width;
-    if (attribute == 'Zipcode') {}
     return Container(
         padding: const EdgeInsets.only(left: 20.0),
         height: 55,
         width: screenwidth * 0.9,
         alignment: Alignment.bottomLeft,
         decoration: BoxDecoration(
-          color: const Color.fromRGBO(217, 195, 220, 0.584),
+          color: const Color.fromARGB(255, 235, 228, 233),
           borderRadius: BorderRadius.circular(30),
         ),
         child: Row(children: [
