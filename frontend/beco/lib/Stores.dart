@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'dart:ffi';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
 import 'package:json_annotation/json_annotation.dart';
 import 'package:flutter/services.dart' show rootBundle;
@@ -20,6 +22,7 @@ class Store {
     required this.type,
     required this.tags,
     required this.web,
+    required this.aqi,
   });
 
   factory Store.fromJson(Map<String, dynamic> json) => _$StoreFromJson(json);
@@ -36,6 +39,7 @@ class Store {
   final String type;
   final List tags;
   final String web;
+  final double aqi;
 }
 
 @JsonSerializable()
@@ -51,7 +55,7 @@ class Stores {
 }
 
 Future<Stores> getMapStores() async {
-  const shopLocationsURL = 'http://18.219.12.116/load_map';
+  const shopLocationsURL = 'http://34.252.26.132/load_map';
   final voidStore = Store(
     id: "",
     address: "",
@@ -64,13 +68,12 @@ Future<Stores> getMapStores() async {
     type: "",
     tags: [],
     web: "",
+    aqi: 0,
   );
   final noStores = Stores(stores: [voidStore]);
 
   try {
     final response = await http.get(Uri.parse(shopLocationsURL));
-    print("RESPONSE");
-    log(response.body);
     if (response.statusCode == 200) {
       return Stores.fromJson(json.decode(response.body));
     }
@@ -90,7 +93,7 @@ Future<Stores> getMapStores() async {
 }
 
 Future<Stores> getHomepageStores() async {
-  const shopButtonsURL = 'http://18.219.12.116/homepage';
+  const shopButtonsURL = 'http://34.252.26.132/homepage';
   final voidStore = Store(
     id: "",
     address: "",
@@ -103,6 +106,7 @@ Future<Stores> getHomepageStores() async {
     type: "",
     tags: [],
     web: "",
+    aqi: 0,
   );
   final noStores = Stores(stores: [voidStore]);
 
@@ -135,6 +139,7 @@ Future<Store> getStore(String storeId) async {
     type: "",
     tags: [],
     web: "",
+    aqi: 0,
   );
 
   try {

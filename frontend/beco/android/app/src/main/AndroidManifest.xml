@@ -1,9 +1,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="es.beco.beco">
+   <queries>
+    <package android:name="com.google.android.apps.maps" />
+  </queries>
    <application
-        android:label="beco"
+        android:label="BECO"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/beco">
 
         <meta-data android:name="com.google.android.geo.API_KEY"
                android:value="AIzaSyDr7uWUDY51_9dI8lCt1ffiP6DURo53eew"/> <!-- https://console.cloud.google.com/google/maps-apis/credentials?authuser=3&project=beco-345609&supportedpurview=project-->
@@ -35,4 +38,8 @@
             android:name="flutterEmbedding"
             android:value="2" />
     </application>
+
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
 </manifest>

@@ -5,9 +5,13 @@ The aim of this python script is to asign the air quality index
 to a given store.
 """
 
+import os
 import numpy as np
 import json
 import time
+from datetime import datetime as dt
+
+import tools
 
 __author__ = '[Gerard Calvo, Pau Matas]'
 __maintainer__ = 'Gerard Calvo'
@@ -16,25 +20,26 @@ __status__ = 'Dev'
 
 available_stations = set()
 
-def get_store_aqi(store_id):
+def get_shop_aqi(shop_id):
     calling_time = time.time()
 
-    with open('./stores.json', 'r') as json_file:
-        stores_json = json.load(json_file)
-    nearest_stations = stores_json[store_id]["nearest_stations"]
+    nearest_stations = tools.getShop(_id=shop_id)[0]["nearest_stations"]
 
-    with open('./stations.json', 'r') as json_file:
+    with open(os.path.dirname(os.path.abspath(__file__))+'/stations.json', 'r', encoding='utf-8') as json_file:
         stations_json = json.load(json_file)
 
     station_aqis_dist_time = []
     total_dist = 0
     sum_elapsed_time = 0
     for station_id, distance in nearest_stations.items():
-        if station_id in available_stations: #wtf es available_stations
+        if stations_json[station_id]["aqi"] is not None: #wtf es available_stations
             station_aqi = stations_json[station_id]["aqi"]
+
             station_time = stations_json[station_id]["time"] #cal transformar a timestamp
+            station_time = time.mktime(dt.fromisoformat(station_time).timetuple())
             elapsed_time = calling_time - station_time
-            station_aqis_dist_time.append(station_aqi, distance, elapsed_time)
+
+            station_aqis_dist_time.append((station_aqi, distance, elapsed_time))
             sum_elapsed_time += elapsed_time
             total_dist += distance
         else:

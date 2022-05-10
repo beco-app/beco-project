@@ -22,6 +22,7 @@ object to the JSON file you must follow one of the following command skeletons:
 # Libs
 import argparse
 import json
+import os
 
 # Own modules
 from extraction_routine import sensors_api_query, token
@@ -51,7 +52,7 @@ extraction = sensors_api_query(
 if 'status' in extraction and extraction['status'] == 'ok': # Extr. succesful
     # Update stations information adding the new stations detected by the new
     # bounding box.
-    with open('./stations.json', 'r') as json_file:
+    with open(os.path.dirname(os.path.abspath(__file__))+'/stations.json', 'r') as json_file:
         stations = json.load(json_file)
         for st in extraction['data']:
             if not st['uid'] in stations:
@@ -62,11 +63,11 @@ if 'status' in extraction and extraction['status'] == 'ok': # Extr. succesful
                                               if st['aqi'] != '-'
                                               else None
                                              )
-    with open('./stations.json', 'w') as json_file:
+    with open(os.path.dirname(os.path.abspath(__file__))+'/stations.json', 'w') as json_file:
         json.dump(stations, json_file, ensure_ascii=False, indent=2)
 
     # Update 'bounding_boxes.json' file
-    with open('./bounding_boxes.json', 'r') as json_file:
+    with open(os.path.dirname(os.path.abspath(__file__))+'/bounding_boxes.json', 'r') as json_file:
         bounding_boxes = json.load(json_file)
         bb_names_set = {bb['name'] for bb in bounding_boxes}
         if not args.bb_name in bb_names_set:
