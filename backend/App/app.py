@@ -18,6 +18,7 @@ sys.path.append(os.getcwd())
 from backend.data_base import tools
 from backend.App.validate import validate_promotion, validate_user_exists, validate_unique_username
 from backend.data_base.recommender import recommend
+from backend.data_base.shops_aqi import get_shop_aqi
 
 
 import json
@@ -159,6 +160,7 @@ def recommended_shops():
     shops = []
     for shop_id, score in resp:
         shop_content = tools.getShop(_id=shop_id)
+        shop_content[0]['aqi'] = get_shop_aqi(shop_id)
         shops.append(shop_content[0])
         print("shop_aqi", shop_content)
     shops_dict = {"shops": shops}
