@@ -60,7 +60,7 @@ Future<Discounts> getDiscounts() async {
     // final response = await http.post(Uri.parse(discountsURL),
     // body: {"user_id": await FirebaseAuth.instance.currentUser!.uid});
     final response = await http.post(Uri.parse(discountsURL),
-        body: {"user_id": "6278119583f5afe7b5eff43c"});
+        body: {"user_id": "627a279fd29f58dbc575baf7"});
     print("RESPONSE");
     print(response.body);
     log(response.body);
@@ -76,3 +76,5 @@ Future<Discounts> getDiscounts() async {
 
   return noDiscount;
 }
+
+

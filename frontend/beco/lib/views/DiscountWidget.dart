@@ -162,11 +162,12 @@ class DiscountButton extends StatelessWidget {
                         Row(
                           children: [
                           Spacer(),
-                          Button(option: "Redeem"),
+                          UnsaveButton(
+                                userId: "627a279fd29f58dbc575baf7",
+                                discountId: discount.id,
+                              ),
                           Spacer(),
-                          Button(option: "Unsave"),
-                          Spacer(),
-                          Button(option: "Go to shop"),
+                          GoToShopButton(option: "Go to shop", discount: discount),
                           Spacer(),
                         ])),
                         SizedBox(height: 15),
@@ -243,19 +244,39 @@ class _TagsButton extends State<TagsButton> {
 }
 
 // Button
-class Button extends StatefulWidget {
-  const Button({required this.option, Key? key}) : super(key: key);
+class GoToShopButton extends StatefulWidget {
+  const GoToShopButton({
+    required this.discount,
+    required this.option, 
+    Key? key}) : super(key: key);
   final String option;
+  final Discount discount;
 
   @override
-  State<Button> createState() => _Button();
+  State<GoToShopButton> createState() => _GoToShopButton();
 }
 
-class _Button extends State<Button> {
+class _GoToShopButton extends State<GoToShopButton> {
   Color? myColor = Colors.grey[350];
+  late Future<Store> store;
+  @override
+  void initState() {
+    super.initState();
+    store = getStore(widget.discount.shop_id);
+    print("polla");
+    print(widget.discount.shop_id);
+  }
+  
   @override
   Widget build(BuildContext context) {
-    return Material(
+    return  FutureBuilder<Store>(
+              future: store,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  print(store);
+                  print(snapshot.data!.shopname);
+                  print('hola hola');
+                  return Material(
         borderRadius: BorderRadius.circular(30),
         clipBehavior: Clip.antiAliasWithSaveLayer,
         child: InkWell(
@@ -263,9 +284,9 @@ class _Button extends State<Button> {
                 Navigator.pushNamed(
                   context,
                   DetailView.routeName,
-                  //arguments: getStore(discount.),
-                );
-              },
+                  arguments: snapshot.data!,
+                );    
+          },
           child: Container(
               //Button config
               decoration: BoxDecoration(
@@ -282,9 +303,12 @@ class _Button extends State<Button> {
                   ),
                 ]),
               )),
-        ));
-  }
-}
+            ));
+          } else {
+            return Text("Loading...");
+        }}
+  );
+}}
 
 showAlertDialog(BuildContext context, Discount discount) {
   // set up the buttons
@@ -323,4 +347,51 @@ showAlertDialog(BuildContext context, Discount discount) {
       return alert;
     },
   );
+}
+
+// Unsave button
+class UnsaveButton extends StatefulWidget {
+  const UnsaveButton({required this.userId, required this.discountId, Key? key})
+      : super(key: key);
+
+  final String userId;
+  final String discountId;
+
+  @override
+  State<UnsaveButton> createState() => _UnsaveButton();
+}
+
+class _UnsaveButton extends State<UnsaveButton> {
+  Color? myColor = Colors.grey[350];
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+        borderRadius: BorderRadius.circular(30),
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        child: InkWell(
+          onTap: () async {
+            final r = await http.post(
+                Uri.parse('http://34.252.26.132/promotions/unsave'),
+                body: {
+                  'user_id': widget.userId,
+                  'promotion_id': widget.discountId,
+                });
+          },
+          child: Container(
+              //Button config
+              decoration: BoxDecoration(
+                color: myColor,
+                borderRadius: BorderRadius.circular(30),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                child: Row(// Everything inside the button
+                    children: [
+                  Text(
+                    "Unsave",
+                  ),
+                ]),
+              )),
+        ));
+  }
 }
