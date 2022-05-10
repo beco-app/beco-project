@@ -160,6 +160,7 @@ def recommended_shops():
     for shop_id, score in resp:
         shop_content = tools.getShop(_id=shop_id)
         shops.append(shop_content[0])
+        print("shop_aqi", shop_content)
     shops_dict = {"shops": shops}
     response = json.loads(json_util.dumps(shops_dict))
     print("This is the response", response)
