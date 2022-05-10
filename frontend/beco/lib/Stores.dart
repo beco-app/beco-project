@@ -93,7 +93,7 @@ Future<Stores> getMapStores() async {
 }
 
 Future<Stores> getHomepageStores() async {
-  const shopButtonsURL = 'http://34.252.26.132/homepage';
+  const shopButtonsURL = 'http://34.252.26.132/recommended_shops/';
   final voidStore = Store(
     id: "",
     address: "",
@@ -111,7 +111,8 @@ Future<Stores> getHomepageStores() async {
   final noStores = Stores(stores: [voidStore]);
 
   try {
-    final response = await http.get(Uri.parse(shopButtonsURL));
+    final response = await http.post(Uri.parse(shopButtonsURL),
+        body: {"user_id": await FirebaseAuth.instance.currentUser!.uid});
     print("RESPONSE");
     log(response.body);
     if (response.statusCode == 200) {

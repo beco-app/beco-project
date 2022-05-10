@@ -140,6 +140,7 @@ def get_shop_info():
     shopid = request.form.get('shop_id')
     shop = tools.getShop(["_id","address", "location", "shopname", "neighbourhood", "description", "photo",  "type", "tags", "web"], _id=ObjectId(shopid))[0]
     # dict = {"shop": shop}
+    shop['aqi'] = get_shop_aqi(shop['_id'])
     response = json.loads(json_util.dumps(shop))
     print("This is the response: ", response)
     return response, 200
@@ -435,19 +436,6 @@ def update_user():
             return {'message': 'No user found'}, 400
     except:
         return {'message': 'Error in updating database'}, 400
-
-# Get shop info from shopid
-@app.route('/shop_info', methods=['POST'])
-def get_shop_info(shopid):
-    """
-    Given the shopid, returns the shop info.
-    """
-    shopid = request.form.get('shopid')
-    shop = tools.getShop(["_id","address", "location", "shopname", "neighbourhood", "description", "photo",  "type", "tags", "web"],shopid=shopid)
-    dict = {"shop": shop}
-    response = json.loads(json_util.dumps(dict))
-
-    return response, 200
     
 
 if __name__ == '__main__':
