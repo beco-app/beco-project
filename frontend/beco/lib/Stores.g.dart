@@ -18,6 +18,7 @@ Store _$StoreFromJson(Map<String, dynamic> json) => Store(
       type: json['type'] as String,
       tags: json['tags'] as List<dynamic>,
       web: json['web'] as String,
+      aqi: json['aqi'] as double,
     );
 
 Map<String, dynamic> _$StoreToJson(Store instance) => <String, dynamic>{
@@ -32,6 +33,7 @@ Map<String, dynamic> _$StoreToJson(Store instance) => <String, dynamic>{
       'type': instance.type,
       'tags': instance.tags,
       'web': instance.web,
+      'aqi': instance.aqi,
     };
 
 Stores _$StoresFromJson(Map<String, dynamic> json) => Stores(

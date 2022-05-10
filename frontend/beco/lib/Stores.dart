@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
 import 'package:json_annotation/json_annotation.dart';
@@ -21,6 +22,7 @@ class Store {
     required this.type,
     required this.tags,
     required this.web,
+    required this.aqi,
   });
 
   factory Store.fromJson(Map<String, dynamic> json) => _$StoreFromJson(json);
@@ -37,6 +39,7 @@ class Store {
   final String type;
   final List tags;
   final String web;
+  final double aqi;
 }
 
 @JsonSerializable()
@@ -65,6 +68,7 @@ Future<Stores> getMapStores() async {
     type: "",
     tags: [],
     web: "",
+    aqi: 0,
   );
   final noStores = Stores(stores: [voidStore]);
 
@@ -104,6 +108,7 @@ Future<Stores> getHomepageStores() async {
     type: "",
     tags: [],
     web: "",
+    aqi: 0,
   );
   final noStores = Stores(stores: [voidStore]);
 
@@ -137,6 +142,7 @@ Future<Stores> getStores() async {
     type: "",
     tags: [],
     web: "",
+    aqi: 0,
   );
   final noStores = Stores(stores: [voidStore]);
 

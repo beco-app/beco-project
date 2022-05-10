@@ -90,7 +90,7 @@ class DetailView extends StatelessWidget {
                         SizedBox(height: 10),
                         Text(args.address),
                         const SizedBox(height: 2000)
-                      ])
+                      ]),
                   ])))
         ]));
   }
