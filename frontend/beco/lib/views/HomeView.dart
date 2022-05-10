@@ -61,7 +61,7 @@ class _HomeViewState extends State<HomeView> {
               Container(
                   width: screenwidth * 0.22,
                   child: Text(
-                    globals.user.becoins.toString(), 
+                    globals.user.becoins.toString(),
                     overflow: TextOverflow.ellipsis,
                     maxLines: 1,
                     textAlign: TextAlign.left,
@@ -74,7 +74,7 @@ class _HomeViewState extends State<HomeView> {
           Image.asset('assets/images/BECO_nom-removebg-preview 1.png',
               height: kToolbarHeight * 0.6),
         ]),
-        backgroundColor: Color.fromARGB(255, 235, 228, 233),
+        backgroundColor: const Color.fromARGB(255, 235, 228, 233),
         elevation: 0.0,
       ),
       body: _pages.elementAt(_selectedIndex),
@@ -87,22 +87,25 @@ class _HomeViewState extends State<HomeView> {
         onTap: _onItemTapped,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-              icon: Icon(Icons.house, color: Colors.black),
+              icon: Icon(Icons.home, color: Colors.black),
               label: 'Home',
-              activeIcon: Icon(Icons.house, color: Colors.deepPurple)),
+              activeIcon:
+                  Icon(Icons.home, color: Color.fromARGB(255, 229, 207, 222))),
           BottomNavigationBarItem(
               icon: Icon(Icons.map, color: Colors.black),
               label: 'Map',
-              activeIcon: Icon(Icons.map, color: Colors.deepPurple)),
+              activeIcon:
+                  Icon(Icons.map, color: Color.fromARGB(255, 229, 207, 222))),
           BottomNavigationBarItem(
               icon: Icon(Icons.price_check, color: Colors.black),
               label: 'Discounts',
-              activeIcon: Icon(Icons.price_check, color: Colors.deepPurple)),
+              activeIcon: Icon(Icons.price_check,
+                  color: Color.fromARGB(255, 229, 207, 222))),
           BottomNavigationBarItem(
               icon: Icon(Icons.account_circle_sharp, color: Colors.black),
               label: 'Profile',
-              activeIcon:
-                  Icon(Icons.account_circle_sharp, color: Colors.deepPurple)),
+              activeIcon: Icon(Icons.account_circle_sharp,
+                  color: Color.fromARGB(255, 229, 207, 222))),
         ],
       ),
     );
