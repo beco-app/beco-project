@@ -1,7 +1,6 @@
 import 'package:barcode_widget/barcode_widget.dart';
+import 'package:beco/tools/Discounts.dart';
 import 'package:flutter/material.dart';
-
-// ignore_for_file: public_member_api_docs
 
 class QRView extends StatelessWidget {
   const QRView({Key? key}) : super(key: key);
@@ -9,29 +8,30 @@ class QRView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final args = ModalRoute.of(context)!.settings.arguments as Discount;
     double screenwidth = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Barcode demo'),
+        title: const Text('Selected discount'),
       ),
       body: Center(child: Column(
         children: [
           const SizedBox(height: 20),
-          Text("Nom Tenda", style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
+          Text(args.shopname, style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
           const SizedBox(height : 20),
-          Text("Descripció de descompte", style: TextStyle(fontSize: 15)),
+          Text(args.description, style: TextStyle(fontSize: 15)),
           const SizedBox(height : 20),
           Stack( 
         alignment: Alignment.center,
         children: [
         BarcodeWidget(
           barcode: Barcode.qrCode(errorCorrectLevel: BarcodeQRCorrectionLevel.high,), // Barcode type and settings
-          data: 'QR data', // Content
+          data: args.id, // Content
           width: screenwidth,
         ),
       Container(
       color: Colors.white,
-      width: 42,//screenwidth*0.2,
+      width: 30,//screenwidth*0.2,
       child: Image.asset(
                           "assets/images/logo_black.png",
                           fit: BoxFit.cover,
@@ -47,7 +47,7 @@ class QRView extends StatelessWidget {
             width: 40,
           ), 
           const SizedBox(width: 10),
-          const Text('123', style: TextStyle(fontSize: 20)), 
+          Text(args.becoins.toString(), style: TextStyle(fontSize: 20)), 
           const Icon(Icons.arrow_drop_down, color: Colors.red, size: 30),
           const Spacer()]),
       SizedBox(height: 10),
