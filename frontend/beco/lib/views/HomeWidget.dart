@@ -275,9 +275,9 @@ class ShopButton extends StatelessWidget {
                                   fontWeight: FontWeight.bold, fontSize: 15)),
                           const SizedBox(height: 5),
                           Text(
-                            store.type,
+                            "${store.type[0].toUpperCase()}${store.type.substring(1)}",
                           ),
-                          const SizedBox(height: 10),
+                          const SizedBox(height: 5),
                           Row(
                             //Icons
                             children: [
@@ -285,9 +285,14 @@ class ShopButton extends StatelessWidget {
                                 Icon(
                                   myIcons[word],
                                   size: 20,
-                                )
+                                ),
                             ],
                           ),
+                          const SizedBox(height: 5),
+                          Container(
+                              height: 10,
+                              width: 50,
+                              color: color_from_aqi(store.aqi)),
                         ]),
                   ),
                   const Spacer(),

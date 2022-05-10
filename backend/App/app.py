@@ -19,6 +19,7 @@ from backend.data_base import tools
 from backend.App.validate import validate_promotion, validate_user_exists, validate_unique_username
 
 from backend.data_base.recommender import recommend
+from backend.data_base.shops_aqi import get_shop_aqi
 
 
 import json
@@ -173,9 +174,12 @@ def recommended_shops():
     shops = []
     for shop_id, score in resp:
         shop_content = tools.getShop(_id=shop_id)
+        shop_content[0]['aqi'] = get_shop_aqi(shop_id)
         shops.append(shop_content[0])
+        print("shop_aqi", shop_content)
     shops_dict = {"shops": shops}
     response = json.loads(json_util.dumps(shops_dict))
+    print("This is the response", response)
     return response, 200
 
 # Get nearest shops
@@ -380,7 +384,13 @@ def homepage():
 def load_map():
     data = request.form.to_dict()
     shops = tools.getShop(["_id","address", "location", "shopname", "neighbourhood", "description", "photo",  "type", "tags", "web"])
-    shops_dict = {"shops": shops}
+    shops_aqi = []
+    for shop in shops:
+        shop['aqi'] = get_shop_aqi(shop['_id'])
+        shops_aqi.append(shop)
+    
+    print("shop_aqi", shops_aqi)
+    shops_dict = {"shops": shops_aqi}
     response = json.loads(json_util.dumps(shops_dict))
 
     return response, 200
