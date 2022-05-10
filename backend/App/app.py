@@ -162,8 +162,10 @@ def recommended_shops():
         shop_content = tools.getShop(_id=shop_id)
         shop_content[0]['aqi'] = get_shop_aqi(shop_id)
         shops.append(shop_content[0])
+        print("shop_aqi", shop_content)
     shops_dict = {"shops": shops}
     response = json.loads(json_util.dumps(shops_dict))
+    print("This is the response", response)
     return response, 200
 
 # Get nearest shops

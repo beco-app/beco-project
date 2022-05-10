@@ -25,7 +25,7 @@ def get_shop_aqi(shop_id):
 
     nearest_stations = tools.getShop(_id=shop_id)[0]["nearest_stations"]
 
-    with open(os.path.dirname(os.path.abspath(__file__))+'/stations.json', 'r') as json_file:
+    with open(os.path.dirname(os.path.abspath(__file__))+'/stations.json', 'r', encoding='utf-8') as json_file:
         stations_json = json.load(json_file)
 
     station_aqis_dist_time = []
