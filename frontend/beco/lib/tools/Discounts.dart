@@ -12,6 +12,7 @@ class Discount {
   Discount({
     required this.id,
     required this.shopname,
+    required this.shop_id,
     required this.description,
     required this.becoins,
     // required this.validInterval,
@@ -23,6 +24,7 @@ class Discount {
 
   final String id;
   final String shopname;
+  final String shop_id;
   final String description;
   final int becoins;
   // final String validInterval; // TODO: Canviar a datetime o format apropiat
@@ -47,6 +49,7 @@ Future<Discounts> getDiscounts() async {
   final voidDiscount = Discount(
     id: "",
     shopname: "",
+    shop_id:"",
     description: "",
     becoins: 0,
     // validInterval: "",
@@ -57,7 +60,7 @@ Future<Discounts> getDiscounts() async {
     // final response = await http.post(Uri.parse(discountsURL),
     // body: {"user_id": await FirebaseAuth.instance.currentUser!.uid});
     final response = await http.post(Uri.parse(discountsURL),
-        body: {"user_id": "626ad91ef86a6624c429e394"});
+        body: {"user_id": "6278119583f5afe7b5eff43c"});
     print("RESPONSE");
     print(response.body);
     log(response.body);

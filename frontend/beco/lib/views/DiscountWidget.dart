@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:beco/Stores.dart';
 import 'package:beco/tools/Discounts.dart';
 
+import 'DetailView.dart';
 import 'QRView.dart';
 
 class DiscountWidget extends StatefulWidget {
@@ -258,6 +259,13 @@ class _Button extends State<Button> {
         borderRadius: BorderRadius.circular(30),
         clipBehavior: Clip.antiAliasWithSaveLayer,
         child: InkWell(
+          onTap: () {
+                Navigator.pushNamed(
+                  context,
+                  DetailView.routeName,
+                  //arguments: getStore(discount.),
+                );
+              },
           child: Container(
               //Button config
               decoration: BoxDecoration(

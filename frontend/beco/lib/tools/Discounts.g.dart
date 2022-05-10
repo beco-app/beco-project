@@ -9,6 +9,7 @@ part of 'Discounts.dart';
 Discount _$DiscountFromJson(Map<String, dynamic> json) => Discount(
       id: json['_id']["\$oid"] as String,
       shopname: json['shopname']['shopname'] as String,
+      shop_id: json['shop_id']["\$oid"] as String,
       description: json['description'] as String,
       becoins: json['becoins'] as int,
       // validInterval: json['valid_interval'] as String,
@@ -16,7 +17,8 @@ Discount _$DiscountFromJson(Map<String, dynamic> json) => Discount(
 
 Map<String, dynamic> _$DiscountToJson(Discount instance) => <String, dynamic>{
       'id': instance.id,
-      'shop_id': instance.shopname,
+      'shopname': instance.shopname,
+      'shop_id': instance.shop_id,
       'description': instance.description,
       'becoins': instance.becoins,
       // 'valid_interval': instance.validInterval,
