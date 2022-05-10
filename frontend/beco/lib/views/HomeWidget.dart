@@ -10,23 +10,24 @@ import 'package:beco/globals.dart' as globals;
 
 Map<String, IconData> myIcons = {
   "Accessible": Icons.accessible_sharp,
-  "For children": Icons.child_friendly,
-  "Beverages": Icons.emoji_food_beverage,
-  "Restaurant": Icons.local_dining,
-  "Herbalist": Icons.local_pharmacy,
-  "Pharmacy": Icons.healing,
-  "Bakery": Icons.bakery_dining,
-  "Recycled material": Icons.recycling,
-  "Green space": Icons.nature_people,
-  "Plastic free": Icons.panorama_outlined,
-  "Bar": Icons.local_cafe_outlined,
-  "Second hand": Icons.refresh,
-  "Others": Icons.question_mark,
   "Allows pets": Icons.pets_sharp,
-  "Vegan food": Icons.emoji_nature,
-  "Supermarket": Icons.local_grocery_store,
+  "Bakery": Icons.bakery_dining,
+  "Bar": Icons.local_cafe_outlined,
+  "Beverages": Icons.emoji_food_beverage,
+  "Cosmetics": Icons.face_retouching_natural,
+  "For children": Icons.child_friendly,
+  "Fruits & vegetables": Icons.location_on,
+  "Green space": Icons.nature_people,
+  "Herbalist": Icons.local_pharmacy,
   "Local products": Icons.location_on,
-  "Fruits and vegetables": Icons.location_on,
+  "Pharmacy": Icons.healing,
+  "Plastic free": Icons.panorama_outlined,
+  "Recycled material": Icons.recycling,
+  "Restaurant": Icons.local_dining,
+  "Second hand": Icons.refresh,
+  "Supermarket": Icons.local_grocery_store,
+  "Vegan food": Icons.emoji_nature,
+  "Others": Icons.question_mark,
   "Vegetarian food": Icons.location_on,
 };
 List<String> listTags = myIcons.keys.toList();
@@ -53,8 +54,9 @@ class _HomeWidgetState extends State<HomeWidget> {
   void _openFilterDialog() async {
     await FilterListDialog.display<String>(
       context,
+      backgroundColor: Colors.black,
       hideSelectedTextCount: true,
-      themeData: FilterListThemeData(context),
+      themeData: FilterListThemeData(context, backgroundColor: Colors.white),
       headlineText: 'Select Tags',
       height: 500,
       listData: listTags,
@@ -108,6 +110,7 @@ class _HomeWidgetState extends State<HomeWidget> {
 
   @override
   Widget build(BuildContext context) {
+    double screenwidth = MediaQuery.of(context).size.width;
     return CustomScrollView(slivers: <Widget>[
       // SliverAppBar(floating: true, actions: <Widget>[
       //   SizedBox(height: 20), //sliver app bar doesnt work with stateful widget
@@ -117,51 +120,71 @@ class _HomeWidgetState extends State<HomeWidget> {
           hasScrollBody: false,
           child: Column(children: [
             const SizedBox(height: 20),
-            InkWell(
-              onTap: () {
-                showSearch(context: context, delegate: MySearchDelegate());
-              },
-              child: Container(
-                //Button config
-                child: const Icon(
-                  Icons.search,
-                  size: 30,
+            Row(children: [
+              SizedBox(width: screenwidth * 0.05),
+              InkWell(
+                  onTap: () {
+                    showSearch(context: context, delegate: MySearchDelegate());
+                  },
+                  child: Container(
+                      padding: const EdgeInsets.only(left: 3.0),
+                      // margin: const EdgeInsets.only(left: 15.0),
+                      height: 55,
+                      width: screenwidth * 0.8,
+                      alignment: Alignment.bottomLeft,
+                      decoration: BoxDecoration(
+                        color: Color.fromARGB(147, 231, 231, 231),
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      child: Row(children: [
+                        Container(
+                            width: 70,
+                            child: const Icon(Icons.search, size: 30)),
+                        Flexible(
+                            child: Container(
+                          width: double.infinity,
+                          height: 100,
+                          child: const Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              'Search...',
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                              textAlign: TextAlign.left,
+                              style: TextStyle(
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.normal,
+                                  color: Color.fromARGB(255, 63, 63, 63)),
+                            ),
+                          ),
+                        )),
+                      ]))),
+              const Spacer(),
+              InkWell(
+                onTap: () {
+                  scanBarcodeNormal();
+                },
+                child: Container(
+                  //Button config
+                  child: const Icon(
+                    Icons.camera_alt,
+                    size: 30,
+                  ),
                 ),
               ),
-            ),
-            InkWell(
-              onTap: () {
-                scanBarcodeNormal();
-              },
-              child: Container(
-                //Button config
-                child: const Icon(
-                  Icons.camera_alt,
-                  size: 30,
-                ),
-              ),
-            ),
-            InkWell(
-              onTap: () {
-                const QRView();
-              },
-              child: Container(
-                //Button config
-                child: const Icon(
-                  Icons.qr_code,
-                  size: 30,
-                ),
-              ),
-            ),
-            const SizedBox(height: 20),
+              SizedBox(width: screenwidth * 0.05)
+            ]),
+            const SizedBox(height: 10),
             TextButton(
                 onPressed: _openFilterDialog,
                 child: const Text(
-                  "Filter Dialog",
-                  style: TextStyle(color: Colors.white),
+                  "Filter by",
+                  style: TextStyle(
+                      color: Color.fromARGB(255, 0, 0, 0), fontSize: 15),
                 ),
-                style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(Colors.blue))),
+                style: TextButton.styleFrom(
+                    backgroundColor: Color.fromARGB(255, 224, 224, 224),
+                    fixedSize: Size.fromWidth(screenwidth * 0.9))),
             Padding(
               padding: const EdgeInsets.all(20),
               child: FutureBuilder<Stores>(
@@ -215,7 +238,7 @@ class ShopButton extends StatelessWidget {
     return Center(
       child: Material(
           elevation: 10,
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(5),
           clipBehavior: Clip.antiAliasWithSaveLayer,
           child: InkWell(
               onTap: () {
@@ -233,11 +256,11 @@ class ShopButton extends StatelessWidget {
                 //Button config
                 //width: screenwidth * 0.95,
                 alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: Colors.transparent,
-                  border: Border.all(color: Colors.black, width: 1),
-                  borderRadius: BorderRadius.circular(9),
-                ),
+                // decoration: BoxDecoration(
+                //   color: Colors.transparent,
+                //    border: Border.all(color: Colors.black, width: 1),
+                //   borderRadius: BorderRadius.circular(9),
+                // ),
                 child: Row(// Everything inside the button
                     children: [
                   const SizedBox(width: 20),
