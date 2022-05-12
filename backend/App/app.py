@@ -69,21 +69,17 @@ def register_user():
     becoins = 0 # Initial becoins
 
 
-    print("this is the mf request", req)
     #req = json.loads(list(req.keys())[0])
 
     #fields = {"email", "password", "phone", "gender", "birthday", "zipcode", "preferences"}
     #if fields != req.keys():
     #    return {"message": "Invalid data fields"}, 400
-    print("this is the requests", type(req), req)
 
     if req["email"] is None:
         return {'message': 'Invalid email'}, 400
 
     if req["password"] is None:
         return {'message': 'Invalid password'}, 400
-    print("these are the preferences", req["preferences"])
-    print("this is the type of the preferences", type(req["preferences"]))
     data = {
         'username': req["email"],
         'email': req["email"],
@@ -142,7 +138,6 @@ def get_shop_info():
     # dict = {"shop": shop}
     shop['aqi'] = get_shop_aqi(shop['_id'])
     response = json.loads(json_util.dumps(shop))
-    print("This is the response: ", response)
     return response, 200
 
 # Get info from user id
@@ -156,7 +151,6 @@ def get_user():
         print("user_id from firebase")
     # Això de posar [0] està bé?
     resp = tools.getUser(["email", "password", "phone", "gender", "birthday", "zip_code", "preferences", "becoins"], _id = user_id)[0]
-    print("the resp klk:", resp)
     resp = json.loads(json_util.dumps(resp))
     return resp, 200
 
@@ -171,16 +165,13 @@ def recommended_shops():
         print("user_id from firebase")
 
     resp = recommend(user_id)
-    print("the resp klk:", resp)
     shops = []
     for shop_id, score in resp:
         shop_content = tools.getShop(_id=shop_id)
         shop_content[0]['aqi'] = get_shop_aqi(shop_id)
         shops.append(shop_content[0])
-        print("shop_aqi", shop_content)
     shops_dict = {"shops": shops}
     response = json.loads(json_util.dumps(shops_dict))
-    print("This is the response", response)
     return response, 200
 
 # Get nearest shops
@@ -300,9 +291,14 @@ def saved_promotions():
     Returns saved promotions list for a given user.
     """
     user_id = request.form.get('user_id')
-
+    print("User_id", user_id)
+    try:
+        user_id = ObjectId(user_id) # ObjectId must be a 12-byte input or a 24-character hex string
+    except:
+        print("Exception")
+    print("User_id", user_id)
     # Itererate over user's saved_prom and checks if it's still valid
-    saved_prom = tools.getUser(['saved_prom'], _id = ObjectId(user_id))[0]['saved_prom']
+    saved_prom = tools.getUser(['saved_prom'], _id = user_id)[0]['saved_prom']
     now = time()
     saved_prom = [
         prom_id
@@ -389,7 +385,6 @@ def load_map():
         shop['aqi'] = get_shop_aqi(shop['_id'])
         shops_aqi.append(shop)
     
-    print("shop_aqi", shops_aqi)
     shops_dict = {"shops": shops_aqi}
     response = json.loads(json_util.dumps(shops_dict))
 
