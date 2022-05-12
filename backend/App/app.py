@@ -300,9 +300,13 @@ def saved_promotions():
     Returns saved promotions list for a given user.
     """
     user_id = request.form.get('user_id')
+    try:
+        user_id = ObjectId(user_id) # ObjectId must be a 12-byte input or a 24-character hex string
+    except:
+        pass
 
     # Itererate over user's saved_prom and checks if it's still valid
-    saved_prom = tools.getUser(['saved_prom'], _id = ObjectId(user_id))[0]['saved_prom']
+    saved_prom = tools.getUser(['saved_prom'], _id = user_id)[0]['saved_prom']
     now = time()
     saved_prom = [
         prom_id
