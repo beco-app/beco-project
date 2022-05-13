@@ -1,13 +1,26 @@
 import 'package:beco/Stores.dart';
+import 'package:beco/tools/Discounts.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class DetailView extends StatelessWidget {
+class DetailView extends StatefulWidget {
   const DetailView({
     Key? key,
   }) : super(key: key);
   static const routeName = '/detail/';
+
+  @override
+  State<DetailView> createState() => _DetailViewState();
+}
+
+class _DetailViewState extends State<DetailView> {
+  late Future<Discounts> discountList;
+  @override
+  void initState() {
+    super.initState();
+    // discountList = getStores();
+  }
 
   @override
   Widget build(BuildContext context) {
