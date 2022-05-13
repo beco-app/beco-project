@@ -134,6 +134,7 @@ def get_shop_info():
     Given the shopid, returns the shop info.
     """
     shopid = request.form.get('shop_id')
+    print("shop_id", shopid)
     shop = tools.getShop(["_id","address", "location", "shopname", "neighbourhood", "description", "photo",  "type", "tags", "web"], _id=ObjectId(shopid))[0]
     # dict = {"shop": shop}
     shop['aqi'] = get_shop_aqi(shop['_id'])
@@ -285,7 +286,7 @@ def add_shop_name_in_proms_list(proms_list):
 
 # Get saved promotions
 @app.route('/promotions/saved', methods=['POST'])
-@validate_user_exists
+# @validate_user_exists
 def saved_promotions():
     """
     Returns saved promotions list for a given user.
@@ -298,15 +299,16 @@ def saved_promotions():
         print("Exception")
     print("User_id", user_id)
     # Itererate over user's saved_prom and checks if it's still valid
-    saved_prom = tools.getUser(['saved_prom'], _id = user_id)[0]['saved_prom']
+    print("promos", tools.getUser('saved_prom', _id = user_id))
+    saved_prom = tools.getUser('saved_prom', _id = user_id)[0]['saved_prom']
     now = time()
     saved_prom = [
         prom_id
         for prom_id in saved_prom
-        if tools.getPromotion(['valid_interval'], _id = prom_id)[0]['valid_interval']['from'] < now < tools.getPromotion(['valid_interval'], _id = prom_id)[0]['valid_interval']['to']
+       # if tools.getPromotion(['valid_interval'], _id = prom_id)[0]['valid_interval']['from'] < now < tools.getPromotion(['valid_interval'], _id = prom_id)[0]['valid_interval']['to']
         
     ]
-    tools.updateUser(ObjectId(user_id), saved_prom=saved_prom)
+    tools.updateUser(user_id, saved_prom=saved_prom)
     
     # user_saved_prom.remove(ObjectId(promotion_id))
     
@@ -363,6 +365,19 @@ def recent_promotions():
 # def use_promotion():
 #     transaction()
 #     return 200
+
+
+@app.route('/promotions/shop_promotions', methods=['POST'])
+def shop_promotions():
+    """
+    Returns the promotions for a given shop.
+    """
+    shop_id = request.form.get('shop_id')
+    promotions = tools.getPromotion(['_id', 'description', 'becoins', 'valid_interval', 'shop_id'], shop_id = ObjectId(shop_id))
+
+    promotions = add_shop_name_in_proms_list(promotions)
+    response = json.loads(json_util.dumps({"promotions": promotions}))
+    return response, 200
 
 
 @app.route("/homepage", methods=["GET"])
