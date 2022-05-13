@@ -8,6 +8,7 @@ from tqdm import tqdm
 from collections import Counter
 import matplotlib.pyplot as plt
 from bson.objectid import ObjectId
+import os
 
 
 def evaluate():
@@ -89,8 +90,19 @@ def transaction_gen(n_days, hard=False, n_hard=None, eval=False):
 
     # generate random latent vars for each user (uniform random [0,1])
     latent = {}
-    f = open('./backend/data_base/latent.csv', 'w')
+    current_ids = []
+    if 'latent.csv' in os.listdir("./backend/data_base"):
+        with open('./backend/data_base/latent.csv', 'r') as f:
+            latent = [r[:-1].split(',') for r in f.readlines()]
+            latent = {ObjectId(r[0]): {'freq': float(r[1]), 
+                                    'fidelity': float(r[2]),
+                                    'laziness': float(r[3]),
+                                    'pickiness': float(r[4])} for r in latent}
+
+    f = open('./backend/data_base/latent.csv', 'a')
     for uid in (t:=tqdm(all_users.keys())):
+        if uid in latent.keys():
+            continue
         t.set_description("generating latent")
         freq = random.random() / 7
         fidelity = random.random()

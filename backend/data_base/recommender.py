@@ -43,7 +43,7 @@ def shop_count_sim(u_shops, v_shops):
     return dot
 
 
-def recommend(user_id, plot=False):
+def recommend(user_id, plot=False, print_time=False):
     t0 = time()
     # Get necessary info
     u_info = getUser(['preferences', 'zip_code'], _id=user_id)[0]
@@ -56,7 +56,7 @@ def recommend(user_id, plot=False):
     u_loc = (u_loc.latitude, u_loc.longitude)
 
     t1 = time()
-    #print(t1 - t0)
+    if print_time: print(t1 - t0)
     
     # To new users, recommend shops in its zip code with preferences
     #if len(u_shops) < 2:
@@ -88,7 +88,7 @@ def recommend(user_id, plot=False):
         plt.show()
 
     t2 = time()
-    #print(t2-t1)
+    if print_time: print(t2-t1)
     shop_info = [s for s in all_shops if s['_id'] in shops.keys()]
     u_shop_info = [s for s in all_shops if s['_id'] in u_shops.keys()]
 
@@ -135,7 +135,7 @@ def recommend(user_id, plot=False):
                 shops[sh] *= preferences[tag] # hyperparameter
 
     t3 = time()
-    #print(t3 - t2)
+    if print_time: print(t3 - t2)
 
     if plot:
         plt.plot(sorted(shops.values())[::-1])
