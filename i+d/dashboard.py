@@ -7,6 +7,9 @@ import plotly.express as px
 import pandas as pd
 import sys
 import os
+from pandas.io.formats import style
+#from dash_html_components.Label import Label
+from dash.dependencies import Input, Output
 
 sys.path.append(os.getcwd())
 
@@ -18,7 +21,16 @@ import calendar
 
 
 def createApp():
-    return dash.Dash()
+    external_stylesheets = [
+        {
+            "href": "https://fonts.googleapis.com/css2?"
+                    "family=Lato:wght@400;700&display=swap",
+            "rel": "stylesheet",
+        },
+    ]
+    app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+    app.title = "BECO Analytics"
+    return app
 
 def create_transactions(shop_id):
     all_users = tools.getUser()
@@ -119,9 +131,9 @@ def trans_over_time_fig(transactions, shop_name):
 def main(shopname):
     try:
         shop_id = tools.getShop(shopname=shopname)[0]["_id"]
-    except Exception as e:
+    except Exception as error:
         print(f'Error! Shop {shopname} does not exist in the shops database')
-        raise est
+        raise error
 
     # get the transactions with the shop
     # transactions = tools.getTransaction(shop_id=ObjectId(shop_id))
@@ -138,6 +150,10 @@ def main(shopname):
     print(users.columns)
     print(transactions.columns)
 
+
+    colors = {"background": "#FFFBFE", "text": "#000000"}
+
+
     fig = px.scatter(
         users,
         x='phone_int',
@@ -148,10 +164,36 @@ def main(shopname):
         log_x=False,
         size_max=60,
     )
-
     fig = trans_over_time_fig(transactions, shopname)
-    
-    app.layout = html.Div([dcc.Graph(id="life-exp-vs-gdp", figure=fig)])
+
+    fig.update_layout(
+        #plot_bgcolor=colors["background"],
+        paper_bgcolor=colors["background"],
+        font_color=colors["text"],
+    )
+
+    app.layout = html.Div(
+        children=[
+            html.Div(
+                children=[
+                    html.P(children="🥑", className="header-emoji"),
+                    html.H1(
+                        children=f"{str.upper(shopname)} Analystics", className="header-title"
+                    ),
+                    html.P(
+                        children="Analyze the data of your BECO costumers",
+                        className="header-description",
+                    ),
+                ],
+                className="header",
+            ),
+            html.Div(
+                children=[
+                    dcc.Graph(id="life-exp-vs-gdp", figure=fig),   
+                ]
+            )
+        ],
+    )
     app.run_server(debug=True)
 
     
