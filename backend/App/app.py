@@ -310,7 +310,6 @@ def saved_promotions():
     
     # user_saved_prom.remove(ObjectId(promotion_id))
     
-    # Debug:
     promotions = [tools.getPromotion(_id = prom_id)[0] for prom_id in saved_prom]
     promotions = add_shop_name_in_proms_list(promotions)
     response = json.loads(json_util.dumps({"promotions": promotions}))
@@ -363,6 +362,18 @@ def recent_promotions():
 # def use_promotion():
 #     transaction()
 #     return 200
+
+@app.route('/promotions/shop_promotions', methods=['POST'])
+def shop_promotions():
+    """
+    Returns the promotions for a given shop.
+    """
+    shop_id = request.form.get('shop_id')
+    promotions = tools.getPromotion(['_id', 'description', 'becoins', 'valid_interval', 'shop_id'], shop_id = ObjectId(shop_id))
+
+    promotions = add_shop_name_in_proms_list(promotions)
+    response = json.loads(json_util.dumps({"promotions": promotions}))
+    return response, 200
 
 
 @app.route("/homepage", methods=["GET"])
