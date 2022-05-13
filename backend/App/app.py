@@ -241,8 +241,13 @@ def save_promotion():
     user_id = request.form.get('user_id')
     promotion_id = request.form.get('promotion_id')
 
+    try:
+        user_id = ObjectId(user_id) # ObjectId must be a 12-byte input or a 24-character hex string
+    except:
+        print("Exception")
+
     # Append promotion_id to user's saved_prom
-    user_saved_prom = tools.getUser(['saved_prom'], _id = ObjectId(user_id))[0]['saved_prom']
+    user_saved_prom = tools.getUser(['saved_prom'], _id = user_id)[0]['saved_prom']
     if ObjectId(promotion_id) not in user_saved_prom:
         user_saved_prom.append(ObjectId(promotion_id))
         tools.updateUser(ObjectId(user_id), saved_prom=user_saved_prom)
@@ -250,7 +255,7 @@ def save_promotion():
     # Debug:
     return (
         (
-            str(tools.getUser(['saved_prom'], _id = ObjectId(user_id))[0]['saved_prom']) +
+            str(tools.getUser(['saved_prom'], _id = user_id)[0]['saved_prom']) +
             '\n' + promotion_id),
         200
     )
@@ -266,13 +271,18 @@ def unsave_promotion():
     user_id = request.form.get('user_id')
     promotion_id = request.form.get('promotion_id')
 
+    try:
+        user_id = ObjectId(user_id) # ObjectId must be a 12-byte input or a 24-character hex string
+    except:
+        print("Exception")
+
     # Deletes promotion_id from user's saved_prom
-    user_saved_prom = tools.getUser(['saved_prom'], _id = ObjectId(user_id))[0]['saved_prom']
+    user_saved_prom = tools.getUser(['saved_prom'], _id = user_id)[0]['saved_prom']
     if ObjectId(promotion_id) not in user_saved_prom:
         raise ValueError(f'Promotion {promotion_id} not saved for user {user_id}')
     
     user_saved_prom.remove(ObjectId(promotion_id))
-    tools.updateUser(ObjectId(user_id), saved_prom=user_saved_prom)
+    tools.updateUser(user_id, saved_prom=user_saved_prom)
     
     # Debug:
     return (

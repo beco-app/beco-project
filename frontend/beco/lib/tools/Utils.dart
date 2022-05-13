@@ -34,12 +34,11 @@ class _SaveButton extends State<SaveButton> {
         clipBehavior: Clip.antiAliasWithSaveLayer,
         child: InkWell(
           onTap: () async {
-            final r = await http.post(
-                Uri.parse('http://34.252.26.132/promotions/save'),
-                body: {
-                  'user_id': widget.userId,
-                  'promotion_id': widget.discountId,
-                });
+            final r = await http
+                .post(Uri.parse('http://34.252.26.132/promotions/save'), body: {
+              'user_id': widget.userId,
+              'promotion_id': widget.discountId,
+            });
             saveAlert(context);
             setState(() {});
           },
@@ -86,7 +85,6 @@ saveAlert(BuildContext context) {
     },
   );
 }
-
 
 // Unsave button
 class UnsaveButton extends StatefulWidget {
