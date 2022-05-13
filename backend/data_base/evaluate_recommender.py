@@ -1,12 +1,13 @@
 from tools import *
 from recommender import recommend
-from simulate_transactions import computeScores
+from simulate_transactions import computeScores, transaction_gen
 from time import time
 import numpy as np
 from tqdm import tqdm
 from bson.objectid import ObjectId
+from populate_users import populate_users
 
-def evaluate():
+def evaluate(verbose=True):
     f = open('./backend/data_base/latent.csv', 'r')
     latent = [r[:-1].split(',') for r in f.readlines()]
     latent = {ObjectId(r[0]): {'freq': float(r[1]), 
@@ -30,10 +31,25 @@ def evaluate():
     
     avg_recom_score = np.mean([s[0] for s in scores])
     avg_max_score = np.mean([s[1] for s in scores])
-    print("Average recommendation score:", avg_recom_score)
-    print("Average maximum score:", avg_max_score)
-    print("Ratio of averages:", avg_recom_score / avg_max_score)
-    print("Average ratio:",  np.mean([s[0]/s[1] for s in scores]))
+    avg_ratio = np.mean([s[0]/s[1] for s in scores])
+    if verbose:
+        print("Average recommendation score:", avg_recom_score)
+        print("Average maximum score:", avg_max_score)
+        print("Ratio of averages:", avg_recom_score / avg_max_score)
+        print("Average ratio:", avg_ratio)
+    return avg_ratio
+
+
+def evaluate_time(days, start=10, factor=0.1):
+    new_users = start
+    for d in range(days):
+        populate_users(new_users)
+        transaction_gen(n_days=1)
+        evaluate()
+
+
+
+
 
 if __name__ == '__main__':
-    evaluate()
+    evaluate(100)

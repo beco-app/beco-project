@@ -15,8 +15,8 @@ def populate_db(s, nu, np, nap, nt) :
     print('-'*50, '-'*50, '-'*50, f"{len(getPromotion())} proms inserted", "inserting active proms", sep='\n')
     populate_active_prom(nap)
     print('-'*50, '-'*50, '-'*50, f"{len(getActivePromotion())} active proms inserted", "inserting transaction", sep='\n')
-    transaction_gen(n_days=10, hard=True, n_hard=5)
+    transaction_gen(n_days=nt, hard=True, n_hard=5)
     print('-'*50, '-'*50, '-'*50, f"{len(getTransaction())} transactions inserted", sep='\n')
 
 if __name__ == '__main__':
-    populate_db(s='backend/data_base/shops_upper.csv', nu=100, np=100, nap=10, nt=500)
+    populate_db(s='backend/data_base/shops_upper.csv', nu=100, np=100, nap=10, nt=70)
