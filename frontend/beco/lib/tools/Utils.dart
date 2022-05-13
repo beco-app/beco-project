@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -113,6 +115,7 @@ class _UnsaveButton extends State<UnsaveButton> {
                   'user_id': widget.userId,
                   'promotion_id': widget.discountId,
                 });
+            log(r.body);
             unsaveAlert(context);
             setState(() {});
           },
