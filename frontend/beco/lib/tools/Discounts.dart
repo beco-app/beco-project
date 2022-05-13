@@ -77,7 +77,7 @@ Future<Discounts> getDiscounts() async {
   return noDiscount;
 }
 
-Future<Discounts> getShopDiscount(String storeId) async {
+Future<Discounts> getShopDiscounts(String storeId) async {
   const discountsURL = 'http://34.252.26.132/promotions/shop_promotions';
   final voidDiscount = Discount(
     id: "",
@@ -92,8 +92,8 @@ Future<Discounts> getShopDiscount(String storeId) async {
   try {
     // final response = await http.post(Uri.parse(discountsURL),
     // body: {"user_id": await FirebaseAuth.instance.currentUser!.uid});
-    final response = await http.post(Uri.parse(discountsURL),
-        body: {"shop_id": storeId});
+    final response =
+        await http.post(Uri.parse(discountsURL), body: {"shop_id": storeId});
     print("RESPONSE");
     print(response.body);
     log(response.body);

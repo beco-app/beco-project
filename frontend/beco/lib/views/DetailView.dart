@@ -4,6 +4,8 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+import 'DiscountWidget.dart';
+
 class DetailView extends StatefulWidget {
   const DetailView({
     Key? key,
@@ -19,12 +21,12 @@ class _DetailViewState extends State<DetailView> {
   @override
   void initState() {
     super.initState();
-    // discountList = getStores();
   }
 
   @override
   Widget build(BuildContext context) {
     final args = ModalRoute.of(context)!.settings.arguments as Store;
+    discountList = getShopDiscounts(args.id);
     return Scaffold(
         resizeToAvoidBottomInset: true,
         body: CustomScrollView(slivers: [
@@ -127,6 +129,42 @@ class _DetailViewState extends State<DetailView> {
                           color: color_from_aqi(args.aqi)),
                       Spacer(),
                     ],
+                  ),
+                  const SizedBox(height: 10),
+                  Text("Discounts",
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 25)),
+                  FutureBuilder<Discounts>(
+                    future: discountList,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        return Column(
+                          children: [
+                            for (var i = 0;
+                                i < snapshot.data!.discounts.length;
+                                i++)
+                              Column(
+                                children: [
+                                  const SizedBox(height: 20),
+                                  DiscountButton(
+                                    shopName:
+                                        snapshot.data!.discounts[i].shopname,
+                                    description:
+                                        snapshot.data!.discounts[i].description,
+                                    becoins:
+                                        snapshot.data!.discounts[i].becoins,
+                                    discount: snapshot.data!.discounts[i],
+                                  ),
+                                ],
+                              ),
+                          ],
+                        );
+                      } else if (snapshot.hasError) {
+                        return Text('${snapshot.error}');
+                      }
+                      // By default, show a loading spinner.
+                      return const CircularProgressIndicator();
+                    },
                   )
                 ]),
               ))
