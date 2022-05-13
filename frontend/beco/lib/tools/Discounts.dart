@@ -76,3 +76,36 @@ Future<Discounts> getDiscounts() async {
 
   return noDiscount;
 }
+
+Future<Discounts> getShopDiscount(String storeId) async {
+  const discountsURL = 'http://34.252.26.132/promotions/shop_promotions';
+  final voidDiscount = Discount(
+    id: "",
+    shopname: "",
+    shop_id: "",
+    description: "",
+    becoins: 0,
+    // validInterval: "",
+  );
+  final noDiscount = Discounts(discounts: [voidDiscount]);
+
+  try {
+    // final response = await http.post(Uri.parse(discountsURL),
+    // body: {"user_id": await FirebaseAuth.instance.currentUser!.uid});
+    final response = await http.post(Uri.parse(discountsURL),
+        body: {"shop_id": storeId});
+    print("RESPONSE");
+    print(response.body);
+    log(response.body);
+    if (response.statusCode == 200) {
+      print(json.decode(response.body));
+      print(Discounts.fromJson(json.decode(response.body)));
+      return Discounts.fromJson(json.decode(response.body));
+    }
+  } catch (err) {
+    print("ERROR");
+    print(err);
+  }
+
+  return noDiscount;
+}
