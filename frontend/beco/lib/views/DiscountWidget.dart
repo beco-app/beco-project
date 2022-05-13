@@ -375,6 +375,8 @@ class _UnsaveButton extends State<UnsaveButton> {
                   'user_id': widget.userId,
                   'promotion_id': widget.discountId,
                 });
+            unsaveAlert(context);
+            setState(() {});
           },
           child: Container(
               //Button config
@@ -393,4 +395,29 @@ class _UnsaveButton extends State<UnsaveButton> {
               )),
         ));
   }
+}
+
+unsaveAlert(BuildContext context) {
+  // set up the buttons
+  Widget okay = TextButton(
+    child: const Text("Done"),
+    onPressed: () {
+      Navigator.of(context).pop();
+    },
+  );
+
+  // set up the AlertDialog
+  AlertDialog alert = AlertDialog(
+    // title: const Text("Are you sure you want to use this discount?"),
+    content: Text("Discount unsaved."),
+    actions: [okay],
+  );
+
+  // show the dialog
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
 }
