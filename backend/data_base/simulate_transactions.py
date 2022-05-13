@@ -15,12 +15,22 @@ def evaluate():
     f = open('./backend/data_base/latent.csv', 'r')
     latent = [r[:-1].split(',') for r in f.readlines()]
     f.close()
-    latent = {ObjectId(r[0]): {'freq': float(r[1]), 
-                               'fidelity': float(r[2]),
-                               'laziness': float(r[3]),
-                               'pickiness': float(r[4])} for r in latent}
+
+    for r in latent:
+        user_id = r[0]
+        try:
+            user_id = ObjectId(user_id)
+        except:
+            pass
+        latent = {user_id: {
+            'freq': float(r[1]),
+            'fidelity': float(r[2]),
+            'laziness': float(r[3]),
+            'pickiness': float(r[4])
+        }}
+
     all_users = getUser() # all users from db with all fields
-    all_users = {user["_id"]: user for user in all_users} # index users by id
+    all_users = {user["_id"]: user for user in all_users if isinstance(user["_id"], ObjectId)} # index users by id
     all_shops = getShop() # all shops from db with all fields
     all_shops = {shop["_id"]: shop for shop in all_shops} # index shops by id
     all_transactions = getTransaction()
@@ -42,29 +52,36 @@ def evaluate():
 
 
 def computeScores(all_shops, user, u_transactions, u_latent):
-    n_transactions = Counter(u_transactions)
-    ntrans_exp = np.exp(list(n_transactions.values()))
-    softmax_list = ntrans_exp / sum(ntrans_exp)
-    softmax_ntrans = dict(zip(n_transactions.keys(), softmax_list))
-    scores = {}
-    for shop in all_shops.values():
-        dist = distance(shop["location"], user["location"]).km
-        u_pref = [pref.lower() for pref in user["preferences"]]
-        sh_tags = [tag.lower() for tag in shop["tags"]]
-        common_tags = len(set(sh_tags).intersection(set(u_pref)))
-        softmax_shop = softmax_ntrans[shop["_id"]] if shop["_id"] in softmax_ntrans.keys() else 0
-        _, fd, lz, pk = u_latent.values()
+    if isinstance(user["_id"], ObjectId):
+        n_transactions = Counter(u_transactions)
+        ntrans_exp = np.exp(list(n_transactions.values()))
+        softmax_list = ntrans_exp / sum(ntrans_exp)
+        softmax_ntrans = dict(zip(n_transactions.keys(), softmax_list))
+        scores = {}
+        for shop in all_shops.values():
+            print()
+            print(shop)
+            print()
+            print(user)
+            print()
 
-        score = (np.exp(-lz*dist)  +  pk * common_tags / 3  +  fd * softmax_shop ) / 3
-        scores[shop["_id"]] = score**4
-    return scores
+            dist = distance(shop["location"], user["location"]).km
+            u_pref = [pref.lower() for pref in user["preferences"]]
+            sh_tags = [tag.lower() for tag in shop["tags"]]
+            common_tags = len(set(sh_tags).intersection(set(u_pref)))
+            softmax_shop = softmax_ntrans[shop["_id"]] if shop["_id"] in softmax_ntrans.keys() else 0
+            _, fd, lz, pk = u_latent.values()
+
+            score = (np.exp(-lz*dist)  +  pk * common_tags / 3  +  fd * softmax_shop ) / 3
+            scores[shop["_id"]] = score**4
+        return scores
 
 
 def transaction_gen(n_days, hard=False, n_hard=None, eval=False):
     now = time()
 
     all_users = getUser() # all users from db with all fields
-    all_users = {user["_id"]: user for user in all_users} # index users by id
+    all_users = {user["_id"]: user for user in all_users if isinstance(user["_id"], ObjectId)} # index users by id
 
     all_shops = getShop() # all shops from db with all fields
     all_shops = {shop["_id"]: shop for shop in all_shops} # index shops by id
