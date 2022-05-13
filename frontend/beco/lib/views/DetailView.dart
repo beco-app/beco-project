@@ -37,7 +37,7 @@ class _DetailViewState extends State<DetailView> {
                   //mainAxisAlignment: MainAxisAlignment.end,
                   Stack(children: [
                 Positioned.fill(
-                    child: Image.asset("assets/images/media_4.png",
+                    child: Image.asset("assets/images/leavesbackground.png",
                         fit: BoxFit.cover)),
                 Align(
                     alignment: Alignment.bottomCenter,
@@ -70,7 +70,7 @@ class _DetailViewState extends State<DetailView> {
                           fontWeight: FontWeight.bold, fontSize: 12)),
                   SizedBox(height: 10),
                   Text(
-                    args.description,
+                    args.description.replaceAll("<br />", ""),
                   ),
                   SizedBox(height: 20),
                   // Text("Features",

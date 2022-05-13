@@ -55,7 +55,12 @@ class QRView extends StatelessWidget {
       borderRadius: BorderRadius.circular(30),
       clipBehavior: Clip.antiAliasWithSaveLayer,
       child: InkWell(
-        onTap: () {},
+        onTap: () {
+          Navigator.of(context).pushNamedAndRemoveUntil(
+                              '/home/',
+                              (route) => false,
+                            );
+                            },
         child: Container ( //Button config
           decoration: BoxDecoration(
             color: Colors.purple,
