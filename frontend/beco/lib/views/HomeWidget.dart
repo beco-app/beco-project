@@ -1,12 +1,17 @@
 import 'package:beco/views/DetailView.dart';
 import 'package:beco/views/QRView.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:beco/Stores.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:http/http.dart' as http;
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:beco/Stores.dart';
 import 'package:filter_list/filter_list.dart';
 import 'package:beco/globals.dart' as globals;
+
+import '../Users.dart';
 
 Map<String, IconData> myIcons = {
   "Accessible": Icons.accessible_sharp,
@@ -51,6 +56,11 @@ class _HomeWidgetState extends State<HomeWidget> {
     storeList = getHomepageStores();
   }
 
+  void _initUser() async {
+    globals.user = await getUser();
+    FlutterNativeSplash.remove();
+  }
+  
   void _openFilterDialog() async {
     await FilterListDialog.display<String>(
       context,
@@ -102,7 +112,12 @@ class _HomeWidgetState extends State<HomeWidget> {
     try {
       _scanBarcode = await FlutterBarcodeScanner.scanBarcode(
           '#ff6666', 'Cancel', true, ScanMode.BARCODE);
-      print(_scanBarcode);
+        var response = http.post(Uri.parse("http://34.252.26.132/api/add_becoins"),
+                                body: {"user_id": await FirebaseAuth.instance.currentUser!.uid, "becoins":50});
+        print("read discount");
+        print(response);
+         _initUser();
+
     } on Exception catch (exception) {
       _scanBarcode = 'Failed to get platform version.';
     }

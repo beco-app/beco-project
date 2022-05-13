@@ -192,14 +192,20 @@ def add_becoins():
         The amount and the user is passed in the data content of the request
         TODO: Add some security by requiring a token or something
     """
-    user = request.form.get('username')
-    becoins = request.form.get('becoins')
-    try:
-        # updateUser(username=user, becoins=becoins)
-        return 0
-    except:
-        return {'message': 'Error'}, 404
 
+    try:
+        userid = request.form.get('user_id')
+        becoins_gained = request.form.get('becoins')
+
+        user = tools.getUser(attributes='becoins', _id=userid)[0]
+        becoins_initial = user['becoins']
+
+        if becoins_initial + becoins_gained < 0:
+            raise Exception("You cannot have negative amount of becoins.")
+
+        return tools.update(_id=userid, becoins=becoins_initial+becoins_gained)
+    except:
+        return {'message': 'Error at adding or substracting becoins.'}, 404
 
 # Activate promotion
 @app.route('/promotions/activate', methods=['POST'])
@@ -364,19 +370,6 @@ def recent_promotions():
 # def use_promotion():
 #     transaction()
 #     return 200
-
-@app.route('/promotions/shop_promotions', methods=['POST'])
-def shop_promotions():
-    """
-    Returns the promotions for a given shop.
-    """
-    shop_id = request.form.get('shop_id')
-    promotions = tools.getPromotion(['_id', 'description', 'becoins', 'valid_interval', 'shop_id'], shop_id = ObjectId(shop_id))
-
-    promotions = add_shop_name_in_proms_list(promotions)
-    response = json.loads(json_util.dumps({"promotions": promotions}))
-    return response, 200
-
 
 @app.route('/promotions/shop_promotions', methods=['POST'])
 def shop_promotions():

@@ -47,9 +47,10 @@ class _DiscountWidgetState extends State<DiscountWidget> {
                   if (snapshot.hasData) {
                     return Column(
                       children: [
-                        for (var i = 0;
-                            i < snapshot.data!.discounts.length;
-                            i++)
+                        if (snapshot.data?.discounts[0].id == "")
+                          const Text('No discounts saved')
+                        else
+                          for (var i = 0; i < snapshot.data!.discounts.length; i++)
                           Column(
                             children: [
                               DiscountButton(
@@ -61,7 +62,7 @@ class _DiscountWidgetState extends State<DiscountWidget> {
                               ),
                               const SizedBox(height: 20),
                             ],
-                          ),
+                          )
                       ],
                     );
                   } else if (snapshot.hasError) {
