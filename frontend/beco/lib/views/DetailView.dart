@@ -24,21 +24,26 @@ class DetailView extends StatelessWidget {
                   //mainAxisAlignment: MainAxisAlignment.end,
                   Stack(children: [
                 Positioned.fill(
-                    child: Image.asset("assets/images/leavesbackground.png",
-                        fit: BoxFit.cover)),
+                  child: Image.network(
+                    args.photo,
+                    fit: BoxFit.cover,
+                  ),
+                ),
                 Align(
                     alignment: Alignment.bottomCenter,
                     child: Material(
-                        shape: const CircleBorder(),
-                        clipBehavior: Clip.antiAliasWithSaveLayer,
-                        child: InkWell(
-                            onTap: () {},
-                            child: Image.network(
-                              args.photo,
-                              width: 150,
-                              height: 150, //s'ha de fer fit
-                              fit: BoxFit.cover,
-                            )))),
+                      shape: const CircleBorder(),
+                      clipBehavior: Clip.antiAliasWithSaveLayer,
+                      // child: InkWell(
+                      //     onTap: () {},
+                      //     child: Image.network(
+                      //       args.photo,
+                      //       width: 150,
+                      //       height: 150, //s'ha de fer fit
+                      //       fit: BoxFit.cover,
+                      //     )
+                      // )
+                    )),
               ])),
           SliverFillRemaining(
               hasScrollBody: false,
@@ -48,18 +53,18 @@ class DetailView extends StatelessWidget {
                   Text(args.shopname,
                       style: const TextStyle(
                           fontWeight: FontWeight.bold, fontSize: 25)),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   Text("${args.type[0].toUpperCase()}${args.type.substring(1)}",
                       style: const TextStyle(fontSize: 18)),
-                  SizedBox(height: 20),
-                  Text("Description",
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 12)),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 20),
+                  const Text("Description",
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+                  const SizedBox(height: 10),
                   Text(
                     args.description.replaceAll("<br />", ""),
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   // Text("Features",
                   //     style: const TextStyle(
                   //         fontWeight: FontWeight.bold, fontSize: 12)),
@@ -71,10 +76,10 @@ class DetailView extends StatelessWidget {
                   //       size: 30,
                   //     ),
                   //     SizedBox(height: 20),
-                  Text("Features",
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 12)),
-                  SizedBox(height: 10),
+                  const Text("Features",
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+                  const SizedBox(height: 10),
                   for (var word in args.tags)
                     Row(children: [
                       Icon(
@@ -84,10 +89,10 @@ class DetailView extends StatelessWidget {
                       SizedBox(width: 20),
                       Text(word.toString())
                     ]),
-                  SizedBox(height: 20),
-                  Text("Where are we?",
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 12)),
+                  const SizedBox(height: 20),
+                  const Text("Where are we?",
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
                   SizedBox(height: 10),
                   Text(args.address),
                   SizedBox(height: 20),

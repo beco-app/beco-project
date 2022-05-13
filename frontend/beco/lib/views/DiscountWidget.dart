@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'dart:async';
 import 'dart:convert';
@@ -10,6 +11,8 @@ import 'package:beco/tools/Discounts.dart';
 
 import 'DetailView.dart';
 import 'QRView.dart';
+
+import 'package:beco/tools/Utils.dart';
 
 class DiscountWidget extends StatefulWidget {
   const DiscountWidget({Key? key}) : super(key: key);
@@ -44,9 +47,10 @@ class _DiscountWidgetState extends State<DiscountWidget> {
                   if (snapshot.hasData) {
                     return Column(
                       children: [
-                        for (var i = 0;
-                            i < snapshot.data!.discounts.length;
-                            i++)
+                        if (snapshot.data?.discounts[0].id == "")
+                          const Text('No discounts saved')
+                        else
+                          for (var i = 0; i < snapshot.data!.discounts.length; i++)
                           Column(
                             children: [
                               DiscountButton(
@@ -58,7 +62,7 @@ class _DiscountWidgetState extends State<DiscountWidget> {
                               ),
                               const SizedBox(height: 20),
                             ],
-                          ),
+                          )
                       ],
                     );
                   } else if (snapshot.hasError) {
@@ -164,7 +168,7 @@ class DiscountButton extends StatelessWidget {
                             child: Row(children: [
                               Spacer(),
                               UnsaveButton(
-                                userId: "627a279fd29f58dbc575baf7",
+                                userId: FirebaseAuth.instance.currentUser!.uid,
                                 discountId: discount.id,
                               ),
                               Spacer(),
@@ -337,80 +341,6 @@ showAlertDialog(BuildContext context, Discount discount) {
       cancelButton,
       continueButton,
     ],
-  );
-
-  // show the dialog
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return alert;
-    },
-  );
-}
-
-// Unsave button
-class UnsaveButton extends StatefulWidget {
-  const UnsaveButton({required this.userId, required this.discountId, Key? key})
-      : super(key: key);
-
-  final String userId;
-  final String discountId;
-
-  @override
-  State<UnsaveButton> createState() => _UnsaveButton();
-}
-
-class _UnsaveButton extends State<UnsaveButton> {
-  Color? myColor = Colors.grey[350];
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-        borderRadius: BorderRadius.circular(30),
-        clipBehavior: Clip.antiAliasWithSaveLayer,
-        child: InkWell(
-          onTap: () async {
-            final r = await http.post(
-                Uri.parse('http://34.252.26.132/promotions/unsave'),
-                body: {
-                  'user_id': widget.userId,
-                  'promotion_id': widget.discountId,
-                });
-            unsaveAlert(context);
-            setState(() {});
-          },
-          child: Container(
-              //Button config
-              decoration: BoxDecoration(
-                color: myColor,
-                borderRadius: BorderRadius.circular(30),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                child: Row(// Everything inside the button
-                    children: [
-                  Text(
-                    "Unsave",
-                  ),
-                ]),
-              )),
-        ));
-  }
-}
-
-unsaveAlert(BuildContext context) {
-  // set up the buttons
-  Widget okay = TextButton(
-    child: const Text("Done"),
-    onPressed: () {
-      Navigator.of(context).pop();
-    },
-  );
-
-  // set up the AlertDialog
-  AlertDialog alert = AlertDialog(
-    // title: const Text("Are you sure you want to use this discount?"),
-    content: Text("Discount unsaved."),
-    actions: [okay],
   );
 
   // show the dialog

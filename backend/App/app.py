@@ -384,19 +384,6 @@ def shop_promotions():
     return response, 200
 
 
-@app.route('/promotions/shop_promotions', methods=['POST'])
-def shop_promotions():
-    """
-    Returns the promotions for a given shop.
-    """
-    shop_id = request.form.get('shop_id')
-    promotions = tools.getPromotion(['_id', 'description', 'becoins', 'valid_interval', 'shop_id'], shop_id = ObjectId(shop_id))
-
-    promotions = add_shop_name_in_proms_list(promotions)
-    response = json.loads(json_util.dumps({"promotions": promotions}))
-    return response, 200
-
-
 @app.route("/homepage", methods=["GET"])
 def homepage():
     data = request.form.to_dict()

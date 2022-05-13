@@ -289,10 +289,12 @@ class ShopButton extends StatelessWidget {
                               style: const TextStyle(
                                   fontWeight: FontWeight.bold, fontSize: 15)),
                           const SizedBox(height: 5),
+                          // const Spacer(),
                           Text(
                             "${store.type[0].toUpperCase()}${store.type.substring(1)}",
                           ),
                           const SizedBox(height: 5),
+                          // const Spacer(),
                           Row(
                             //Icons
                             children: [
@@ -303,11 +305,16 @@ class ShopButton extends StatelessWidget {
                                 ),
                             ],
                           ),
-                          const SizedBox(height: 5),
+                          const SizedBox(height: 7),
+                          // const Spacer(),
                           Container(
-                              height: 10,
-                              width: 50,
-                              color: color_from_aqi(store.aqi)),
+                            height: 10,
+                            width: 60,
+                            decoration: BoxDecoration(
+                                color: color_from_aqi(store.aqi),
+                                borderRadius: BorderRadius.circular(3)),
+                          )
+                          //color: color_from_aqi(store.aqi)),
                         ]),
                   ),
                   const Spacer(),
