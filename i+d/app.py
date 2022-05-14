@@ -4,6 +4,9 @@ from dash import html
 import pandas as pd
 import numpy as np
 from dash.dependencies import Output, Input
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
+
 
 ###########
 # Backend #
@@ -146,6 +149,111 @@ def get_data(shopname):
     #print(transactions.user_id.value_counts())
     return data, transactions, users
 
+def get_filtered_data(users, transactions, gender, neighbourhood, start_date, end_date):
+    neighbourhoods = set(neighbourhood) if type(neighbourhood) != str else {neighbourhood}
+    print('neighbourhoods:',neighbourhoods)
+    if 'All neighbourhoods' in neighbourhoods:
+        users_mask = (
+            (users.gender.isin(set(gender)))
+        )
+    else:
+        users_mask = (
+            (users.gender.isin(set(gender)))
+            & (users.neighbourhood.isin(neighbourhoods))
+        )
+    filtered_users = users.loc[users_mask, :].copy()
+    print('filtered_uers')
+    print(filtered_users.head())
+
+    transactions_mask = (
+        (transactions.timestamp >= start_date)
+        & (transactions.timestamp <= end_date)
+        & (transactions.user_id.isin(set(filtered_users._id.unique())))
+    )
+    filtered_transactions = transactions.loc[transactions_mask, :].copy()
+    #filtered_transactions['day'] = filtered_transactions.timestamp.dt.day
+    #filtered_transactions['month'] = filtered_transactions.timestamp.dt.month
+    filtered_transactions['week'] = filtered_transactions.timestamp.dt.isocalendar().week
+    filtered_transactions_gpby = filtered_transactions.groupby('week')
+    filtered_transactions['count'] = filtered_transactions_gpby.shop_id.transform(len)
+    filtered_transactions = filtered_transactions_gpby.first().sort_values('timestamp').reset_index()
+
+    print('filtered_transactions')
+    print(filtered_transactions.head())
+    return filtered_users, filtered_transactions
+
+def polar_plots_figures(users):
+    fig = make_subplots(
+        rows=1, cols=2,
+        specs=[[{'type': 'domain'}, {'type': 'polar'}]],
+        subplot_titles=['Users age distribution', 'Users preferences']
+    )
+    preferences_tags = [
+        'Accessible', 'Allows pets', 'Bakery', 'Bar', 'Beverages', 'Cosmetics',
+        'For children', 'Fruits & vegetables', 'Green space', 'Herbalist',
+        'Local products', 'Pharmacy', 'Plastic free', 'Recycled material',
+        'Restaurant', 'Second hand', 'Supermarket', 'Vegan food'
+    ]
+    users_tags = users[preferences_tags].sum(axis=0)
+    users_tags = users_tags/len(users)
+    users_tags *= 100
+
+    binned_ages = []
+    for age in users.age.values:
+        if age <= 20:
+            binned_ages.append('12-20')
+        elif age <= 35:
+            binned_ages.append('21-35')
+        elif age <= 50:
+            binned_ages.apend('36-50')
+        elif age <= 65:
+            binned_ages.append('51-65')
+        else:
+            binned_ages.append('66+')
+
+    users['age'] = binned_ages       
+    users_gpby_age = users.groupby('age')
+    users['age_count'] = users_gpby_age._id.transform(len)
+    users = users_gpby_age.first().sort_values('age').reset_index()
+    users['age_percentage'] = users.age_count/users.age_count.sum()
+    print(users[['age','age_percentage']])
+
+    fig.add_trace(
+        go.Pie(
+            labels = users.age,
+            values = users.age_percentage,
+            name = "Users age distribution",
+            hole = 0.3,
+            textinfo = 'label+percent',
+            insidetextorientation='radial'
+        ),
+        1, 1
+    )
+    
+    fig.add_trace(
+        go.Scatterpolar(
+            name = "Users preferences (in %)",
+            theta = users_tags.index,
+            r = users_tags.values,
+            fill='toself'
+        ),
+        1, 2
+    )
+
+    fig.update_layout(
+        polar2 = dict(
+            radialaxis = dict(
+                angle = 180,
+                tickangle = -180 # so that tick labels are not upside down
+            )
+        )
+    )
+
+    fig.layout.annotations[0].update(y=1.15)
+    fig.layout.annotations[1].update(y=1.15)
+
+    return fig          
+
 def main(shopname):
     data, transactions, users = get_data(shopname)
 
@@ -190,7 +298,7 @@ def main(shopname):
                                     {"label": gender, "value": gender}
                                     for gender in np.sort(users.gender.unique())
                                 ],
-                                value=np.sort(users.gender.unique())[0],
+                                value=[i for i in np.sort(users.gender.unique())],
                                 clearable=False,
                                 className="dropdown",
                                 multi=True
@@ -252,6 +360,13 @@ def main(shopname):
                         ),
                         className="card",
                     ),
+                    html.Div(
+                        children=dcc.Graph(
+                            id="users_polar_chart",
+                            config={"displayModeBar": False},
+                        ),
+                        className="card",
+                    ),
                 ],
                 className="wrapper",
             ),
@@ -260,7 +375,7 @@ def main(shopname):
 
 
     @app.callback(
-        [Output("num_trans_chart", "figure"), Output("volume-chart", "figure")],
+        [Output("num_trans_chart", "figure"), Output("volume-chart", "figure"), Output("users_polar_chart", "figure")],
         [
             Input("gender-filter", "value"),
             Input("neighbourhood-filter", "value"),
@@ -269,36 +384,7 @@ def main(shopname):
         ],
     )
     def update_charts(gender, neighbourhood, start_date, end_date):
-        neighbourhoods = set(neighbourhood) if type(neighbourhood) != str else {neighbourhood}
-        print('neighbourhoods:',neighbourhoods)
-        if 'All neighbourhoods' in neighbourhoods:
-            users_mask = (
-                (users.gender.isin(set(gender)))
-            )
-        else:
-            users_mask = (
-                (users.gender.isin(set(gender)))
-                & (users.neighbourhood.isin(neighbourhoods))
-            )
-        filtered_users = users.loc[users_mask, :].copy()
-        print('filtered_uers')
-        print(filtered_users.head())
-
-        transactions_mask = (
-            (transactions.timestamp >= start_date)
-            & (transactions.timestamp <= end_date)
-            & (transactions.user_id.isin(set(filtered_users._id.unique())))
-        )
-        filtered_transactions = transactions.loc[transactions_mask, :].copy()
-        #filtered_transactions['day'] = filtered_transactions.timestamp.dt.day
-        #filtered_transactions['month'] = filtered_transactions.timestamp.dt.month
-        filtered_transactions['week'] = filtered_transactions.timestamp.dt.isocalendar().week
-        filtered_transactions_gpby = filtered_transactions.groupby('week')
-        filtered_transactions['count'] = filtered_transactions_gpby.shop_id.transform(len)
-        filtered_transactions = filtered_transactions_gpby.first().sort_values('timestamp').reset_index()
-
-        print('filtered_transactions')
-        print(filtered_transactions.head())
+        filtered_users, filtered_transactions = get_filtered_data(users, transactions, gender, neighbourhood, start_date, end_date)
 
         num_trans_chart_figure = {
             "data": [
@@ -322,22 +408,6 @@ def main(shopname):
             },
         }
 
-        #volume_chart_figure = {
-        #    "data": [
-        #        {
-        #            "x": filtered_data["Date"],
-        #            "y": filtered_data["Total Volume"],
-        #            "type": "lines",
-        #        },
-        #    ],
-        #    "layout": {
-        #        "title": {"text": "Avocados Sold", "x": 0.05, "xanchor": "left"},
-        #        "xaxis": {"fixedrange": True},
-        #        "yaxis": {"fixedrange": True},
-        #        "colorway": ["#E12D39"],
-        #    },
-        #}
-
         volume_chart_figure = {
             "data": [
                 {
@@ -358,12 +428,15 @@ def main(shopname):
                 "colorway": ["#17B897"],
             },
         }
+
+        users_polar_figs = polar_plots_figures(filtered_users)
         
-        return num_trans_chart_figure, volume_chart_figure
+        return num_trans_chart_figure, volume_chart_figure, users_polar_figs
 
     app.run_server(debug=True)
 
 if __name__ == "__main__":
     assert len(sys.argv) > 1, "pasame tiendiki broskikiii"
     shopname = sys.argv[1]
+    print(f"Starting {shopname} dashboard...")
     main(shopname)
