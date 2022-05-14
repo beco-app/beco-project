@@ -44,16 +44,21 @@ def shop_count_sim(u_shops, v_shops):
 
 
 def recommend(user_id, plot=False, print_time=False):
+    try:
+        user_id = ObjectId(user_id)
+    except:
+        pass
+
     t0 = time()
     # Get necessary info
-    u_info = getUser(['preferences', 'zip_code'], _id=user_id)[0]
+    u_info = getUser(['preferences', 'location'], _id=user_id)[0]
     all_trans = getTransaction(['shop_id', 'user_id'])
     all_shops = getShop(['location', 'tags'])
     shop_ids = [s["_id"] for s in all_shops]
     u_shops = get_shop_count(user_id, all_trans)
-    geolocator = Nominatim(user_agent="beco")
-    u_loc = geolocator.geocode({"country": "Spain", "postalcode": u_info["zip_code"]})
-    u_loc = (u_loc.latitude, u_loc.longitude)
+    #geolocator = Nominatim(user_agent="beco")
+    #u_loc = geolocator.geocode({"country": "Spain", "postalcode": u_info["zip_code"]})
+    #u_loc = (u_loc.latitude, u_loc.longitude)
 
     t1 = time()
     if print_time: print(t1 - t0)
@@ -100,7 +105,7 @@ def recommend(user_id, plot=False, print_time=False):
     u_loc = np.mean(lats), np.mean(lons)
     """
     s_locs = {s['_id']: s['location'] for s in shop_info}
-    dists = {s_id: distance(u_loc, s_loc).km for s_id, s_loc in s_locs.items()}
+    dists = {s_id: distance(u_info["location"], s_loc).km for s_id, s_loc in s_locs.items()}
     max_dist = max(dists.values())
     dists = {s_id: s_dist / max_dist for s_id, s_dist in dists.items()}
     dist_scores = {s_id: np.pi / 2 - np.arctan(s_dist) for s_id, s_dist in dists.items()}  # hyperparameter
@@ -143,6 +148,7 @@ def recommend(user_id, plot=False, print_time=False):
         plt.show()
 
     shops = sorted(shops.items(), key=lambda x: -x[1])[:30]  # Hyperparameter
+    #return shops
     #return shops[:20]
     return random.sample(shops, k=20)
 
