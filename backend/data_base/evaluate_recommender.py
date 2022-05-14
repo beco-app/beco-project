@@ -6,6 +6,8 @@ import numpy as np
 from tqdm import tqdm
 from bson.objectid import ObjectId
 from populate_users import populate_users
+import matplotlib.pyplot as plt
+from tqdm import tqdm
 
 def evaluate(verbose=True):
     f = open('./backend/data_base/latent.csv', 'r')
@@ -41,15 +43,29 @@ def evaluate(verbose=True):
 
 
 def evaluate_time(days, start=10, factor=0.1):
+    """
+    Simulate increasing users behavior during some days
+    and evaluate the recommender after each one
+    Execute in local, and first wipe out users and transactions collections!
+    """
     new_users = start
-    for d in range(days):
+    accuracies = []
+    n_users = []
+    n_trans = []
+    for d in tqdm(range(days)):
         populate_users(new_users)
         transaction_gen(n_days=1)
-        evaluate()
-
-
-
+        current_users = len(getUser())
+        accuracies.append(evaluate())
+        n_users.append(current_users)
+        n_trans.append(len(getTransaction))
+        new_users = int(current_users * factor)
+    
+    plt.plot(n_users, accuracies)
+    plt.show()
+    plt.plot(n_trans, accuracies)
+    plt.show()
 
 
 if __name__ == '__main__':
-    evaluate(100)
+    evaluate_time(50)
