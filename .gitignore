@@ -10,6 +10,10 @@ i\+d/logs
 *.log
 */map/img/*
 *.png
+*map/index.html
+backend/data_base/map/index.html
+backend/data_base/map/img/*
+
 
 *prova2.dart
 *Homepage.dart
