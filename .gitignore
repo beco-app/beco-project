@@ -9,6 +9,7 @@
 i\+d/logs
 *.log
 */map/img/*
+*.png
 
 *prova2.dart
 *Homepage.dart
