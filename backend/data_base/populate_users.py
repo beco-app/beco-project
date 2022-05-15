@@ -104,10 +104,13 @@ def user_gen(n):
         yield user 
 
 
-def populate_users(n):
+def populate_users(n, verbose=True):
     users = user_gen(n)
     for user in users:
-        print(setUser(user))
+        if verbose:
+            print(setUser(user))
+        else:
+            setUser(user)
         # print('-'*100)
         # print(user)
 
