@@ -8,6 +8,7 @@
 *.idea/*
 i\+d/logs
 *.log
+*/map/img/*
 
 *prova2.dart
 *Homepage.dart
