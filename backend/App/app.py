@@ -202,8 +202,8 @@ def add_becoins():
 
         if becoins_initial + becoins_gained < 0:
             raise Exception("You cannot have negative amount of becoins.")
-
-        return tools.updateUser(_id=userid, becoins=becoins_initial+becoins_gained)
+        _, changed = tools.update(_id=userid, becoins=becoins_initial+becoins_gained)
+        return f"Changed {changed} users."
     except Exception as e:
         return {'message': e}, 404
 
