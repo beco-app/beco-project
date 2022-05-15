@@ -59,12 +59,6 @@ def computeScores(all_shops, user, u_transactions, u_latent):
         softmax_ntrans = dict(zip(n_transactions.keys(), softmax_list))
         scores = {}
         for shop in all_shops.values():
-            print()
-            print(shop)
-            print()
-            print(user)
-            print()
-
             dist = distance(shop["location"], user["location"]).km
             u_pref = [pref.lower() for pref in user["preferences"]]
             sh_tags = [tag.lower() for tag in shop["tags"]]
@@ -77,7 +71,7 @@ def computeScores(all_shops, user, u_transactions, u_latent):
         return scores
 
 
-def transaction_gen(n_days, hard=False, n_hard=None, eval=False):
+def transaction_gen(n_days, hard=False, n_hard=None, eval=False, verbose=True):
     now = time()
 
     all_users = getUser() # all users from db with all fields
@@ -91,19 +85,30 @@ def transaction_gen(n_days, hard=False, n_hard=None, eval=False):
     # generate random latent vars for each user (uniform random [0,1])
     latent = {}
     current_ids = []
-    if 'latent.csv' in os.listdir("./backend/data_base"):
+    if os.path.exists('./backend/data_base/latent.csv'):
         with open('./backend/data_base/latent.csv', 'r') as f:
             latent = [r[:-1].split(',') for r in f.readlines()]
-            latent = {ObjectId(r[0]): {'freq': float(r[1]), 
-                                    'fidelity': float(r[2]),
-                                    'laziness': float(r[3]),
-                                    'pickiness': float(r[4])} for r in latent}
+        latent = {ObjectId(r[0]): {
+                    'freq': float(r[1]), 
+                    'fidelity': float(r[2]),
+                    'laziness': float(r[3]),
+                    'pickiness': float(r[4])} for r in latent}
+        if list(latent.keys())[0] not in all_users.keys():
+            print("removing")
+            os.remove('./backend/data_base/latent.csv')
+            latent = {}
+        
 
     f = open('./backend/data_base/latent.csv', 'a')
-    for uid in (t:=tqdm(all_users.keys())):
+    if verbose:
+        users_iter = tqdm(all_users.keys())
+    else:
+        users_iter = all_users.keys()
+    for uid in (users_iter):
         if uid in latent.keys():
             continue
-        t.set_description("generating latent")
+        if verbose:
+            users_iter.set_description("generating latent")
         freq = random.random() / 7
         fidelity = random.random()
         laziness = random.random()
@@ -142,7 +147,11 @@ def transaction_gen(n_days, hard=False, n_hard=None, eval=False):
              'promotion_used': promotion_used, 'payment': payment, 'becoin_gained': becoin_gained}
 
             if not eval:
-                print(setTransaction(record))
+                if verbose:
+                    print(setTransaction(record))
+                else:
+                    setTransaction(record)
+
             transactions[uid].append(shop_chosen)
         if eval:
             ratios.append(evaluate())
@@ -151,7 +160,8 @@ def transaction_gen(n_days, hard=False, n_hard=None, eval=False):
     for k,v in transactions.items():
         total_trans += len(v)
 
-    print(f"total transactions {total_trans}")
+    if verbose:
+        print(f"total transactions {total_trans}")
 
     if eval:
         plt.plot(ratios)
