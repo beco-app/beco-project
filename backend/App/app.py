@@ -185,7 +185,7 @@ def nearest_shops(username, lat, long, distance):
 
 
 # Add BECOINS
-@app.route('/api/add_becoins', methods=["GET"])
+@app.route('/api/add_becoins', methods=["POST"])
 def add_becoins():
     """
         Adds becoins to a user's account
@@ -195,7 +195,7 @@ def add_becoins():
 
     try:
         userid = request.form.get('user_id')
-        becoins_gained = request.form.get('becoins')
+        becoins_gained = int(request.form.get('becoins'))
 
         user = tools.getUser(attributes='becoins', _id=userid)[0]
         becoins_initial = user['becoins']
@@ -233,7 +233,7 @@ def activate_promotion():
 
 # Save promotion
 @app.route('/promotions/save', methods=['POST'])
-@validate_user_exists
+# @validate_user_exists
 def save_promotion():
     """
     Saves a promotion for a given user.
@@ -250,7 +250,7 @@ def save_promotion():
     user_saved_prom = tools.getUser(['saved_prom'], _id = user_id)[0]['saved_prom']
     if ObjectId(promotion_id) not in user_saved_prom:
         user_saved_prom.append(ObjectId(promotion_id))
-        tools.updateUser(ObjectId(user_id), saved_prom=user_saved_prom)
+        tools.updateUser(user_id, saved_prom=user_saved_prom)
     
     # Debug:
     return (
@@ -262,8 +262,8 @@ def save_promotion():
 
 # Unsave promotion
 @app.route('/promotions/unsave', methods=['POST'])
-@validate_user_exists
-@validate_promotion
+# @validate_user_exists
+# @validate_promotion
 def unsave_promotion():
     """
     Unsaves a promotion for a given user.
@@ -287,7 +287,7 @@ def unsave_promotion():
     # Debug:
     return (
         (
-            str(tools.getUser(['saved_prom'], _id = ObjectId(user_id))[0]['saved_prom']) +
+            str(tools.getUser(['saved_prom'], _id = user_id)[0]['saved_prom']) +
             '\n' + promotion_id),
         200
     )
