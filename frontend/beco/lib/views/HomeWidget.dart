@@ -60,7 +60,7 @@ class _HomeWidgetState extends State<HomeWidget> {
     globals.user = await getUser();
     FlutterNativeSplash.remove();
   }
-  
+
   void _openFilterDialog() async {
     await FilterListDialog.display<String>(
       context,
@@ -112,14 +112,15 @@ class _HomeWidgetState extends State<HomeWidget> {
     try {
       _scanBarcode = await FlutterBarcodeScanner.scanBarcode(
           '#ff6666', 'Cancel', true, ScanMode.BARCODE);
-        var response = http.post(Uri.parse("http://34.252.26.132/api/add_becoins"),
-                                body: {"user_id": await FirebaseAuth.instance.currentUser!.uid, "becoins":50});
-        print("read discount");
-        print(response);
-         _initUser();
-
-    } on Exception catch (exception) {
-      _scanBarcode = 'Failed to get platform version.';
+      var response = await http
+          .post(Uri.parse("http://34.252.26.132/api/add_becoins"), body: {
+        "user_id": await FirebaseAuth.instance.currentUser!.uid,
+        "becoins": "50"
+      });
+      _initUser();
+      // May it should refresh the "top bar"?
+    } catch (e) {
+      print(e);
     }
   }
 

@@ -14,6 +14,8 @@ import 'QRView.dart';
 
 import 'package:beco/tools/Utils.dart';
 
+import 'package:beco/globals.dart' as globals;
+
 class DiscountWidget extends StatefulWidget {
   const DiscountWidget({Key? key}) : super(key: key);
 
@@ -50,19 +52,22 @@ class _DiscountWidgetState extends State<DiscountWidget> {
                         if (snapshot.data?.discounts[0].id == "")
                           const Text('No discounts saved')
                         else
-                          for (var i = 0; i < snapshot.data!.discounts.length; i++)
-                          Column(
-                            children: [
-                              DiscountButton(
-                                shopName: snapshot.data!.discounts[i].shopname,
-                                description:
-                                    snapshot.data!.discounts[i].description,
-                                becoins: snapshot.data!.discounts[i].becoins,
-                                discount: snapshot.data!.discounts[i],
-                              ),
-                              const SizedBox(height: 20),
-                            ],
-                          )
+                          for (var i = 0;
+                              i < snapshot.data!.discounts.length;
+                              i++)
+                            Column(
+                              children: [
+                                DiscountButton(
+                                  shopName:
+                                      snapshot.data!.discounts[i].shopname,
+                                  description:
+                                      snapshot.data!.discounts[i].description,
+                                  becoins: snapshot.data!.discounts[i].becoins,
+                                  discount: snapshot.data!.discounts[i],
+                                ),
+                                const SizedBox(height: 20),
+                              ],
+                            )
                       ],
                     );
                   } else if (snapshot.hasError) {
@@ -335,11 +340,13 @@ showAlertDialog(BuildContext context, Discount discount) {
 
   // set up the AlertDialog
   AlertDialog alert = AlertDialog(
-    title: const Text("Are you sure you want to use this discount?"),
+    title: globals.user.becoins >= discount.becoins
+        ? Text("Are you sure you want to use this discount?")
+        : Text("You do not have enough becoins."),
     content: Text("It costs ${discount.becoins.toString()} becoins"),
     actions: [
       cancelButton,
-      continueButton,
+      if (globals.user.becoins >= discount.becoins) continueButton,
     ],
   );
 
