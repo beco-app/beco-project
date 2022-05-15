@@ -205,7 +205,7 @@ def add_becoins():
 
         return tools.update(_id=userid, becoins=becoins_initial+becoins_gained)
     except Exception as e:
-        return {'message': 'Error at adding or substracting becoins.', 'Exception': e}, 404
+        return {'message': e}, 404
 
 # Activate promotion
 @app.route('/promotions/activate', methods=['POST'])
