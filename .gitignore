@@ -7,6 +7,7 @@
 *Icon*
 *.idea/*
 i\+d/logs
+*.log
 
 *prova2.dart
 *Homepage.dart
