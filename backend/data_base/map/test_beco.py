@@ -75,7 +75,7 @@ print(shops_df)
 uids = [str(user["_id"]) for user in getUser() if isinstance(user["_id"], ObjectId)]
 
 
-top_k = 2
+top_k = 10
 n_days = 100
 for i in trange(n_days):
     for uid in (t:=tqdm(uids)):
