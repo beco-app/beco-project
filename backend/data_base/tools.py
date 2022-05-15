@@ -12,13 +12,7 @@ TO IMPLEMENT:
 
 import sys
 sys.path.append("./backend/data_base")
-
-from site import getusersitepackages
-import pymongo
-# from bson.objectid import ObjectId
 import db_handler # using relative path
-import re
-# import os
 import json
 
 # Globals

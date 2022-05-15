@@ -1,6 +1,4 @@
-import numpy as np
 import pandas as pd
-import csv
 from geopy.geocoders import Nominatim
 from tqdm import tqdm
 geolocator = Nominatim(user_agent="geoapiExercises")

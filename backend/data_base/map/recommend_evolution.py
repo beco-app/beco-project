@@ -5,7 +5,6 @@ sys.path.append(os.getcwd())
 from tools import *
 from recommender import recommend
 from simulate_transactions import computeScores, transaction_gen
-from time import time
 import numpy as np
 from tqdm import tqdm
 from bson.objectid import ObjectId

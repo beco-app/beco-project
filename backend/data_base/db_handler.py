@@ -1,14 +1,5 @@
-#from flask import Flask, request, jsonify, abort
-#from datetime import datetime, timedelta
-#from bson.objectid import ObjectId
-#from bson import json_util
-#from run import mongo 
-
-#import hashlib
 import pymongo
-#import random
 import json
-#import re
 
 
 # Globals

@@ -9,7 +9,6 @@ print (sys.version_info)
 import sys
 import os
 from datetime import datetime, timedelta
-import pymongo
 from bson import json_util
 from bson.objectid import ObjectId
 
@@ -22,7 +21,6 @@ from backend.data_base.recommender import recommend
 
 import json
 from flask import Flask, request
-from functools import wraps
 from time import time
 
 from backend.data_base.db_handler import queryFind

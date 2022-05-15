@@ -3,7 +3,6 @@ from recommender import recommend
 from simulate_transactions import computeScores, transaction_gen
 from time import time
 import numpy as np
-from tqdm import tqdm
 from bson.objectid import ObjectId
 from populate_users import populate_users
 import matplotlib.pyplot as plt

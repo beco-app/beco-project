@@ -13,7 +13,6 @@ stations file so it can be used as a module.
 # Libs
 import requests
 import json
-import pandas as pd
 from tqdm import tqdm
 import datetime
 

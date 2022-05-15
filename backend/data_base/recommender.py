@@ -4,7 +4,6 @@ sys.path.append("./backend/data_base")
 from tools import *
 from collections import Counter
 from geopy.distance import distance
-from geopy.geocoders import Nominatim
 import numpy as np
 from bson.objectid import ObjectId
 from time import time
@@ -39,7 +38,6 @@ def shop_count_sim(u_shops, v_shops):
             id1 += 1
         else:
             id2 += 1
-    # print(dot, end='')
     return dot
 
 
@@ -56,9 +54,6 @@ def recommend(user_id, plot=False, print_time=False):
     all_shops = getShop(['location', 'tags'])
     shop_ids = [s["_id"] for s in all_shops]
     u_shops = get_shop_count(user_id, all_trans)
-    #geolocator = Nominatim(user_agent="beco")
-    #u_loc = geolocator.geocode({"country": "Spain", "postalcode": u_info["zip_code"]})
-    #u_loc = (u_loc.latitude, u_loc.longitude)
 
     t1 = time()
     if print_time: print(t1 - t0)
