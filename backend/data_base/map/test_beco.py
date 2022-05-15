@@ -1,9 +1,7 @@
 import folium
-from folium.features import DivIcon
 import folium.plugins
 import numpy as np
 import pandas as pd
-import random
 from tqdm import tqdm, trange
 from selenium import webdriver
 import time
@@ -15,7 +13,7 @@ from backend.data_base.tools import *
 from backend.data_base.recommender import recommend
 
 
-def show_shops_map(shops, my_map=None, day=0):
+def show_shops_map(shops, day=0):
     def draw_shop(shop, color, fill_opacity=0.6, radius=2, txt=''):
         lat, lon = shop["location"]
         return folium.CircleMarker(
@@ -76,12 +74,16 @@ shops_df, shops_dict = preprocessDF(path)
 print(shops_df)
 uids = [str(user["_id"]) for user in getUser() if isinstance(user["_id"], ObjectId)]
 
-for i in trange(100):
+
+top_k = 2
+n_days = 100
+for i in trange(n_days):
     for uid in (t:=tqdm(uids)):
         t.set_description("recomending for each user")
         recommended = recommend(uid)
-        first_shop = str(recommended[0][0])
-        shops_dict[first_shop]["n_recom"] += 1
+        for shop in recommended[:top_k]:
+            shop_id = str(shop[0])
+            shops_dict[shop_id]["n_recom"] += 1
     m = show_shops_map(shops_dict, day=i+1)
     make_screenshot(m, f"{i:03d}", driver)
 
