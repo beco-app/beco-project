@@ -14,8 +14,6 @@ import 'QRView.dart';
 
 import 'package:beco/tools/Utils.dart';
 
-import 'package:beco/globals.dart' as globals;
-
 class DiscountWidget extends StatefulWidget {
   const DiscountWidget({Key? key}) : super(key: key);
 
@@ -105,7 +103,7 @@ class DiscountButton extends StatelessWidget {
     return Center(
       child: Material(
           elevation: 10,
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(5),
           clipBehavior: Clip.antiAliasWithSaveLayer,
           child: InkWell(
               onTap: () {
@@ -120,20 +118,20 @@ class DiscountButton extends StatelessWidget {
                 //Button config
                 width: screenwidth * 0.95,
                 alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: Colors.transparent,
-                  border: Border.all(color: Colors.black, width: 1),
-                  borderRadius: BorderRadius.circular(9),
-                ),
-                child: Row(// Everything inside the button
+                // decoration: BoxDecoration(
+                //   color: Colors.transparent,
+                //   border: Border.all(color: Colors.black, width: 1),
+                //   borderRadius: BorderRadius.circular(9),
+                // ),
+                child: Column(// Everything inside the button
                     children: [
-                  SizedBox(width: 20),
-                  Column(
+                  // Spacer(),
+                  Row(
                       //Text, short description and Icons
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox(height: 10),
-                        Row(children: [
+                        SizedBox(width: 20),
+                        Column(children: [
                           ConstrainedBox(
                               constraints: BoxConstraints(
                                   maxWidth: screenwidth * 0.4,
@@ -165,25 +163,26 @@ class DiscountButton extends StatelessWidget {
                                 ),
                               ])),
                         ]),
-                        SizedBox(height: 10),
+                        SizedBox(width: 10),
                         // Buttons
                         ConstrainedBox(
-                            constraints:
-                                BoxConstraints(maxWidth: screenwidth * 0.8),
-                            child: Row(children: [
-                              Spacer(),
-                              UnsaveButton(
-                                userId: FirebaseAuth.instance.currentUser!.uid,
-                                discountId: discount.id,
-                              ),
-                              Spacer(),
-                              GoToShopButton(
-                                  option: "Go to shop", discount: discount),
-                              Spacer(),
-                            ])),
-                        SizedBox(height: 15),
+                            constraints: BoxConstraints(
+                                maxHeight: screenheight * 0.15,
+                                maxWidth: screenwidth * 0.4),
+                            child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  UnsaveButton(
+                                    userId:
+                                        FirebaseAuth.instance.currentUser!.uid,
+                                    discountId: discount.id,
+                                  ),
+                                  GoToShopButton(
+                                      option: "Go to shop", discount: discount),
+                                ])),
+                        // SizedBox(height: 15),
                       ]),
-                  const Spacer(),
+                  // const Spacer(),
                 ]),
               ))),
     );
@@ -271,12 +270,13 @@ class _GoToShopButton extends State<GoToShopButton> {
   void initState() {
     super.initState();
     store = getStore(widget.discount.shop_id);
-    print("polla");
     print(widget.discount.shop_id);
   }
 
   @override
   Widget build(BuildContext context) {
+    double screenheight = MediaQuery.of(context).size.height;
+    double screenwidth = MediaQuery.of(context).size.width;
     return FutureBuilder<Store>(
         future: store,
         builder: (context, snapshot) {
@@ -285,7 +285,7 @@ class _GoToShopButton extends State<GoToShopButton> {
             print(snapshot.data!.shopname);
             print('hola hola');
             return Material(
-                borderRadius: BorderRadius.circular(30),
+                //borderRadius: BorderRadius.circular(30),
                 clipBehavior: Clip.antiAliasWithSaveLayer,
                 child: InkWell(
                   onTap: () {
@@ -296,10 +296,13 @@ class _GoToShopButton extends State<GoToShopButton> {
                     );
                   },
                   child: Container(
+                      constraints: BoxConstraints(
+                          minHeight: screenheight * 0.075,
+                          minWidth: screenwidth * 0.4),
                       //Button config
                       decoration: BoxDecoration(
                         color: myColor,
-                        borderRadius: BorderRadius.circular(30),
+                        //borderRadius: BorderRadius.circular(30),
                       ),
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
@@ -307,6 +310,7 @@ class _GoToShopButton extends State<GoToShopButton> {
                             children: [
                           Text(
                             widget.option,
+                            textAlign: TextAlign.center,
                           ),
                         ]),
                       )),
@@ -340,13 +344,11 @@ showAlertDialog(BuildContext context, Discount discount) {
 
   // set up the AlertDialog
   AlertDialog alert = AlertDialog(
-    title: globals.user.becoins >= discount.becoins
-        ? Text("Are you sure you want to use this discount?")
-        : Text("You do not have enough becoins."),
+    title: const Text("Are you sure you want to use this discount?"),
     content: Text("It costs ${discount.becoins.toString()} becoins"),
     actions: [
       cancelButton,
-      if (globals.user.becoins >= discount.becoins) continueButton,
+      continueButton,
     ],
   );
 

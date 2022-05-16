@@ -104,8 +104,9 @@ class _UnsaveButton extends State<UnsaveButton> {
   Color? myColor = Colors.grey[350];
   @override
   Widget build(BuildContext context) {
+    double screenheight = MediaQuery.of(context).size.height;
     return Material(
-        borderRadius: BorderRadius.circular(30),
+        //borderRadius: BorderRadius.circular(30),
         clipBehavior: Clip.antiAliasWithSaveLayer,
         child: InkWell(
           onTap: () async {
@@ -120,18 +121,17 @@ class _UnsaveButton extends State<UnsaveButton> {
             setState(() {});
           },
           child: Container(
+              constraints: BoxConstraints(minHeight: screenheight * 0.075),
               //Button config
               decoration: BoxDecoration(
                 color: myColor,
-                borderRadius: BorderRadius.circular(30),
+                //borderRadius: BorderRadius.circular(30),
               ),
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                 child: Row(// Everything inside the button
                     children: [
-                  Text(
-                    "Unsave",
-                  ),
+                  Text("Unsave", textAlign: TextAlign.center),
                 ]),
               )),
         ));
