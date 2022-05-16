@@ -56,10 +56,10 @@ class _HomeWidgetState extends State<HomeWidget> {
     storeList = getHomepageStores();
   }
 
-  void _initUser() async {
-    globals.user = await getUser();
-    FlutterNativeSplash.remove();
-  }
+  // void _initUser() async {
+  //   globals.user = await getUser();
+  //   FlutterNativeSplash.remove();
+  // }
 
   void _openFilterDialog() async {
     await FilterListDialog.display<String>(
@@ -117,7 +117,12 @@ class _HomeWidgetState extends State<HomeWidget> {
         "user_id": await FirebaseAuth.instance.currentUser!.uid,
         "becoins": "50"
       });
-      _initUser();
+      // _initUser();
+      globals.user.becoins += 50;
+      Navigator.of(context).pushNamedAndRemoveUntil(
+        '/home/',
+        (route) => false,
+      );
       // May it should refresh the "top bar"?
     } catch (e) {
       print(e);

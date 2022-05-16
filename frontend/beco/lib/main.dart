@@ -15,8 +15,15 @@ import 'Stores.dart';
 import 'firebase_options.dart';
 import 'globals.dart' as globals;
 
-void main() {
-  WidgetsFlutterBinding.ensureInitialized();
+bool loading = true;
+
+void main() async {
+  // await Firebase.initializeApp();
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(
     MaterialApp(
       title: 'Flutter Demo',
@@ -48,45 +55,57 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    _initStores();
-    _initUser();
+    //Firebase.initializeApp();
   }
 
   void _initStores() async {
     globals.storeList = await getMapStores();
-    FlutterNativeSplash.remove();
   }
 
   void _initUser() async {
     globals.user = await getUser();
-    FlutterNativeSplash.remove();
+    //FlutterNativeSplash.remove();
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: Firebase.initializeApp(
-        options: DefaultFirebaseOptions.currentPlatform,
-      ),
-      builder: (context, snapshot) {
-        switch (snapshot.connectionState) {
-          case ConnectionState.done:
-            final user = FirebaseAuth.instance.currentUser;
-            print(user);
-            if (user != null) {
-              // if (user.emailVerified) {
-              //   print('Email is verified');
-              // } else {
-              //   return const VerifyEmailView();
-              // }
-              return const HomeView();
-            } else {
-              return const LoginView();
-            }
-          default:
-            return const CircularProgressIndicator();
-        }
-      },
-    );
+    // return FutureBuilder(
+    //   future: Firebase.initializeApp(
+    //     options: DefaultFirebaseOptions.currentPlatform,
+    //   ),
+    //   builder: (context, snapshot) {
+    //     switch (snapshot.connectionState) {
+    //       case ConnectionState.done:
+    if (loading) {
+      getMapStores().then((storeList) {
+        globals.storeList = storeList;
+        getUser().then((user) {
+          globals.user = user;
+          setState(() {
+            loading = false;
+          });
+        });
+      });
+      return CircularProgressIndicator();
+    } else {
+      FlutterNativeSplash.remove();
+      final user = FirebaseAuth.instance.currentUser;
+      print(user);
+      if (user != null) {
+        // if (user.emailVerified) {
+        //   print('Email is verified');
+        // } else {
+        //   return const VerifyEmailView();
+        // }
+        return const HomeView();
+      } else {
+        return const LoginView();
+      }
+    }
+    //       default:
+    //         return const CircularProgressIndicator();
+    //     }
+    //   },
+    // );
   }
 }
