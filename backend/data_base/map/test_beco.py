@@ -68,32 +68,33 @@ def make_screenshot(m, img_name, driver):
     driver.save_screenshot(f'./backend/data_base/map/img/{img_name}.png')
 
 
-driver = webdriver.Firefox(executable_path="./backend/data_base/map/geckodriver",log_path=None)
-path = "./backend/data_base/map/shops.csv"
-shops_df, shops_dict = preprocessDF(path)
-print(shops_df)
+#driver = webdriver.Firefox(executable_path="./backend/data_base/map/geckodriver",log_path=None)
 uids = [str(user["_id"]) for user in getUser() if isinstance(user["_id"], ObjectId)]
 
 
-top_k = 10
-n_days = 100
-for i in trange(n_days):
-    for uid in (t:=tqdm(uids)):
-        t.set_description("recomending for each user")
-        recommended = recommend(uid)
-        for shop in recommended[:top_k]:
-            shop_id = str(shop[0])
-            shops_dict[shop_id]["n_recom"] += 1
-    m = show_shops_map(shops_dict, day=i+1)
-    make_screenshot(m, f"{i:03d}", driver)
+ndays = 1000
+for topk in [1, 3, 5, 10, 20]:
+    shops_df, shops_dict = preprocessDF("./backend/data_base/map/shops.csv")
+    #m = show_shops_map(shops_dict, day=0)
+    #make_screenshot(m, f"{0:03d}", driver)
+    total_days = 0
+    for i in trange(ndays):
+        total_days = i+1
+        for uid in (t:=tqdm(uids)):
+            t.set_description("recomending for each user")
+            recommended = recommend(uid)
+            for shop in recommended[:topk]:
+                shop_id = str(shop[0])
+                shops_dict[shop_id]["n_recom"] += 1
+        #m = show_shops_map(shops_dict, day=i+1)
+        #make_screenshot(m, f"{i+1:03d}", driver)
 
-    # break if all shops are recommended
-    min_recom = 1
-    for shop in shops_dict.values():
-        min_recom = min(min_recom, shop["n_recom"])
-    if min_recom > 0:
-        break
-
-driver.quit()
-
-os.system("ffmpeg -f image2 -r 4.1 -i ./backend/data_base/map/img/%03d.png -vcodec mpeg4 -b 1000k -y ./backend/data_base/map/img/videiko.mp4")
+        # break if all shops are recommended
+        min_recom = 1
+        for shop in shops_dict.values():
+            min_recom = min(min_recom, shop["n_recom"])
+        if min_recom > 0:
+            break
+    print(f"Total days top{topk:02d} = {total_days}")
+    #os.system(f"ffmpeg -f image2 -r 4.1 -i ./backend/data_base/map/img/u100-top{topk:02d}/%03d.png -vcodec mpeg4 -b 1000k -y ./backend/data_base/map/img/videiko.mp4")
+#driver.quit()
