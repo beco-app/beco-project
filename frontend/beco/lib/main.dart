@@ -1,6 +1,7 @@
 import 'dart:collection';
 import 'package:beco/Users.dart';
 import 'package:beco/views/DetailView.dart';
+import 'package:beco/views/DiscountWidget.dart';
 import 'package:beco/views/HomeView.dart';
 import 'package:beco/views/LoginView.dart';
 import 'package:beco/views/RegisterView.dart';
@@ -29,6 +30,7 @@ void main() {
         '/home/': (context) => const HomeView(),
         DetailView.routeName: (context) => const DetailView(),
         QRView.routeName: (context) => const QRView(),
+        '/discounts/': (context) => const DiscountWidget(),
       },
     ),
   );

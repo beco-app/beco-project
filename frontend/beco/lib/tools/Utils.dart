@@ -28,11 +28,12 @@ class SaveButton extends StatefulWidget {
 }
 
 class _SaveButton extends State<SaveButton> {
-  Color? myColor = Colors.grey[350];
+  Color? myColor = Color.fromARGB(255, 238, 238, 238);
   @override
   Widget build(BuildContext context) {
+    double screenheight = MediaQuery.of(context).size.height;
     return Material(
-        borderRadius: BorderRadius.circular(30),
+        // borderRadius: BorderRadius.circular(30),
         clipBehavior: Clip.antiAliasWithSaveLayer,
         child: InkWell(
           onTap: () async {
@@ -45,10 +46,14 @@ class _SaveButton extends State<SaveButton> {
             setState(() {});
           },
           child: Container(
+              constraints: BoxConstraints(minHeight: screenheight * 0.075),
               //Button config
               decoration: BoxDecoration(
+                border: Border(
+                    bottom: BorderSide(width: 1, color: Colors.grey[350]!),
+                    left: BorderSide(width: 1, color: Colors.grey[350]!)),
                 color: myColor,
-                borderRadius: BorderRadius.circular(30),
+                //borderRadius: BorderRadius.circular(30),
               ),
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
@@ -56,6 +61,8 @@ class _SaveButton extends State<SaveButton> {
                     children: [
                   Text(
                     "Save",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.grey[700]!),
                   ),
                 ]),
               )),
@@ -101,40 +108,47 @@ class UnsaveButton extends StatefulWidget {
 }
 
 class _UnsaveButton extends State<UnsaveButton> {
-  Color? myColor = Colors.grey[350];
+  Color? myColor = Color.fromARGB(255, 238, 238, 238);
   @override
   Widget build(BuildContext context) {
     double screenheight = MediaQuery.of(context).size.height;
     return Material(
         //borderRadius: BorderRadius.circular(30),
-        clipBehavior: Clip.antiAliasWithSaveLayer,
+        //clipBehavior: Clip.antiAliasWithSaveLayer,
+
         child: InkWell(
-          onTap: () async {
-            final r = await http.post(
-                Uri.parse('http://34.252.26.132/promotions/unsave'),
-                body: {
-                  'user_id': widget.userId,
-                  'promotion_id': widget.discountId,
-                });
-            log(r.body);
-            unsaveAlert(context);
-            setState(() {});
-          },
-          child: Container(
-              constraints: BoxConstraints(minHeight: screenheight * 0.075),
-              //Button config
-              decoration: BoxDecoration(
-                color: myColor,
-                //borderRadius: BorderRadius.circular(30),
+      onTap: () async {
+        final r = await http
+            .post(Uri.parse('http://34.252.26.132/promotions/unsave'), body: {
+          'user_id': widget.userId,
+          'promotion_id': widget.discountId,
+        });
+        log(r.body);
+        unsaveAlert(context);
+        setState(() {});
+      },
+      child: Container(
+          constraints: BoxConstraints(minHeight: screenheight * 0.075),
+          //Button config
+          decoration: BoxDecoration(
+            border: Border(
+                bottom: BorderSide(width: 1, color: Colors.grey[350]!),
+                left: BorderSide(width: 1, color: Colors.grey[350]!)),
+            color: myColor,
+            //borderRadius: BorderRadius.circular(30),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+            child: Row(// Everything inside the button
+                children: [
+              Text(
+                "Unsave",
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.grey[700]!),
               ),
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                child: Row(// Everything inside the button
-                    children: [
-                  Text("Unsave", textAlign: TextAlign.center),
-                ]),
-              )),
-        ));
+            ]),
+          )),
+    ));
   }
 }
 

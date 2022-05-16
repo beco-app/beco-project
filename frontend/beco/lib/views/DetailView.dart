@@ -1,17 +1,35 @@
 import 'package:beco/Stores.dart';
+import 'package:beco/tools/Discounts.dart';
+import 'package:beco/tools/Utils.dart';
+import 'package:beco/views/HomeView.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class DetailView extends StatelessWidget {
+import 'DiscountWidget.dart';
+
+class DetailView extends StatefulWidget {
   const DetailView({
     Key? key,
   }) : super(key: key);
   static const routeName = '/detail/';
 
   @override
+  State<DetailView> createState() => _DetailViewState();
+}
+
+class _DetailViewState extends State<DetailView> {
+  late Future<Discounts> discountList;
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final args = ModalRoute.of(context)!.settings.arguments as Store;
+    discountList = getShopDiscounts(args.id);
     return Scaffold(
         resizeToAvoidBottomInset: true,
         body: CustomScrollView(slivers: [
@@ -93,13 +111,13 @@ class DetailView extends StatelessWidget {
                   const Text("Where are we?",
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
-                  const SizedBox(height: 10),
+                  SizedBox(height: 10),
                   Text(args.address),
-                  const SizedBox(height: 20),
-                  const Text("Pollution level",
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
-                  const SizedBox(height: 10),
+                  SizedBox(height: 20),
+                  Text("Pollution level",
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 12)),
+                  SizedBox(height: 10),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -114,6 +132,42 @@ class DetailView extends StatelessWidget {
                           color: color_from_aqi(args.aqi)),
                       Spacer(),
                     ],
+                  ),
+                  const SizedBox(height: 10),
+                  Text("Discounts",
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 25)),
+                  FutureBuilder<Discounts>(
+                    future: discountList,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        return Column(
+                          children: [
+                            for (var i = 0;
+                                i < snapshot.data!.discounts.length;
+                                i++)
+                              Column(
+                                children: [
+                                  const SizedBox(height: 20),
+                                  DiscountButtonDetail(
+                                    shopName:
+                                        snapshot.data!.discounts[i].shopname,
+                                    description:
+                                        snapshot.data!.discounts[i].description,
+                                    becoins:
+                                        snapshot.data!.discounts[i].becoins,
+                                    discount: snapshot.data!.discounts[i],
+                                  ),
+                                ],
+                              ),
+                          ],
+                        );
+                      } else if (snapshot.hasError) {
+                        return Text('${snapshot.error}');
+                      }
+                      // By default, show a loading spinner.
+                      return const CircularProgressIndicator();
+                    },
                   )
                 ]),
               ))
@@ -159,3 +213,155 @@ Map<String, IconData> myIcons = {
   "Others": Icons.question_mark,
   "Vegetarian food": Icons.location_on,
 };
+
+class DiscountButtonDetail extends StatelessWidget {
+  const DiscountButtonDetail({
+    required this.shopName,
+    required this.description,
+    required this.becoins,
+    required this.discount,
+    Key? key,
+  }) : super(key: key);
+
+  final String shopName; //= "Unknown";
+  final String description; //= "assets/images/logo.png";
+  final int becoins;
+  final Discount discount; //= "No description available";
+
+  @override
+  Widget build(context) {
+    double screenheight = MediaQuery.of(context).size.height;
+    double screenwidth = MediaQuery.of(context).size.width;
+    return Center(
+      child: Material(
+          elevation: 10,
+          borderRadius: BorderRadius.circular(5),
+          // clipBehavior: Clip.antiAliasWithSaveLayer,
+          clipBehavior: Clip.hardEdge,
+          child: InkWell(
+              onTap: () {
+                showAlertDialog(context, discount);
+                // Navigator.pushNamed(
+                //   context,
+                //   QRView.routeName,
+                //   arguments: discount,
+                //   );
+              },
+              child: Container(
+                //Button config
+                width: screenwidth * 0.95,
+                alignment: Alignment.center,
+                // decoration: BoxDecoration(
+                //   color: Colors.transparent,
+                //   border: Border.all(color: Colors.black, width: 1),
+                //   borderRadius: BorderRadius.circular(9),
+                // ),
+                child: Column(// Everything inside the button
+                    children: [
+                  // Spacer(),
+                  Row(
+                      //Text, short description and Icons
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(width: 20),
+                        Column(children: [
+                          SizedBox(height: 20),
+                          ConstrainedBox(
+                              constraints: BoxConstraints(
+                                  maxWidth: screenwidth * 0.4,
+                                  minWidth: screenwidth * 0.4),
+                              child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  // Name and description
+                                  children: [
+                                    Text(shopName,
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 15)),
+                                    SizedBox(height: 5),
+                                    Text(
+                                      description,
+                                    ),
+                                    Row(children: [
+                                      Text("$becoins becoins"),
+                                      SizedBox(width: 5),
+                                      Image.asset(
+                                        'assets/images/becoin.png',
+                                        height: 20,
+                                        width: 20,
+                                      ),
+                                    ])
+                                  ])),
+                        ]),
+                        // SizedBox(width: 10),
+                        // Buttons
+                        Spacer(),
+                        ConstrainedBox(
+                            constraints: BoxConstraints(
+                                maxHeight: screenheight * 0.15,
+                                maxWidth: screenwidth * 0.4),
+                            child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SaveButton(
+                                    userId:
+                                        FirebaseAuth.instance.currentUser!.uid,
+                                    discountId: discount.id,
+                                  ),
+                                  GoToDiscountsButton(),
+                                ])),
+                        // SizedBox(height: 15),
+                      ]),
+                  // const Spacer(),
+                ]),
+              ))),
+    );
+  }
+}
+
+class GoToDiscountsButton extends StatefulWidget {
+  const GoToDiscountsButton({Key? key}) : super(key: key);
+
+  @override
+  State<GoToDiscountsButton> createState() => _GoToDiscountsButtonState();
+}
+
+class _GoToDiscountsButtonState extends State<GoToDiscountsButton> {
+  Color? myColor = Color.fromRGBO(238, 238, 238, 1);
+  @override
+  Widget build(BuildContext context) {
+    double screenheight = MediaQuery.of(context).size.height;
+    return Material(
+        // borderRadius: BorderRadius.circular(30),
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        child: InkWell(
+          onTap: () async {
+            Navigator.of(context).pushNamedAndRemoveUntil(
+              '/discounts/',
+              (route) => false,
+            );
+          },
+          child: Container(
+              constraints: BoxConstraints(minHeight: screenheight * 0.075),
+              //Button config
+              decoration: BoxDecoration(
+                border: Border(
+                    bottom: BorderSide(width: 1, color: Colors.grey[350]!),
+                    left: BorderSide(width: 1, color: Colors.grey[350]!)),
+                color: myColor,
+                //borderRadius: BorderRadius.circular(30),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                child: Row(// Everything inside the button
+                    children: [
+                  Text(
+                    "Go to discounts",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.grey[700]!),
+                  ),
+                ]),
+              )),
+        ));
+  }
+}

@@ -38,7 +38,6 @@ class _DiscountWidgetState extends State<DiscountWidget> {
           hasScrollBody: false,
           child: Column(children: [
             const SizedBox(height: 20),
-            IconsRow(),
             Padding(
               padding: const EdgeInsets.all(20),
               child: FutureBuilder<Discounts>(
@@ -104,7 +103,8 @@ class DiscountButton extends StatelessWidget {
       child: Material(
           elevation: 10,
           borderRadius: BorderRadius.circular(5),
-          clipBehavior: Clip.antiAliasWithSaveLayer,
+          // clipBehavior: Clip.antiAliasWithSaveLayer,
+          clipBehavior: Clip.hardEdge,
           child: InkWell(
               onTap: () {
                 showAlertDialog(context, discount);
@@ -132,6 +132,7 @@ class DiscountButton extends StatelessWidget {
                       children: [
                         SizedBox(width: 20),
                         Column(children: [
+                          SizedBox(height: 20),
                           ConstrainedBox(
                               constraints: BoxConstraints(
                                   maxWidth: screenwidth * 0.4,
@@ -148,29 +149,26 @@ class DiscountButton extends StatelessWidget {
                                     Text(
                                       description,
                                     ),
+                                    Row(children: [
+                                      Text("$becoins becoins"),
+                                      SizedBox(width: 5),
+                                      Image.asset(
+                                        'assets/images/becoin.png',
+                                        height: 20,
+                                        width: 20,
+                                      ),
+                                    ])
                                   ])),
-                          SizedBox(width: screenwidth * 0.1),
-                          ConstrainedBox(
-                              constraints:
-                                  BoxConstraints(maxWidth: screenwidth * 0.3),
-                              child: Row(children: [
-                                Text("$becoins becoins"),
-                                SizedBox(width: 5),
-                                Image.asset(
-                                  'assets/images/becoin.png',
-                                  height: 20,
-                                  width: 20,
-                                ),
-                              ])),
                         ]),
-                        SizedBox(width: 10),
+                        // SizedBox(width: 10),
                         // Buttons
+                        Spacer(),
                         ConstrainedBox(
                             constraints: BoxConstraints(
                                 maxHeight: screenheight * 0.15,
                                 maxWidth: screenwidth * 0.4),
                             child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.end,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   UnsaveButton(
                                     userId:
@@ -264,7 +262,7 @@ class GoToShopButton extends StatefulWidget {
 }
 
 class _GoToShopButton extends State<GoToShopButton> {
-  Color? myColor = Colors.grey[350];
+  Color? myColor = Color.fromARGB(147, 231, 231, 231);
   late Future<Store> store;
   @override
   void initState() {
@@ -286,37 +284,63 @@ class _GoToShopButton extends State<GoToShopButton> {
             print('hola hola');
             return Material(
                 //borderRadius: BorderRadius.circular(30),
-                clipBehavior: Clip.antiAliasWithSaveLayer,
+                // clipBehavior: Clip.antiAliasWithSaveLayer,
+                //clipBehavior: Clip.hardEdge,
                 child: InkWell(
-                  onTap: () {
-                    Navigator.pushNamed(
-                      context,
-                      DetailView.routeName,
-                      arguments: snapshot.data!,
-                    );
-                  },
-                  child: Container(
-                      constraints: BoxConstraints(
-                          minHeight: screenheight * 0.075,
-                          minWidth: screenwidth * 0.4),
-                      //Button config
-                      decoration: BoxDecoration(
-                        color: myColor,
-                        //borderRadius: BorderRadius.circular(30),
+              onTap: () {
+                Navigator.pushNamed(
+                  context,
+                  DetailView.routeName,
+                  arguments: snapshot.data!,
+                );
+              },
+              child: Container(
+                  constraints: BoxConstraints(
+                      minHeight: screenheight * 0.075,
+                      minWidth: screenwidth * 0.4),
+                  //Button config
+                  decoration: BoxDecoration(
+                    color: myColor,
+                    border: Border(
+                        //top: BorderSide(width: 1, color: Colors.grey),
+                        left: BorderSide(width: 1, color: Colors.grey[350]!)),
+                    //borderRadius: BorderRadius.circular(30),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                    child: Row(// Everything inside the button
+                        children: [
+                      Text(
+                        widget.option,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Colors.grey[700]!),
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                        child: Row(// Everything inside the button
-                            children: [
-                          Text(
-                            widget.option,
-                            textAlign: TextAlign.center,
-                          ),
-                        ]),
-                      )),
-                ));
+                    ]),
+                  )),
+            ));
           } else {
-            return Text("Loading.....s");
+            return Container(
+              constraints: BoxConstraints(
+                  minHeight: screenheight * 0.075, minWidth: screenwidth * 0.4),
+              //Button config
+              decoration: BoxDecoration(
+                color: myColor,
+                border: Border(
+                    //top: BorderSide(width: 1, color: Colors.grey),
+                    left: BorderSide(width: 1, color: Colors.grey[350]!)),
+                //borderRadius: BorderRadius.circular(30),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                child: Row(// Everything inside the button
+                    children: [
+                  Text(
+                    widget.option,
+                    textAlign: TextAlign.center,
+                  ),
+                ]),
+              ),
+            );
           }
         });
   }
