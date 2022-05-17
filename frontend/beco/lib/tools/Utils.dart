@@ -158,6 +158,10 @@ unsaveAlert(BuildContext context) {
     child: const Text("Done"),
     onPressed: () {
       Navigator.of(context).pop();
+      Navigator.of(context).pushNamedAndRemoveUntil(
+        '/discounts/',
+        (route) => false,
+      );
     },
   );
 
