@@ -26,6 +26,7 @@ void main() async {
   );
   runApp(
     MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
           primarySwatch: Colors.deepPurple,
