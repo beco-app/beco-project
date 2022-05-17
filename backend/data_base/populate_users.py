@@ -71,13 +71,26 @@ def user_gen(n):
     last_birthday  = date(2008, 12, 31)
 
     # hood distributions
-    geolocator = Nominatim(user_agent="beco")
+    #geolocator = Nominatim(user_agent="beco")
     all_shops = getShop()
     hoods = [shop["neighbourhood"] for shop in all_shops]
     hood_distribution = Counter(hoods)
-    hood_loc = {}
-    for hood in hood_distribution.keys():
-        hood_loc[hood] = hood2loc(geolocator, hood)
+    #hood_loc = {}
+    #for hood in hood_distribution.keys():
+    #    hood_loc[hood] = hood2loc(geolocator, hood)
+    hood_loc = {'El Poblenou': [41.400527, 2.2017292], 'Vila de Gràcia': [41.3997257, 2.1520867],
+        'Sagrada Família': [41.4034789, 2.174410333009705], "Dreta de l'Eixample": [41.3950373, 2.1672069],
+        'Sant Pere, Santa Caterina i la Ribera': [41.3883219, 2.1774107],
+        "Camp d'en Grassot i Gràcia Nova": [41.4093317, 2.1623227],
+        'Sant Martí de Provençals': [41.4165186, 2.1989683], 'La Verneda i la Pau': [41.4232198, 2.202940152045822],
+        'Sant Andreu': [41.43743905, 2.196859449748228], 'Fort Pienc': [41.3959246, 2.1823245],
+        'Les Corts': [41.385244, 2.1328626], "L'Antiga Esquerra de l'Eixample": [41.39, 2.155],
+        "La Nova Esquerra de l'Eixample": [41.383389, 2.149], 'Sant Antoni': [41.3800525, 2.1633268],
+        'Barri Gòtic': [41.3833947, 2.1769119], 'Sants': [41.3753288, 2.1349117], 'Sarrià': [41.399373, 2.1215125],
+        'Pedralbes': [41.3901401, 2.112218], 'El Poble Sec': [41.3728061, 2.1619718], 'El Raval': [41.3795176, 2.1683678],
+        'Sant Gervasi - Galvany': [41.397806849999995, 2.1433767032885203], 'Hostafrancs': [41.375271, 2.1433563],
+        'Provençals del Poblenou': [41.4119484, 2.2041249]}
+
 
     for _ in range(n):
         username    = next(username_gen)
