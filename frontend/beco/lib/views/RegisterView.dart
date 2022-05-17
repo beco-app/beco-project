@@ -39,6 +39,10 @@ class RegisterView extends StatefulWidget {
 }
 
 class _RegisterViewState extends State<RegisterView> {
+  final GlobalKey<FormFieldState> emailKey = GlobalKey();
+  final GlobalKey<FormFieldState> passwordKey = GlobalKey();
+  final GlobalKey<FormFieldState> phoneKey = GlobalKey();
+  final GlobalKey<FormFieldState> zipcodeKey = GlobalKey();
   late final TextEditingController _email;
   late final TextEditingController _password;
   late final TextEditingController _phone;
@@ -81,7 +85,14 @@ class _RegisterViewState extends State<RegisterView> {
               child: Column(
                 children: [
                   ...[
-                    TextField(
+                    TextFormField(
+                      key: emailKey,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "This field is required";
+                        }
+                        return null;
+                      },
                       controller: _email,
                       enableSuggestions: false,
                       autocorrect: false,
@@ -95,7 +106,14 @@ class _RegisterViewState extends State<RegisterView> {
                             EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                       ),
                     ),
-                    TextField(
+                    TextFormField(
+                      key: passwordKey,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "This field is required";
+                        }
+                        return null;
+                      },
                       controller: _password,
                       enableSuggestions: false,
                       autocorrect: false,
@@ -109,7 +127,14 @@ class _RegisterViewState extends State<RegisterView> {
                             EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                       ),
                     ),
-                    TextField(
+                    TextFormField(
+                      key: phoneKey,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "This field is required";
+                        }
+                        return null;
+                      },
                       controller: _phone,
                       enableSuggestions: false,
                       autocorrect: false,
@@ -123,7 +148,14 @@ class _RegisterViewState extends State<RegisterView> {
                             EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                       ),
                     ),
-                    TextField(
+                    TextFormField(
+                      key: zipcodeKey,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "This field is required";
+                        }
+                        return null;
+                      },
                       controller: _zipcode,
                       enableSuggestions: false,
                       autocorrect: false,
@@ -213,6 +245,10 @@ class _RegisterViewState extends State<RegisterView> {
                       alignment: Alignment.centerRight,
                       child: ElevatedButton(
                         onPressed: () async {
+                          emailKey.currentState!.validate();
+                          passwordKey.currentState!.validate();
+                          phoneKey.currentState!.validate();
+                          zipcodeKey.currentState!.validate();
                           var user = User();
                           user.email = _email.text;
                           user.password = _password.text;

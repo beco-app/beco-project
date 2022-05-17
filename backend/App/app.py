@@ -325,12 +325,13 @@ def saved_promotions():
     print("promos", tools.getUser('saved_prom', _id = user_id))
     saved_prom = tools.getUser('saved_prom', _id = user_id)[0]['saved_prom']
     now = time()
-    saved_prom = [
-        prom_id
-        for prom_id in saved_prom
-       # if tools.getPromotion(['valid_interval'], _id = prom_id)[0]['valid_interval']['from'] < now < tools.getPromotion(['valid_interval'], _id = prom_id)[0]['valid_interval']['to']
-        
-    ]
+    if saved_prom:
+        saved_prom = [
+            prom_id
+            for prom_id in saved_prom
+        # if tools.getPromotion(['valid_interval'], _id = prom_id)[0]['valid_interval']['from'] < now < tools.getPromotion(['valid_interval'], _id = prom_id)[0]['valid_interval']['to']
+            
+        ]
     tools.updateUser(user_id, saved_prom=saved_prom)
     
     # user_saved_prom.remove(ObjectId(promotion_id))
