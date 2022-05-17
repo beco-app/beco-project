@@ -3,6 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:beco/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:http/http.dart' as http;
+import 'package:beco/globals.dart' as globals;
+
+import '../Users.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({Key? key}) : super(key: key);
@@ -105,11 +108,13 @@ class _LoginViewState extends State<LoginView> {
                                 });
 
                             print(userCredential);
-
-                            Navigator.of(context).pushNamedAndRemoveUntil(
-                              '/home/',
-                              (route) => false,
-                            );
+                            getUser().then((user) {
+                              globals.user = user;
+                              Navigator.of(context).pushNamedAndRemoveUntil(
+                                '/home/',
+                                (route) => false,
+                              );
+                            });
                           } on FirebaseAuthException catch (e) {
                             print(e.code);
                           }
