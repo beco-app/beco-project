@@ -6,6 +6,8 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'dart:developer';
 
+import 'package:geolocator/geolocator.dart';
+
 part 'Stores.g.dart';
 
 @JsonSerializable()
@@ -54,6 +56,35 @@ class Stores {
   final List<Store> stores;
 }
 
+Future<List<double>> _determinePosition() async {
+  bool serviceEnabled;
+  LocationPermission permission;
+
+  serviceEnabled = await Geolocator.isLocationServiceEnabled();
+
+  if (!serviceEnabled) {
+    return Future.error('Location services are disabled');
+  }
+
+  permission = await Geolocator.checkPermission();
+
+  if (permission == LocationPermission.denied) {
+    permission = await Geolocator.requestPermission();
+
+    if (permission == LocationPermission.denied) {
+      return [-1, -1];
+    }
+  }
+
+  if (permission == LocationPermission.deniedForever) {
+    return [-1, -1];
+  }
+
+  Position position = await Geolocator.getCurrentPosition();
+
+  return [position.latitude, position.longitude];
+}
+
 Future<Stores> getMapStores() async {
   const shopLocationsURL = 'http://34.252.26.132/load_map';
   final voidStore = Store(
@@ -93,6 +124,11 @@ Future<Stores> getMapStores() async {
 }
 
 Future<Stores> getHomepageStores() async {
+  print("This is the position of the user.");
+  final position = await _determinePosition();
+  print("This is the position of the user.");
+  print(position[0]);
+  print(position[1]);
   const shopButtonsURL = 'http://34.252.26.132/recommended_shops/';
   final voidStore = Store(
     id: "",
@@ -111,8 +147,12 @@ Future<Stores> getHomepageStores() async {
   final noStores = Stores(stores: [voidStore]);
 
   try {
-    final response = await http.post(Uri.parse(shopButtonsURL),
-        body: {"user_id": await FirebaseAuth.instance.currentUser!.uid});
+    final response = await http.post(Uri.parse(shopButtonsURL), body: {
+      "user_id": await FirebaseAuth.instance.currentUser!.uid,
+      "user_lat": position[0] == -1 ? '' : position[0].toString(),
+      "user_lon": position[1] == -1 ? '' : position[1].toString()
+    });
+
     print("RESPONSE");
     log(response.body);
     if (response.statusCode == 200) {
