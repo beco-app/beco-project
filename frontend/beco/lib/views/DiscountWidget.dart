@@ -38,7 +38,6 @@ class _DiscountWidgetState extends State<DiscountWidget> {
           hasScrollBody: false,
           child: Column(children: [
             const SizedBox(height: 20),
-            IconsRow(),
             Padding(
               padding: const EdgeInsets.all(20),
               child: FutureBuilder<Discounts>(
@@ -50,19 +49,22 @@ class _DiscountWidgetState extends State<DiscountWidget> {
                         if (snapshot.data?.discounts[0].id == "")
                           const Text('No discounts saved')
                         else
-                          for (var i = 0; i < snapshot.data!.discounts.length; i++)
-                          Column(
-                            children: [
-                              DiscountButton(
-                                shopName: snapshot.data!.discounts[i].shopname,
-                                description:
-                                    snapshot.data!.discounts[i].description,
-                                becoins: snapshot.data!.discounts[i].becoins,
-                                discount: snapshot.data!.discounts[i],
-                              ),
-                              const SizedBox(height: 20),
-                            ],
-                          )
+                          for (var i = 0;
+                              i < snapshot.data!.discounts.length;
+                              i++)
+                            Column(
+                              children: [
+                                DiscountButton(
+                                  shopName:
+                                      snapshot.data!.discounts[i].shopname,
+                                  description:
+                                      snapshot.data!.discounts[i].description,
+                                  becoins: snapshot.data!.discounts[i].becoins,
+                                  discount: snapshot.data!.discounts[i],
+                                ),
+                                const SizedBox(height: 20),
+                              ],
+                            )
                       ],
                     );
                   } else if (snapshot.hasError) {
@@ -100,8 +102,9 @@ class DiscountButton extends StatelessWidget {
     return Center(
       child: Material(
           elevation: 10,
-          borderRadius: BorderRadius.circular(10),
-          clipBehavior: Clip.antiAliasWithSaveLayer,
+          borderRadius: BorderRadius.circular(5),
+          // clipBehavior: Clip.antiAliasWithSaveLayer,
+          clipBehavior: Clip.hardEdge,
           child: InkWell(
               onTap: () {
                 showAlertDialog(context, discount);
@@ -115,20 +118,21 @@ class DiscountButton extends StatelessWidget {
                 //Button config
                 width: screenwidth * 0.95,
                 alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: Colors.transparent,
-                  border: Border.all(color: Colors.black, width: 1),
-                  borderRadius: BorderRadius.circular(9),
-                ),
-                child: Row(// Everything inside the button
+                // decoration: BoxDecoration(
+                //   color: Colors.transparent,
+                //   border: Border.all(color: Colors.black, width: 1),
+                //   borderRadius: BorderRadius.circular(9),
+                // ),
+                child: Column(// Everything inside the button
                     children: [
-                  SizedBox(width: 20),
-                  Column(
+                  // Spacer(),
+                  Row(
                       //Text, short description and Icons
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox(height: 10),
-                        Row(children: [
+                        SizedBox(width: 20),
+                        Column(children: [
+                          SizedBox(height: 20),
                           ConstrainedBox(
                               constraints: BoxConstraints(
                                   maxWidth: screenwidth * 0.4,
@@ -145,40 +149,38 @@ class DiscountButton extends StatelessWidget {
                                     Text(
                                       description,
                                     ),
+                                    Row(children: [
+                                      Text("$becoins becoins"),
+                                      SizedBox(width: 5),
+                                      Image.asset(
+                                        'assets/images/becoin.png',
+                                        height: 20,
+                                        width: 20,
+                                      ),
+                                    ])
                                   ])),
-                          SizedBox(width: screenwidth * 0.1),
-                          ConstrainedBox(
-                              constraints:
-                                  BoxConstraints(maxWidth: screenwidth * 0.3),
-                              child: Row(children: [
-                                Text("$becoins becoins"),
-                                SizedBox(width: 5),
-                                Image.asset(
-                                  'assets/images/becoin.png',
-                                  height: 20,
-                                  width: 20,
-                                ),
-                              ])),
                         ]),
-                        SizedBox(height: 10),
+                        // SizedBox(width: 10),
                         // Buttons
+                        Spacer(),
                         ConstrainedBox(
-                            constraints:
-                                BoxConstraints(maxWidth: screenwidth * 0.8),
-                            child: Row(children: [
-                              Spacer(),
-                              UnsaveButton(
-                                userId: FirebaseAuth.instance.currentUser!.uid,
-                                discountId: discount.id,
-                              ),
-                              Spacer(),
-                              GoToShopButton(
-                                  option: "Go to shop", discount: discount),
-                              Spacer(),
-                            ])),
-                        SizedBox(height: 15),
+                            constraints: BoxConstraints(
+                                maxHeight: screenheight * 0.15,
+                                maxWidth: screenwidth * 0.4),
+                            child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  UnsaveButton(
+                                    userId:
+                                        FirebaseAuth.instance.currentUser!.uid,
+                                    discountId: discount.id,
+                                  ),
+                                  GoToShopButton(
+                                      option: "Go to shop", discount: discount),
+                                ])),
+                        // SizedBox(height: 15),
                       ]),
-                  const Spacer(),
+                  // const Spacer(),
                 ]),
               ))),
     );
@@ -260,18 +262,19 @@ class GoToShopButton extends StatefulWidget {
 }
 
 class _GoToShopButton extends State<GoToShopButton> {
-  Color? myColor = Colors.grey[350];
+  Color? myColor = Color.fromARGB(147, 231, 231, 231);
   late Future<Store> store;
   @override
   void initState() {
     super.initState();
     store = getStore(widget.discount.shop_id);
-    print("polla");
     print(widget.discount.shop_id);
   }
 
   @override
   Widget build(BuildContext context) {
+    double screenheight = MediaQuery.of(context).size.height;
+    double screenwidth = MediaQuery.of(context).size.width;
     return FutureBuilder<Store>(
         future: store,
         builder: (context, snapshot) {
@@ -280,34 +283,64 @@ class _GoToShopButton extends State<GoToShopButton> {
             print(snapshot.data!.shopname);
             print('hola hola');
             return Material(
-                borderRadius: BorderRadius.circular(30),
-                clipBehavior: Clip.antiAliasWithSaveLayer,
+                //borderRadius: BorderRadius.circular(30),
+                // clipBehavior: Clip.antiAliasWithSaveLayer,
+                //clipBehavior: Clip.hardEdge,
                 child: InkWell(
-                  onTap: () {
-                    Navigator.pushNamed(
-                      context,
-                      DetailView.routeName,
-                      arguments: snapshot.data!,
-                    );
-                  },
-                  child: Container(
-                      //Button config
-                      decoration: BoxDecoration(
-                        color: myColor,
-                        borderRadius: BorderRadius.circular(30),
+              onTap: () {
+                Navigator.pushNamed(
+                  context,
+                  DetailView.routeName,
+                  arguments: snapshot.data!,
+                );
+              },
+              child: Container(
+                  constraints: BoxConstraints(
+                      minHeight: screenheight * 0.075,
+                      minWidth: screenwidth * 0.4),
+                  //Button config
+                  decoration: BoxDecoration(
+                    color: myColor,
+                    border: Border(
+                        //top: BorderSide(width: 1, color: Colors.grey),
+                        left: BorderSide(width: 1, color: Colors.grey[350]!)),
+                    //borderRadius: BorderRadius.circular(30),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                    child: Row(// Everything inside the button
+                        children: [
+                      Text(
+                        widget.option,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Colors.grey[700]!),
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                        child: Row(// Everything inside the button
-                            children: [
-                          Text(
-                            widget.option,
-                          ),
-                        ]),
-                      )),
-                ));
+                    ]),
+                  )),
+            ));
           } else {
-            return Text("Loading.....s");
+            return Container(
+              constraints: BoxConstraints(
+                  minHeight: screenheight * 0.075, minWidth: screenwidth * 0.4),
+              //Button config
+              decoration: BoxDecoration(
+                color: myColor,
+                border: Border(
+                    //top: BorderSide(width: 1, color: Colors.grey),
+                    left: BorderSide(width: 1, color: Colors.grey[350]!)),
+                //borderRadius: BorderRadius.circular(30),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                child: Row(// Everything inside the button
+                    children: [
+                  Text(
+                    widget.option,
+                    textAlign: TextAlign.center,
+                  ),
+                ]),
+              ),
+            );
           }
         });
   }

@@ -54,7 +54,7 @@ Future<ProfileUser> getUser() async {
   try {
     final response = await http.post(Uri.parse(userinfoURL),
         body: {"user_id": await FirebaseAuth.instance.currentUser!.uid});
-    print("RESPONSE");
+    print("RESPONSE user");
     log(response.body);
     if (response.statusCode == 200) {
       print("hola");

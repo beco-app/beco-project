@@ -1,6 +1,7 @@
 import 'package:beco/Stores.dart';
 import 'package:beco/tools/Discounts.dart';
 import 'package:beco/tools/Utils.dart';
+import 'package:beco/views/HomeView.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:flutter/material.dart';
@@ -234,8 +235,9 @@ class DiscountButtonDetail extends StatelessWidget {
     return Center(
       child: Material(
           elevation: 10,
-          borderRadius: BorderRadius.circular(10),
-          clipBehavior: Clip.antiAliasWithSaveLayer,
+          borderRadius: BorderRadius.circular(5),
+          // clipBehavior: Clip.antiAliasWithSaveLayer,
+          clipBehavior: Clip.hardEdge,
           child: InkWell(
               onTap: () {
                 showAlertDialog(context, discount);
@@ -249,20 +251,21 @@ class DiscountButtonDetail extends StatelessWidget {
                 //Button config
                 width: screenwidth * 0.95,
                 alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: Colors.transparent,
-                  border: Border.all(color: Colors.black, width: 1),
-                  borderRadius: BorderRadius.circular(9),
-                ),
-                child: Row(// Everything inside the button
+                // decoration: BoxDecoration(
+                //   color: Colors.transparent,
+                //   border: Border.all(color: Colors.black, width: 1),
+                //   borderRadius: BorderRadius.circular(9),
+                // ),
+                child: Column(// Everything inside the button
                     children: [
-                  SizedBox(width: 20),
-                  Column(
+                  // Spacer(),
+                  Row(
                       //Text, short description and Icons
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox(height: 10),
-                        Row(children: [
+                        SizedBox(width: 20),
+                        Column(children: [
+                          SizedBox(height: 20),
                           ConstrainedBox(
                               constraints: BoxConstraints(
                                   maxWidth: screenwidth * 0.4,
@@ -279,42 +282,86 @@ class DiscountButtonDetail extends StatelessWidget {
                                     Text(
                                       description,
                                     ),
+                                    Row(children: [
+                                      Text("$becoins becoins"),
+                                      SizedBox(width: 5),
+                                      Image.asset(
+                                        'assets/images/becoin.png',
+                                        height: 20,
+                                        width: 20,
+                                      ),
+                                    ])
                                   ])),
-                          SizedBox(width: screenwidth * 0.1),
-                          ConstrainedBox(
-                              constraints:
-                                  BoxConstraints(maxWidth: screenwidth * 0.3),
-                              child: Row(children: [
-                                Text("$becoins becoins"),
-                                SizedBox(width: 5),
-                                Image.asset(
-                                  'assets/images/becoin.png',
-                                  height: 20,
-                                  width: 20,
-                                ),
-                              ])),
                         ]),
-                        SizedBox(height: 10),
+                        // SizedBox(width: 10),
                         // Buttons
+                        Spacer(),
                         ConstrainedBox(
-                            constraints:
-                                BoxConstraints(maxWidth: screenwidth * 0.8),
-                            child: Row(children: [
-                              Spacer(),
-                              SaveButton(
-                                userId: FirebaseAuth.instance.currentUser!.uid,
-                                discountId: discount.id,
-                              ),
-                              Spacer(),
-                              GoToShopButton(
-                                  option: "Go to shop", discount: discount),
-                              Spacer(),
-                            ])),
-                        SizedBox(height: 15),
+                            constraints: BoxConstraints(
+                                maxHeight: screenheight * 0.15,
+                                maxWidth: screenwidth * 0.4),
+                            child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SaveButton(
+                                    userId:
+                                        FirebaseAuth.instance.currentUser!.uid,
+                                    discountId: discount.id,
+                                  ),
+                                  GoToDiscountsButton(),
+                                ])),
+                        // SizedBox(height: 15),
                       ]),
-                  const Spacer(),
+                  // const Spacer(),
                 ]),
               ))),
     );
+  }
+}
+
+class GoToDiscountsButton extends StatefulWidget {
+  const GoToDiscountsButton({Key? key}) : super(key: key);
+
+  @override
+  State<GoToDiscountsButton> createState() => _GoToDiscountsButtonState();
+}
+
+class _GoToDiscountsButtonState extends State<GoToDiscountsButton> {
+  Color? myColor = Color.fromRGBO(238, 238, 238, 1);
+  @override
+  Widget build(BuildContext context) {
+    double screenheight = MediaQuery.of(context).size.height;
+    return Material(
+        // borderRadius: BorderRadius.circular(30),
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        child: InkWell(
+          onTap: () async {
+            Navigator.of(context).pushNamedAndRemoveUntil(
+              '/discounts/',
+              (route) => false,
+            );
+          },
+          child: Container(
+              constraints: BoxConstraints(minHeight: screenheight * 0.075),
+              //Button config
+              decoration: BoxDecoration(
+                border: Border(
+                    bottom: BorderSide(width: 1, color: Colors.grey[350]!),
+                    left: BorderSide(width: 1, color: Colors.grey[350]!)),
+                color: myColor,
+                //borderRadius: BorderRadius.circular(30),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                child: Row(// Everything inside the button
+                    children: [
+                  Text(
+                    "Go to discounts",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.grey[700]!),
+                  ),
+                ]),
+              )),
+        ));
   }
 }
