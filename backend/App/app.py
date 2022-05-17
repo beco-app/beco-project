@@ -251,14 +251,17 @@ def save_promotion():
     try:
         user_id = ObjectId(user_id) # ObjectId must be a 12-byte input or a 24-character hex string
     except:
-        print("Exception")
+        print("User from firebase")
 
     # Append promotion_id to user's saved_prom
     user_saved_prom = tools.getUser(['saved_prom'], _id = user_id)[0]['saved_prom']
-    if user_saved_prom:
-        if ObjectId(promotion_id) not in user_saved_prom:
-            user_saved_prom.append(ObjectId(promotion_id))
-            tools.updateUser(user_id, saved_prom=user_saved_prom)
+    if user_saved_prom is None:
+        user_saved_prom = []
+
+    if ObjectId(promotion_id) not in user_saved_prom:
+        user_saved_prom.append(ObjectId(promotion_id))
+        print("print of updateUser", tools.updateUser(user_id, saved_prom=user_saved_prom))
+        print(tools.getUser(_id=user_id)[0])
     
     # Debug:
     return (
