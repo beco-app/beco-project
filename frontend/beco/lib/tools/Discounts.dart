@@ -61,12 +61,9 @@ Future<Discounts> getDiscounts() async {
     // body: {"user_id": await FirebaseAuth.instance.currentUser!.uid});
     final response = await http.post(Uri.parse(discountsURL),
         body: {"user_id": await FirebaseAuth.instance.currentUser!.uid});
-    print("RESPONSE");
-    print(response.body);
+    print("RESPONSE SAVED");
     log(response.body);
     if (response.statusCode == 200) {
-      print(json.decode(response.body));
-      print(Discounts.fromJson(json.decode(response.body)));
       return Discounts.fromJson(json.decode(response.body));
     }
   } catch (err) {

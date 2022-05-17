@@ -337,11 +337,13 @@ def saved_promotions():
         # if tools.getPromotion(['valid_interval'], _id = prom_id)[0]['valid_interval']['from'] < now < tools.getPromotion(['valid_interval'], _id = prom_id)[0]['valid_interval']['to']
             
         ]
+    else:
+        saved_prom = []
     tools.updateUser(user_id, saved_prom=saved_prom)
     
     # user_saved_prom.remove(ObjectId(promotion_id))
     
-    promotions = [tools.getPromotion(_id = prom_id)[0] for prom_id in saved_prom] if saved_prom else []
+    promotions = [tools.getPromotion(_id = prom_id)[0] for prom_id in saved_prom]
     promotions = add_shop_name_in_proms_list(promotions)
     response = json.loads(json_util.dumps({"promotions": promotions}))
     return response, 200

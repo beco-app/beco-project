@@ -46,7 +46,7 @@ class _DiscountWidgetState extends State<DiscountWidget> {
                   if (snapshot.hasData) {
                     return Column(
                       children: [
-                        if (snapshot.data?.discounts[0].id == "")
+                        if (snapshot.data!.discounts.isEmpty)
                           const Text('No discounts saved')
                         else
                           for (var i = 0;
