@@ -160,14 +160,21 @@ def get_user():
 def recommended_shops():
     data = request.form.to_dict()
     user_id = data['user_id']
+    user_lat = float(data['user_lat']) if data['user_lat'] != '' else None
+    user_lon = float(data['user_lon']) if data['user_lat'] != '' else None
     try:
         user_id = ObjectId(user_id)
     except:
         print("user_id from firebase")
 
-    resp = recommend(user_id)
+    if user_lat is None and user_lon is None:
+        location = [41.4034789, 2.174410333009705] # Suposem que està a Sagrada Família
+    else:
+        location = [user_lat, user_lon]
+    resp = recommend(user_id, location)
     shops = []
     for shop_id, score in resp:
+        # print("shop_id", shop_id)
         shop_content = tools.getShop(_id=shop_id)
         shop_content[0]['aqi'] = get_shop_aqi(shop_id)
         shops.append(shop_content[0])

@@ -35,10 +35,10 @@ void main() async {
       routes: {
         '/login/': (context) => const LoginView(),
         '/register/': (context) => const RegisterView(),
-        '/home/': (context) => const HomeView(),
+        '/home/': (context) => HomeView(selectedIndex: 0),
         DetailView.routeName: (context) => const DetailView(),
         QRView.routeName: (context) => const QRView(),
-        '/discounts/': (context) => const DiscountWidget(),
+        '/discounts/': (context) => HomeView(selectedIndex: 2),
       },
     ),
   );
@@ -98,7 +98,7 @@ class _HomePageState extends State<HomePage> {
         // } else {
         //   return const VerifyEmailView();
         // }
-        return const HomeView();
+        return HomeView(selectedIndex: 0);
       } else {
         return const LoginView();
       }

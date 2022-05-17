@@ -12,14 +12,15 @@ import 'package:intl/intl.dart' as intl;
 import 'package:beco/globals.dart' as globals;
 
 class HomeView extends StatefulWidget {
-  const HomeView({Key? key}) : super(key: key);
+  HomeView({Key? key, required this.selectedIndex}) : super(key: key);
+  int selectedIndex;
 
   @override
   State<HomeView> createState() => _HomeViewState();
 }
 
 class _HomeViewState extends State<HomeView> {
-  int _selectedIndex = 0;
+  // int selectedIndex = 0;
   final views = ['/home/', '/map/', '/discounts/', '/profile/'];
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
@@ -33,12 +34,13 @@ class _HomeViewState extends State<HomeView> {
 
   void _onItemTapped(int index) {
     setState(() {
-      _selectedIndex = index;
+      widget.selectedIndex = index;
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    //selectedIndex = widget.index;
     double screenwidth = MediaQuery.of(context).size.width;
     return Scaffold(
       resizeToAvoidBottomInset: true,
@@ -77,13 +79,13 @@ class _HomeViewState extends State<HomeView> {
         backgroundColor: const Color.fromARGB(255, 235, 228, 233),
         elevation: 0.0,
       ),
-      body: _pages.elementAt(_selectedIndex),
+      body: _pages.elementAt(widget.selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         showSelectedLabels: false,
         showUnselectedLabels: false,
         selectedItemColor: Theme.of(context).primaryColor,
-        currentIndex: _selectedIndex,
+        currentIndex: widget.selectedIndex,
         onTap: _onItemTapped,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
