@@ -1,4 +1,5 @@
 import sys
+import threading
 print("Python version")
 print (sys.version)
 print("Version info.")
@@ -394,4 +395,4 @@ def update_user(username, parameter, value):
     return str(tools.updateUser(userid, **{parameter:value}))
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, threading=True)
