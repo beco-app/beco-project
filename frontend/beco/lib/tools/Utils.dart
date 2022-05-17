@@ -42,6 +42,8 @@ class _SaveButton extends State<SaveButton> {
               'user_id': widget.userId,
               'promotion_id': widget.discountId,
             });
+            print("save button");
+            log(r.body);
             saveAlert(context);
             setState(() {});
           },

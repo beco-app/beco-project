@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:beco/views/DetailView.dart';
 import 'package:beco/views/QRView.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -117,12 +119,15 @@ class _HomeWidgetState extends State<HomeWidget> {
         "user_id": await FirebaseAuth.instance.currentUser!.uid,
         "becoins": "50"
       });
+      log(response.body);
       // _initUser();
-      globals.user.becoins += 50;
-      Navigator.of(context).pushNamedAndRemoveUntil(
-        '/home/',
-        (route) => false,
-      );
+      if (response.statusCode == 200) {
+        globals.user.becoins += 50;
+        Navigator.of(context).pushNamedAndRemoveUntil(
+          '/home/',
+          (route) => false,
+        );
+      }
       // May it should refresh the "top bar"?
     } catch (e) {
       print(e);

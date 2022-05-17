@@ -1,4 +1,6 @@
 import sys
+
+from hamcrest import none
 print("Python version")
 print (sys.version)
 print("Version info.")
@@ -260,8 +262,7 @@ def save_promotion():
 
     if ObjectId(promotion_id) not in user_saved_prom:
         user_saved_prom.append(ObjectId(promotion_id))
-        print("print of updateUser", tools.updateUser(user_id, saved_prom=user_saved_prom))
-        print(tools.getUser(_id=user_id)[0])
+        tools.updateUser(user_id, saved_prom=user_saved_prom)
     
     # Debug:
     return (
