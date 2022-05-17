@@ -3,12 +3,12 @@ import sys
 sys.path.append("./backend/data_base")
 from tools import *
 from collections import Counter
-from geopy.distance import distance
-from geopy.geocoders import Nominatim
+from geopy.distance import great_circle as distance
 import numpy as np
 from bson.objectid import ObjectId
 from time import time
 import random
+# import matplotlib.pyplot as plt
 
 
 def get_shop_count(uid, all_trans):
@@ -38,24 +38,27 @@ def shop_count_sim(u_shops, v_shops):
             id1 += 1
         else:
             id2 += 1
-    # print(dot, end='')
     return dot
 
 
-def recommend(user_id):
+def recommend(user_id, user_loc=None, plot=False, print_time=False):
+    try:
+        user_id = ObjectId(user_id)
+    except:
+        pass
+
     t0 = time()
     # Get necessary info
-    u_info = getUser(['preferences', 'zip_code'], _id=user_id)[0]
+    u_info = getUser(['preferences', 'location'], _id=user_id)[0]
+    if user_loc is None:
+        user_loc = u_info['location']
     all_trans = getTransaction(['shop_id', 'user_id'])
     all_shops = getShop(['location', 'tags'])
     shop_ids = [s["_id"] for s in all_shops]
     u_shops = get_shop_count(user_id, all_trans)
-    geolocator = Nominatim(user_agent="beco")
-    u_loc = geolocator.geocode({"country": "Spain", "postalcode": u_info["zip_code"]})
-    u_loc = (u_loc.latitude, u_loc.longitude)
 
     t1 = time()
-    print(t1 - t0)
+    if print_time: print(t1 - t0)
     
     # To new users, recommend shops in its zip code with preferences
     #if len(u_shops) < 2:
@@ -72,15 +75,22 @@ def recommend(user_id):
     sims = sorted(sims, key=lambda x: -x[1])
     sims = sims[0:20]  # Hyperparameter
 
-    shops = {s: 1 for s in shop_ids}
+    shops = {s: 0.1 for s in shop_ids}
     for v, sim in sims:
         v_shops = get_shop_count(v, all_trans)
         for shop, count in v_shops.items():
             score = sim * count
             shops[shop] += score
+    
+    #return sorted(shops.items(), key=lambda x: -x[1])[:20]
+
+    if plot:
+        plt.plot(sorted(shops.values())[::-1])
+        plt.title('user to user')
+        plt.show()
 
     t2 = time()
-    print(t2-t1)
+    if print_time: print(t2-t1)
     shop_info = [s for s in all_shops if s['_id'] in shops.keys()]
     u_shop_info = [s for s in all_shops if s['_id'] in u_shops.keys()]
 
@@ -91,11 +101,23 @@ def recommend(user_id):
     lats, lons = [lat for lat, _ in u_locs], [lon for _, lon in u_locs]
     u_loc = np.mean(lats), np.mean(lons)
     """
-    s_locs = [s['location'] for s in shop_info]
-    dists = [distance(u_loc, s_loc).km for s_loc in s_locs]
-    dists = np.array(dists) / max(dists)
-    dist_scores = [np.pi / 2 - np.arctan(d) for d in dists]  # hyperparameter
-    shops = {sh: sc * dist_scores[i] for i, (sh, sc) in enumerate(shops.items())}
+    s_locs = {s['_id']: s['location'] for s in shop_info}
+    dists = {s_id: distance(user_loc, s_loc).km for s_id, s_loc in s_locs.items()}
+    max_dist = max(dists.values())
+    dists = {s_id: s_dist / max_dist for s_id, s_dist in dists.items()}
+    dist_scores = {s_id: np.pi / 2 - np.arctan(s_dist) for s_id, s_dist in dists.items()}  # hyperparameter
+    shops = {sh: sc * dist_scores[sh] for sh, sc in shops.items()}
+
+    t21 = time()
+    if print_time: print(t21-t2)
+
+    if plot:
+        plt.plot(sorted(dist_scores.values())[::-1])
+        plt.title("dist scores")
+        plt.show()
+        plt.plot(sorted(shops.values())[::-1])
+        plt.title("dist ponderated")
+        plt.show()
 
     # Sum if user interested in shop tags or bought in similar shops
     preferences = {}
@@ -118,8 +140,16 @@ def recommend(user_id):
                 shops[sh] *= preferences[tag] # hyperparameter
 
     t3 = time()
-    print(t3 - t2)
-    shops = sorted(shops.items(), key=lambda x: -x[1])[:20]  # Hyperparameter
-    return random.sample(shops, k=10)
+    if print_time: print(t3 - t21)
+
+    if plot:
+        plt.plot(sorted(shops.values())[::-1])
+        plt.title("tag ponderated")
+        plt.show()
+
+    shops = sorted(shops.items(), key=lambda x: -x[1])[:30]  # Hyperparameter
+    #return shops
+    #return shops[:20]
+    return random.sample(shops, k=20)
 
     # Factors: visited or not, air pollution...
