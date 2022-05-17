@@ -120,6 +120,10 @@ class _HomeWidgetState extends State<HomeWidget> {
         "becoins": "50"
       });
       log(response.body);
+      print("hola barcode");
+      print(response.statusCode);
+      print(response.body);
+      print(await FirebaseAuth.instance.currentUser!.uid);
       // _initUser();
       if (response.statusCode == 200) {
         globals.user.becoins += 50;
