@@ -255,9 +255,10 @@ def save_promotion():
 
     # Append promotion_id to user's saved_prom
     user_saved_prom = tools.getUser(['saved_prom'], _id = user_id)[0]['saved_prom']
-    if user_saved_prom and ObjectId(promotion_id) not in user_saved_prom:
-        user_saved_prom.append(ObjectId(promotion_id))
-        tools.updateUser(user_id, saved_prom=user_saved_prom)
+    if user_saved_prom:
+        if ObjectId(promotion_id) not in user_saved_prom:
+            user_saved_prom.append(ObjectId(promotion_id))
+            tools.updateUser(user_id, saved_prom=user_saved_prom)
     
     # Debug:
     return (
@@ -336,7 +337,7 @@ def saved_promotions():
     
     # user_saved_prom.remove(ObjectId(promotion_id))
     
-    promotions = [tools.getPromotion(_id = prom_id)[0] for prom_id in saved_prom]
+    promotions = [tools.getPromotion(_id = prom_id)[0] for prom_id in saved_prom] if saved_prom else []
     promotions = add_shop_name_in_proms_list(promotions)
     response = json.loads(json_util.dumps({"promotions": promotions}))
     return response, 200
