@@ -193,7 +193,7 @@ def nearest_shops(username, lat, long, distance):
     return 0
 
 
-# Add BECOINS
+# Add BECOINS
 @app.route('/api/add_becoins', methods=["POST"])
 def add_becoins():
     """
@@ -201,18 +201,15 @@ def add_becoins():
         The amount and the user is passed in the data content of the request
         TODO: Add some security by requiring a token or something
     """
-
     try:
         userid = request.form.get('user_id')
         becoins_gained = int(request.form.get('becoins'))
-
         user = tools.getUser(attributes='becoins', _id=userid)[0]
         becoins_initial = user['becoins']
-
         if becoins_initial + becoins_gained < 0:
             raise Exception("You cannot have negative amount of becoins.")
         _, changed = tools.update(_id=userid, becoins=becoins_initial+becoins_gained)
-        return "Changed user", 200
+        return f"Changed {changed} users."
     except Exception as e:
         return {'message': e}, 404
 
