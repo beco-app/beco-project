@@ -41,7 +41,7 @@ def shop_count_sim(u_shops, v_shops):
     return dot
 
 
-def recommend(user_id, user_loc=None, plot=False, print_time=False):
+def recommend(user_id, user_loc=None, plot=False, print_time=False, tables=None):
     try:
         user_id = ObjectId(user_id)
     except:
@@ -52,8 +52,9 @@ def recommend(user_id, user_loc=None, plot=False, print_time=False):
     u_info = getUser(['preferences', 'location'], _id=user_id)[0]
     if user_loc is None:
         user_loc = u_info['location']
-    all_trans = getTransaction(['shop_id', 'user_id'])
-    all_shops = getShop(['location', 'tags'])
+    if tables is None:
+        tables = [getUser(['_id']), getShop(['location', 'tags']), getTransaction(['shop_id', 'user_id'])]
+    users, all_shops, all_trans = tables 
     shop_ids = [s["_id"] for s in all_shops]
     u_shops = get_shop_count(user_id, all_trans)
 
@@ -65,7 +66,6 @@ def recommend(user_id, user_loc=None, plot=False, print_time=False):
     #    return recommend_new_user(user_id)
 
     # Find similar users and shops where they buy
-    users = getUser(['_id'])
     sims = []
     for v in users:
         v = v['_id']

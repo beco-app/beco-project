@@ -41,7 +41,7 @@ def user_gen(n):
         i = 0
         while True:
             i = i + 1
-            yield 'user' + str(i)
+            yield 'user' + str(random.randint(1, 10000000))
 
     def hash_password(pwd, salt):
         """
@@ -52,7 +52,7 @@ def user_gen(n):
         """
         return pbkdf2_hmac('sha256', pwd.encode('utf-8'), salt, 10000)
 
-    random.seed(123456789)
+    #random.seed(123456789)
 
     def hood2loc(geolocator, hood):
         if hood == "Sant Antoni":
