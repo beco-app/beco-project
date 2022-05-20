@@ -68,7 +68,7 @@ class _HomeWidgetState extends State<HomeWidget> {
       context,
       backgroundColor: Colors.black,
       hideSelectedTextCount: true,
-      themeData: FilterListThemeData(context, backgroundColor: Colors.white),
+      themeData: FilterListThemeData(context),
       headlineText: 'Select Tags',
       height: 500,
       listData: listTags,
@@ -119,11 +119,6 @@ class _HomeWidgetState extends State<HomeWidget> {
         "user_id": await FirebaseAuth.instance.currentUser!.uid,
         "becoins": "50"
       });
-      log(response.body);
-      print("hola barcode");
-      print(response.statusCode);
-      print(response.body);
-      print(await FirebaseAuth.instance.currentUser!.uid);
       // _initUser();
       if (response.statusCode == 200) {
         globals.user.becoins += 50;

@@ -17,6 +17,21 @@ import 'globals.dart' as globals;
 
 bool loading = true;
 
+Map<int, Color> color = {
+  50: const Color.fromARGB(184, 118, 185, 124),
+  100: const Color.fromARGB(184, 118, 185, 124),
+  200: const Color.fromARGB(184, 118, 185, 124),
+  300: Color.fromARGB(44, 118, 185, 124),
+  400: const Color.fromARGB(184, 118, 185, 124),
+  500: const Color.fromARGB(184, 118, 185, 124),
+  600: const Color.fromARGB(184, 118, 185, 124),
+  700: Color.fromARGB(255, 118, 185, 124),
+  800: const Color.fromARGB(184, 118, 185, 124),
+  900: const Color.fromARGB(184, 118, 185, 124),
+};
+
+MaterialColor colorCustom = MaterialColor(0xB876B97C, color);
+
 void main() async {
   // await Firebase.initializeApp();
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -29,8 +44,8 @@ void main() async {
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
-          primarySwatch: Colors.deepPurple,
-          primaryColor: Colors.deepPurple[900]),
+        primarySwatch: colorCustom,
+      ),
       home: const HomePage(), // Page shown when app is started.
       routes: {
         '/login/': (context) => const LoginView(),

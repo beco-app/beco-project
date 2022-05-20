@@ -54,6 +54,7 @@ class _LoginViewState extends State<LoginView> {
                       width: MediaQuery.of(context).size.width,
                       fit: BoxFit.cover,
                     ),
+                    SizedBox(height: 24),
                     TextField(
                       controller: _email,
                       enableSuggestions: false,
@@ -68,6 +69,7 @@ class _LoginViewState extends State<LoginView> {
                             EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                       ),
                     ),
+                    SizedBox(height: 24),
                     TextField(
                       controller: _password,
                       enableSuggestions: false,
@@ -82,53 +84,54 @@ class _LoginViewState extends State<LoginView> {
                             EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                       ),
                     ),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: ElevatedButton(
-                        onPressed: () async {
-                          final email = _email.text;
-                          final password = _password.text;
-                          try {
-                            final userCredential = await FirebaseAuth.instance
-                                .signInWithEmailAndPassword(
-                              email: email,
-                              password: password,
-                            );
-
-                            // final userid =
-                            //     FirebaseAuth.instance.currentUser!.getIdToken();
-                            // print(userid);
-
-                            // Send user to backend
-                            final r = await http.post(
-                                Uri.parse('http://34.252.26.132/'),
-                                body: {
-                                  'username': email,
-                                  'password': password,
-                                });
-
-                            print(userCredential);
-                            getUser().then((user) {
-                              globals.user = user;
-                              Navigator.of(context).pushNamedAndRemoveUntil(
-                                '/home/',
-                                (route) => false,
-                              );
-                            });
-                          } on FirebaseAuthException catch (e) {
-                            print(e.code);
-                          }
-                        },
-                        child: const Text('Log In',
-                            style: TextStyle(fontWeight: FontWeight.bold)),
-                        // style: TextButton.styleFrom(
-                        //   primary: Colors.white,
-                        //   backgroundColor: Colors.purple[800],
-                        //   onSurface: Colors.grey,
-                        //)
-                      ),
-                    ),
                     Spacer(),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                          onPressed: () async {
+                            final email = _email.text;
+                            final password = _password.text;
+                            try {
+                              final userCredential = await FirebaseAuth.instance
+                                  .signInWithEmailAndPassword(
+                                email: email,
+                                password: password,
+                              );
+
+                              // final userid =
+                              //     FirebaseAuth.instance.currentUser!.getIdToken();
+                              // print(userid);
+
+                              // Send user to backend
+                              final r = await http.post(
+                                  Uri.parse('http://34.252.26.132/'),
+                                  body: {
+                                    'username': email,
+                                    'password': password,
+                                  });
+
+                              print(userCredential);
+                              getUser().then((user) {
+                                globals.user = user;
+                                Navigator.of(context).pushNamedAndRemoveUntil(
+                                  '/home/',
+                                  (route) => false,
+                                );
+                              });
+                            } on FirebaseAuthException catch (e) {
+                              print(e.code);
+                            }
+                          },
+                          child: const Text('Log In',
+                              style: TextStyle(fontWeight: FontWeight.bold)),
+                          style: TextButton.styleFrom(
+                            primary: Colors.white,
+                            backgroundColor:
+                                const Color.fromARGB(184, 118, 185, 124),
+                            onSurface: Colors.grey,
+                          )),
+                    ),
+
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
@@ -138,23 +141,18 @@ class _LoginViewState extends State<LoginView> {
                             (route) => false,
                           );
                         },
-                        child: const Text('Sign Up',
-                            style: TextStyle(fontWeight: FontWeight.bold)),
-                        // style: TextButton.styleFrom(
-                        //   primary: Colors.white,
-                        //   backgroundColor: Colors.purple[800],
-                        //   onSurface: Colors.grey,
-                        // ),
+                        child: const Text("No account? Create one!",
+                            style: TextStyle(
+                                fontWeight: FontWeight.normal,
+                                decoration: TextDecoration.underline)),
+                        style: TextButton.styleFrom(
+                            primary: const Color.fromARGB(184, 118, 185, 124),
+                            backgroundColor: Colors.grey[50],
+                            onSurface: Colors.grey,
+                            elevation: 0),
                       ),
                     )
-                  ].expand(
-                    (widget) => [
-                      widget,
-                      const SizedBox(
-                        height: 24,
-                      )
-                    ],
-                  ),
+                  ]
                 ],
               ),
             ),

@@ -41,7 +41,12 @@ class QRView extends StatelessWidget {
     substractBecoins(args.becoins.toString()); // <--
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Selected discount'),
+          iconTheme: IconThemeData(color: Colors.grey[700]),
+          title: Text(
+            'Selected discount',
+            style: TextStyle(color: Colors.grey[700]),
+          ),
+          backgroundColor: const Color.fromARGB(255, 235, 228, 233),
         ),
         body: Center(
             child: Column(children: [
@@ -94,14 +99,14 @@ class QRView extends StatelessWidget {
                 child: Container(
                     //Button config
                     decoration: BoxDecoration(
-                      color: Colors.purple,
+                      color: Color.fromARGB(255, 224, 224, 224),
                       borderRadius: BorderRadius.circular(30),
                     ),
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(15, 10, 15, 10),
                       child: Text("I'm done!",
                           style: TextStyle(
-                              color: Colors.white,
+                              color: Colors.grey[700],
                               fontWeight: FontWeight.bold,
                               fontSize: 15)),
                     )),

@@ -127,9 +127,12 @@ class _DetailViewState extends State<DetailView> {
                           .toString()),
                       SizedBox(width: 10),
                       Container(
-                          height: 30,
-                          width: 30,
-                          color: color_from_aqi(args.aqi)),
+                        decoration: BoxDecoration(
+                            color: color_from_aqi(args.aqi),
+                            borderRadius: BorderRadius.all(Radius.circular(5))),
+                        height: 30,
+                        width: 30,
+                      ),
                       Spacer(),
                     ],
                   ),

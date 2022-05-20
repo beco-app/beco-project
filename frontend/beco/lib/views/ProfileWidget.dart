@@ -112,7 +112,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                     width: screenwidth * 0.9,
                     alignment: Alignment.bottomLeft,
                     decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 235, 228, 233),
+                      color: Color.fromARGB(44, 118, 185, 124),
                       borderRadius: BorderRadius.circular(5),
                     ),
                     child: Row(children: [
@@ -169,7 +169,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                     width: screenwidth * 0.9,
                     alignment: Alignment.bottomLeft,
                     decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 235, 228, 233),
+                      color: Color.fromARGB(44, 118, 185, 124),
                       borderRadius: BorderRadius.circular(5),
                     ),
                     child: Row(children: [
@@ -235,7 +235,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                     width: screenwidth * 0.9,
                     alignment: Alignment.bottomLeft,
                     decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 235, 228, 233),
+                      color: Color.fromARGB(44, 118, 185, 124),
                       borderRadius: BorderRadius.circular(5),
                     ),
                     child: Row(children: [
@@ -442,7 +442,7 @@ class _FormDatePickerState extends State<_FormDatePicker> {
       width: screenwidth * 0.9,
       alignment: Alignment.centerLeft,
       decoration: BoxDecoration(
-        color: const Color.fromARGB(255, 235, 228, 233),
+        color: const Color.fromARGB(44, 118, 185, 124),
         borderRadius: BorderRadius.circular(5),
       ),
       child: Row(
@@ -507,7 +507,7 @@ class InfoContainer extends StatelessWidget {
         width: screenwidth * 0.9,
         alignment: Alignment.bottomLeft,
         decoration: BoxDecoration(
-          color: const Color.fromARGB(255, 235, 228, 233),
+          color: const Color.fromARGB(44, 118, 185, 124),
           borderRadius: BorderRadius.circular(5),
         ),
         child: Row(children: [
@@ -539,13 +539,17 @@ class InfoContainer extends StatelessWidget {
 showAlertDialog(BuildContext context) {
   // set up the buttons
   Widget cancelButton = TextButton(
-    child: const Text("Cancel"),
+    child: const Text(
+      "Cancel",
+      style: TextStyle(color: Color.fromARGB(184, 118, 185, 124)),
+    ),
     onPressed: () {
       Navigator.of(context).pop();
     },
   );
   Widget continueButton = TextButton(
-    child: const Text("Continue"),
+    child: const Text("Continue",
+        style: TextStyle(color: Color.fromARGB(184, 118, 185, 124))),
     onPressed: () async {
       await FirebaseAuth.instance.signOut();
 
@@ -578,13 +582,15 @@ showAlertDialog(BuildContext context) {
 showSaveAlertDialog(BuildContext context, var profileUser) {
   // set up the buttons
   Widget cancelButton = TextButton(
-    child: const Text("Cancel"),
+    child: const Text("Cancel",
+        style: TextStyle(color: Color.fromARGB(184, 118, 185, 124))),
     onPressed: () {
       Navigator.of(context).pop();
     },
   );
   Widget continueButton = TextButton(
-    child: const Text("Save"),
+    child: const Text("Save",
+        style: TextStyle(color: Color.fromARGB(184, 118, 185, 124))),
     onPressed: () async {
       //   user.birthday = date.millisecondsSinceEpoch;
       //   user.gender = profileUser.gender;
