@@ -114,24 +114,28 @@ class _HomeWidgetState extends State<HomeWidget> {
     try {
       _scanBarcode = await FlutterBarcodeScanner.scanBarcode(
           '#ff6666', 'Cancel', true, ScanMode.BARCODE);
-      var response = await http
-          .post(Uri.parse("http://34.252.26.132/api/add_becoins"), body: {
-        "user_id": await FirebaseAuth.instance.currentUser!.uid,
-        "becoins": "50"
-      });
-      log(response.body);
-      print("hola barcode");
-      print(response.statusCode);
-      print(response.body);
-      print(await FirebaseAuth.instance.currentUser!.uid);
-      // _initUser();
-      if (response.statusCode == 200) {
-        globals.user.becoins += 50;
-        Navigator.of(context).pushNamedAndRemoveUntil(
-          '/home/',
-          (route) => false,
-        );
+      if (_scanBarcode != '-1') {
+        var response = await http
+            .post(Uri.parse("http://34.252.26.132/api/add_becoins"), body: {
+          "user_id": await FirebaseAuth.instance.currentUser!.uid,
+          "becoins": "50"
+        });
+        print(response.statusCode);
+        print(response.body);
+        if (response.statusCode == 200) {
+          globals.user.becoins += 50;
+          Navigator.of(context).pushNamedAndRemoveUntil(
+            '/home/',
+            (route) => false,
+          );
+        }
       }
+      print("<");
+      print(_scanBarcode);
+      print(">");
+      print(await FirebaseAuth.instance.currentUser!.uid);
+
+      // _initUser();
       // May it should refresh the "top bar"?
     } catch (e) {
       print(e);
