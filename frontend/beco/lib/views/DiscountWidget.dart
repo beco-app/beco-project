@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:beco/globals.dart' as globals;
 
 import 'dart:async';
 import 'dart:convert';
@@ -368,11 +369,13 @@ showAlertDialog(BuildContext context, Discount discount) {
 
   // set up the AlertDialog
   AlertDialog alert = AlertDialog(
-    title: const Text("Are you sure you want to use this discount?"),
+    title: globals.user.becoins >= discount.becoins
+        ? Text("Are you sure you want to use this discount?")
+        : Text("You do not have enough becoins."),
     content: Text("It costs ${discount.becoins.toString()} becoins"),
     actions: [
       cancelButton,
-      continueButton,
+      if (globals.user.becoins >= discount.becoins) continueButton,
     ],
   );
 
