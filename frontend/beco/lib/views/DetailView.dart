@@ -34,6 +34,7 @@ class _DetailViewState extends State<DetailView> {
         resizeToAvoidBottomInset: true,
         body: CustomScrollView(slivers: [
           SliverAppBar(
+              iconTheme: IconThemeData(color: Colors.white),
               //maybe sliverpersistentheader is better
               floating: false,
               expandedHeight: 150,
@@ -47,7 +48,7 @@ class _DetailViewState extends State<DetailView> {
                     fit: BoxFit.cover,
                   ),
                 ),
-                Align(
+                const Align(
                     alignment: Alignment.bottomCenter,
                     child: Material(
                       shape: const CircleBorder(),
@@ -75,28 +76,23 @@ class _DetailViewState extends State<DetailView> {
                   Text("${args.type[0].toUpperCase()}${args.type.substring(1)}",
                       style: const TextStyle(fontSize: 18)),
                   const SizedBox(height: 20),
-                  const Text("Description",
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+                  const Align(
+                    alignment: Alignment.topLeft,
+                    child: Text("Description",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 14)),
+                  ),
                   const SizedBox(height: 10),
                   Text(
                     args.description.replaceAll("<br />", ""),
                   ),
                   const SizedBox(height: 20),
-                  // Text("Features",
-                  //     style: const TextStyle(
-                  //         fontWeight: FontWeight.bold, fontSize: 12)),
-                  // SizedBox(height: 10),
-                  // for (var word in args.tags)
-                  //   Row(children: [
-                  //     Icon(
-                  //       myIcons[word],
-                  //       size: 30,
-                  //     ),
-                  //     SizedBox(height: 20),
-                  const Text("Features",
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+                  const Align(
+                    alignment: Alignment.topLeft,
+                    child: Text("Features",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 14)),
+                  ),
                   const SizedBox(height: 10),
                   for (var word in args.tags)
                     Row(children: [
@@ -108,33 +104,44 @@ class _DetailViewState extends State<DetailView> {
                       Text(word.toString())
                     ]),
                   const SizedBox(height: 20),
-                  const Text("Where are we?",
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: const Text("Where are we?",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 14)),
+                  ),
                   SizedBox(height: 10),
-                  Text(args.address),
+                  Align(
+                      alignment: Alignment.topLeft, child: Text(args.address)),
                   SizedBox(height: 20),
-                  Text("Pollution level",
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 12)),
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: Text("Pollution level",
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 14)),
+                  ),
                   SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Spacer(),
-                      Text("Air Quality Index: "),
-                      Text(double.parse((args.aqi).toStringAsFixed(2))
-                          .toString()),
-                      SizedBox(width: 10),
-                      Container(
-                        decoration: BoxDecoration(
-                            color: color_from_aqi(args.aqi),
-                            borderRadius: BorderRadius.all(Radius.circular(5))),
-                        height: 30,
-                        width: 30,
-                      ),
-                      Spacer(),
-                    ],
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        // Spacer(),
+                        Text("Air Quality Index: "),
+                        Text(double.parse((args.aqi).toStringAsFixed(2))
+                            .toString()),
+                        SizedBox(width: 10),
+                        Container(
+                          decoration: BoxDecoration(
+                              color: color_from_aqi(args.aqi),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(5))),
+                          height: 30,
+                          width: 30,
+                        ),
+                        // Spacer(),
+                      ],
+                    ),
                   ),
                   const SizedBox(height: 10),
                   Text("Discounts",
@@ -202,7 +209,7 @@ Map<String, IconData> myIcons = {
   "Beverages": Icons.emoji_food_beverage,
   "Cosmetics": Icons.face_retouching_natural,
   "For children": Icons.child_friendly,
-  "Fruits & vegetables": Icons.location_on,
+  "Fruits & vegetables": Icons.apple_rounded,
   "Green space": Icons.nature_people,
   "Herbalist": Icons.local_pharmacy,
   "Local products": Icons.location_on,
@@ -214,7 +221,7 @@ Map<String, IconData> myIcons = {
   "Supermarket": Icons.local_grocery_store,
   "Vegan food": Icons.emoji_nature,
   "Others": Icons.question_mark,
-  "Vegetarian food": Icons.location_on,
+  "Vegetarian food": Icons.apple_rounded,
 };
 
 class DiscountButtonDetail extends StatelessWidget {

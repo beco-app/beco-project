@@ -41,12 +41,12 @@ class QRView extends StatelessWidget {
     substractBecoins(args.becoins.toString()); // <--
     return Scaffold(
         appBar: AppBar(
-          iconTheme: IconThemeData(color: Colors.grey[700]),
+          iconTheme: IconThemeData(color: Colors.white),
           title: Text(
             'Selected discount',
-            style: TextStyle(color: Colors.grey[700]),
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
           ),
-          backgroundColor: const Color.fromARGB(255, 235, 228, 233),
+          backgroundColor: const Color.fromARGB(184, 118, 185, 124),
         ),
         body: Center(
             child: Column(children: [

@@ -23,7 +23,7 @@ Map<String, IconData> myIcons = {
   "Beverages": Icons.emoji_food_beverage,
   "Cosmetics": Icons.face_retouching_natural,
   "For children": Icons.child_friendly,
-  "Fruits & vegetables": Icons.location_on,
+  "Fruits & vegetables": Icons.apple_rounded,
   "Green space": Icons.nature_people,
   "Herbalist": Icons.local_pharmacy,
   "Local products": Icons.location_on,
@@ -35,7 +35,7 @@ Map<String, IconData> myIcons = {
   "Supermarket": Icons.local_grocery_store,
   "Vegan food": Icons.emoji_nature,
   "Others": Icons.question_mark,
-  "Vegetarian food": Icons.location_on,
+  "Vegetarian food": Icons.apple_rounded,
 };
 List<String> listTags = myIcons.keys.toList();
 

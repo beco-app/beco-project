@@ -44,7 +44,21 @@ void main() async {
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
+        colorScheme: ColorScheme(
+          brightness: Brightness.light,
+          surface: Colors.grey[50]!,
+          onSurface: Colors.black,
+          error: Colors.red,
+          onError: Colors.white,
+          primary: const Color.fromARGB(184, 118, 185, 124),
+          onPrimary: const Color.fromARGB(255, 255, 255, 255),
+          background: Colors.grey[50]!,
+          onBackground: Colors.black,
+          secondary: Colors.grey[500]!,
+          onSecondary: Colors.white,
+        ),
         primarySwatch: colorCustom,
+        // primaryColor: Colors.white,
       ),
       home: const HomePage(), // Page shown when app is started.
       routes: {
