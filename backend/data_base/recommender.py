@@ -3,7 +3,7 @@ import sys
 sys.path.append("./backend/data_base")
 from tools import *
 from collections import Counter
-from geopy.distance import great_circle as distance
+from geopy.distance import distance
 import numpy as np
 from bson.objectid import ObjectId
 from time import time
