@@ -28,11 +28,16 @@ class _DetailViewState extends State<DetailView> {
 
   @override
   Widget build(BuildContext context) {
+    bool isNeedSafeArea = MediaQuery.of(context).viewPadding.top > 0;
+    print(MediaQuery.of(context).viewPadding.top);
     final args = ModalRoute.of(context)!.settings.arguments as Store;
     discountList = getShopDiscounts(args.id);
     return Scaffold(
         resizeToAvoidBottomInset: true,
         body: CustomScrollView(slivers: [
+          // SliverToBoxAdapter(
+          //   child: Container(height: 45),
+          // ),
           SliverAppBar(
               iconTheme: IconThemeData(color: Colors.white),
               //maybe sliverpersistentheader is better
@@ -143,7 +148,7 @@ class _DetailViewState extends State<DetailView> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 20),
                   Text("Discounts",
                       style: const TextStyle(
                           fontWeight: FontWeight.bold, fontSize: 25)),

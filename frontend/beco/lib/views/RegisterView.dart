@@ -75,7 +75,6 @@ class _RegisterViewState extends State<RegisterView> {
     "08042"
   ];
   int emailecode = 0;
-  int passwordecode = 0;
   final GlobalKey<FormFieldState> emailKey = GlobalKey();
   final GlobalKey<FormFieldState> passwordKey = GlobalKey();
   final GlobalKey<FormFieldState> phoneKey = GlobalKey();
@@ -131,6 +130,7 @@ class _RegisterViewState extends State<RegisterView> {
                       ...[
                         TextFormField(
                           key: emailKey,
+                          // autovalidateMode: AutovalidateMode.onUserInteraction,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return "This field is required";
@@ -158,11 +158,11 @@ class _RegisterViewState extends State<RegisterView> {
                         ),
                         TextFormField(
                           key: passwordKey,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return "This field is required";
-                            } else if (passwordecode == 1) {
-                              passwordecode = 0;
+                            } else if (value.length < 6) {
                               return "Weak password";
                             }
                             return null;
@@ -182,6 +182,7 @@ class _RegisterViewState extends State<RegisterView> {
                         ),
                         TextFormField(
                           key: phoneKey,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return "This field is required";
@@ -203,6 +204,7 @@ class _RegisterViewState extends State<RegisterView> {
                         ),
                         TextFormField(
                           key: zipcodeKey,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return "This field is required";
@@ -311,58 +313,57 @@ class _RegisterViewState extends State<RegisterView> {
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () async {
-                        emailKey.currentState!.validate();
-                        passwordKey.currentState!.validate();
-                        phoneKey.currentState!.validate();
-                        zipcodeKey.currentState!.validate();
-                        if ((!emailKey.currentState!.validate() &&
-                            !passwordKey.currentState!.validate() &&
-                            !phoneKey.currentState!.validate() &&
-                            !zipcodeKey.currentState!.validate())) {
-                          var user = User();
-                          user.email = _email.text;
-                          user.password = _password.text;
-                          user.phone = _phone.text;
-                          user.zipcode = _zipcode.text;
-                          user.birthday = date.millisecondsSinceEpoch ~/ 1000;
-                          user.gender = gender;
-                          user.preferences = preferencesSelected;
-                          try {
-                            final userCredential = await FirebaseAuth.instance
-                                .createUserWithEmailAndPassword(
-                              email: user.email,
-                              password: user.password,
-                            );
-                            user.user_id =
-                                await FirebaseAuth.instance.currentUser!.uid;
-                            // Send user to backend
-                            final r = await http.post(
-                                Uri.parse('http://34.252.26.132/register_user'),
-                                body: user.toJson());
+                        // if ((!emailKey.currentState!.validate() &&
+                        //     !passwordKey.currentState!.validate() &&
+                        //     !phoneKey.currentState!.validate() &&
+                        //     !zipcodeKey.currentState!.validate())) {
+                        var user = User();
+                        user.email = _email.text;
+                        user.password = _password.text;
+                        user.phone = _phone.text;
+                        user.zipcode = _zipcode.text;
+                        user.birthday = date.millisecondsSinceEpoch ~/ 1000;
+                        user.gender = gender;
+                        user.preferences = preferencesSelected;
+                        try {
+                          emailKey.currentState!.validate();
+                          passwordKey.currentState!.validate();
+                          phoneKey.currentState!.validate();
+                          zipcodeKey.currentState!.validate();
+                          final userCredential = await FirebaseAuth.instance
+                              .createUserWithEmailAndPassword(
+                            email: user.email,
+                            password: user.password,
+                          );
+                          user.user_id =
+                              await FirebaseAuth.instance.currentUser!.uid;
+                          print("After createUser");
+                          // Send user to backend
+                          final r = await http.post(
+                              Uri.parse('http://34.252.26.132/register_user'),
+                              body: user.toJson());
 
-                            print(r.body);
+                          print(r.body);
 
-                            Navigator.of(context).pushNamedAndRemoveUntil(
-                              '/login/',
-                              (route) => false,
-                            );
-                          } on FirebaseAuthException catch (e) {
-                            if (e.code == 'email-already-in-use') {
-                              emailecode = 1;
-                              emailKey.currentState!.validate();
-                              print('User not found');
-                            } else if (e.code == 'invalid-email') {
-                              emailecode = 2;
-                              emailKey.currentState!.validate();
-                            }
-                            if (e.code == 'weak-password') {
-                              passwordecode = 1;
-                              passwordKey.currentState!.validate();
-                            }
-                            print("ERROR MESSAGE");
-                            print(e);
+                          Navigator.of(context).pushNamedAndRemoveUntil(
+                            '/login/',
+                            (route) => false,
+                          );
+                        } on FirebaseAuthException catch (e) {
+                          if (e.code == 'email-already-in-use') {
+                            emailecode = 1;
+                            emailKey.currentState!.validate();
+                            print('Email 1');
+                          } else if (e.code == 'invalid-email') {
+                            emailecode = 2;
+                            emailKey.currentState!.validate();
+                            print('Email 2');
                           }
+                          print("ERROR MESSAGE");
+                          print(e);
                         }
+                        print("prova");
+                        //}
                       },
                       style: TextButton.styleFrom(
                         primary: Colors.white,

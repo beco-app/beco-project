@@ -117,7 +117,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                     ),
                     child: Row(children: [
                       Container(
-                          width: 70,
+                          width: 75,
                           child: const Text('Gender',
                               style: TextStyle(
                                   fontSize: 17,
@@ -174,7 +174,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                     ),
                     child: Row(children: [
                       Container(
-                          width: 70,
+                          width: 75,
                           child: const Text('Pref.',
                               style: TextStyle(
                                   fontSize: 17,
@@ -186,15 +186,8 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                         child: Align(
                           alignment: Alignment.centerLeft,
                           child: DropDownMultiSelect(
-                            decoration: const InputDecoration.collapsed(
-                              hintText: '',
-                              floatingLabelBehavior:
-                                  FloatingLabelBehavior.always,
-
-                              // border: OutlineInputBorder(),
-                              // contentPadding: EdgeInsets.symmetric(
-                              //     vertical: 5, horizontal: 10),
-                            ),
+                            decoration:
+                                const InputDecoration.collapsed(hintText: ''),
                             onChanged: (List<String> x) {
                               setState(() {
                                 widget.profileUser.preferences = x;
@@ -240,7 +233,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                     ),
                     child: Row(children: [
                       Container(
-                          width: 70,
+                          width: 75,
                           child: const Text('Zipcode',
                               style: TextStyle(
                                   fontSize: 17,
@@ -317,7 +310,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                         },
                         child: const Text("Save",
                             style: TextStyle(
-                                fontSize: 20,
+                                fontSize: 17,
                                 color: Color.fromARGB(255, 64, 64, 64))),
                         style: ElevatedButton.styleFrom(
                             primary: const Color.fromARGB(255, 224, 224, 224),
@@ -330,7 +323,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                         },
                         child: const Text("Log out",
                             style: TextStyle(
-                                fontSize: 20,
+                                fontSize: 17,
                                 color: Color.fromARGB(255, 64, 64, 64))),
                         style: ElevatedButton.styleFrom(
                             primary: Color.fromARGB(255, 224, 224, 224),
@@ -383,7 +376,7 @@ class _TextContainer extends State<TextContainer> {
         ),
         child: Row(children: [
           Container(
-              width: 70,
+              width: 75,
               child: const Text('Zipcode',
                   style: TextStyle(
                       fontSize: 17, color: Color.fromARGB(146, 67, 67, 67)))),
@@ -512,7 +505,7 @@ class InfoContainer extends StatelessWidget {
         ),
         child: Row(children: [
           Container(
-              width: 70,
+              width: 75,
               child: Text(attribute,
                   style: const TextStyle(
                       fontSize: 17, color: Color.fromARGB(146, 67, 67, 67)))),

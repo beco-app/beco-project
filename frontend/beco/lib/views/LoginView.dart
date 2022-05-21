@@ -15,6 +15,10 @@ class LoginView extends StatefulWidget {
 }
 
 class _LoginViewState extends State<LoginView> {
+  int emailecode = 0;
+  int passwordecode = 0;
+  final GlobalKey<FormFieldState> emailKey = GlobalKey();
+  final GlobalKey<FormFieldState> passwordKey = GlobalKey();
   late final TextEditingController _email;
   late final TextEditingController _password;
 
@@ -55,8 +59,21 @@ class _LoginViewState extends State<LoginView> {
                       fit: BoxFit.cover,
                     ),
                     SizedBox(height: 24),
-                    TextField(
+                    TextFormField(
                       controller: _email,
+                      key: emailKey,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "This field is required";
+                        } else if (emailecode == 1) {
+                          emailecode = 0;
+                          return "This user does not exist";
+                        } else if (emailecode == 2) {
+                          emailecode = 0;
+                          return "Invalid email";
+                        }
+                        return null;
+                      },
                       enableSuggestions: false,
                       autocorrect: false,
                       keyboardType: TextInputType.emailAddress,
@@ -70,8 +87,17 @@ class _LoginViewState extends State<LoginView> {
                       ),
                     ),
                     SizedBox(height: 24),
-                    TextField(
+                    TextFormField(
+                      key: passwordKey,
                       controller: _password,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "This field is required";
+                        } else if (passwordecode == 1) {
+                          return "Wrong password";
+                        }
+                        return null;
+                      },
                       enableSuggestions: false,
                       autocorrect: false,
                       obscureText: true,
@@ -92,6 +118,8 @@ class _LoginViewState extends State<LoginView> {
                             final email = _email.text;
                             final password = _password.text;
                             try {
+                              emailKey.currentState!.validate();
+                              passwordKey.currentState!.validate();
                               final userCredential = await FirebaseAuth.instance
                                   .signInWithEmailAndPassword(
                                 email: email,
@@ -119,7 +147,18 @@ class _LoginViewState extends State<LoginView> {
                                 );
                               });
                             } on FirebaseAuthException catch (e) {
-                              print(e.code);
+                              if (e.code == 'invalid-email' ||
+                                  e.code == 'user-not-found') {
+                                emailecode = 1;
+                                emailKey.currentState!.validate();
+                                print('Email 1');
+                              } else if (e.code == 'wrong-password') {
+                                passwordecode = 1;
+                                passwordKey.currentState!.validate();
+                                print('Email 2');
+                              }
+                              print("ERROR MESSAGE");
+                              print(e);
                             }
                           },
                           child: const Text('Log In',
