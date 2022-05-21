@@ -145,6 +145,6 @@ def recommend(user_id, plot=False, print_time=False):
     shops = sorted(shops.items(), key=lambda x: -x[1])[:30]  # Hyperparameter
     #return shops
     #return shops[:20]
-    return random.sample(shops, k=20)
+    return random.sample(shops, k=30)
 
     # Factors: visited or not, air pollution...
