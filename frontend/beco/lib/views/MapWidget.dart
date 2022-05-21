@@ -2,7 +2,7 @@ import 'package:beco/Stores.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-
+import 'package:beco/globals.dart' as globals;
 import 'DetailView.dart';
 
 class MapWidget extends StatefulWidget {
@@ -16,7 +16,8 @@ class _MapWidgetState extends State<MapWidget> {
   final Map<String, Marker> _markers = {};
   late final Position position;
   Future<void> _onMapCreated(GoogleMapController controller) async {
-    final storeList = await getMapStores();
+    // final storeList = await getMapStores();
+    final storeList = globals.storeList;
     position = await _determinePosition();
     setState(() {
       _markers.clear();
