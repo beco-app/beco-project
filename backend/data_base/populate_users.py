@@ -41,7 +41,7 @@ def user_gen(n):
         i = 0
         while True:
             i = i + 1
-            yield 'user' + str(random.randint(1, 10000000))
+            yield 'user' + str(i)
 
     def hash_password(pwd, salt):
         """

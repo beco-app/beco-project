@@ -94,8 +94,7 @@ def transaction_gen(n_days, hard=False, n_hard=None, eval=False, verbose=True):
                     'laziness': float(r[3]),
                     'pickiness': float(r[4])} for r in latent}
         if list(latent.keys())[0] not in all_users.keys():
-            if verbose:
-                print("removing latent.csv")
+            print("removing")
             os.remove('./backend/data_base/latent.csv')
             latent = {}
         

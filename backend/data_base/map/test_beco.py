@@ -91,12 +91,8 @@ for topk in [1, 3, 5, 10, 20]:
 
         # break if all shops are recommended
         min_recom = 1
-        n_recommended = 0
         for shop in shops_dict.values():
-            if shop["n_recom"] > 0:
-                n_recommended += 1
             min_recom = min(min_recom, shop["n_recom"])
-        print(f"{n_recommended}/{len(shops_dict)} shops recommended")
         if min_recom > 0:
             break
     print(f"Total days top{topk:02d} = {total_days}")

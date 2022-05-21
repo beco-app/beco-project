@@ -41,7 +41,7 @@ def shop_count_sim(u_shops, v_shops):
     return dot
 
 
-def recommend(user_id, user_loc=None, plot=False, print_time=False, tables=None):
+def recommend(user_id, plot=False, print_time=False):
     try:
         user_id = ObjectId(user_id)
     except:
@@ -50,11 +50,8 @@ def recommend(user_id, user_loc=None, plot=False, print_time=False, tables=None)
     t0 = time()
     # Get necessary info
     u_info = getUser(['preferences', 'location'], _id=user_id)[0]
-    if user_loc is None:
-        user_loc = u_info['location']
-    if tables is None:
-        tables = [getUser(['_id']), getShop(['location', 'tags']), getTransaction(['shop_id', 'user_id'])]
-    users, all_shops, all_trans = tables 
+    all_trans = getTransaction(['shop_id', 'user_id'])
+    all_shops = getShop(['location', 'tags'])
     shop_ids = [s["_id"] for s in all_shops]
     u_shops = get_shop_count(user_id, all_trans)
 
@@ -66,6 +63,7 @@ def recommend(user_id, user_loc=None, plot=False, print_time=False, tables=None)
     #    return recommend_new_user(user_id)
 
     # Find similar users and shops where they buy
+    users = getUser(['_id'])
     sims = []
     for v in users:
         v = v['_id']
@@ -102,14 +100,11 @@ def recommend(user_id, user_loc=None, plot=False, print_time=False, tables=None)
     u_loc = np.mean(lats), np.mean(lons)
     """
     s_locs = {s['_id']: s['location'] for s in shop_info}
-    dists = {s_id: distance(user_loc, s_loc).km for s_id, s_loc in s_locs.items()}
+    dists = {s_id: distance(u_info["location"], s_loc).km for s_id, s_loc in s_locs.items()}
     max_dist = max(dists.values())
     dists = {s_id: s_dist / max_dist for s_id, s_dist in dists.items()}
     dist_scores = {s_id: np.pi / 2 - np.arctan(s_dist) for s_id, s_dist in dists.items()}  # hyperparameter
     shops = {sh: sc * dist_scores[sh] for sh, sc in shops.items()}
-
-    t21 = time()
-    if print_time: print(t21-t2)
 
     if plot:
         plt.plot(sorted(dist_scores.values())[::-1])
@@ -140,7 +135,7 @@ def recommend(user_id, user_loc=None, plot=False, print_time=False, tables=None)
                 shops[sh] *= preferences[tag] # hyperparameter
 
     t3 = time()
-    if print_time: print(t3 - t21)
+    if print_time: print(t3 - t2)
 
     if plot:
         plt.plot(sorted(shops.values())[::-1])
