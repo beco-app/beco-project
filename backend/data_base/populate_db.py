@@ -19,4 +19,4 @@ def populate_db(s, nu, np, nap, n_days) :
     print('-'*50, '-'*50, '-'*50, f"{len(getTransaction())} transactions inserted", sep='\n')
 
 if __name__ == '__main__':
-    populate_db(s='backend/data_base/shops.csv', nu=100, np=100, nap=10, n_days=70)
+    populate_db(s='backend/data_base/shops.csv', nu=150, np=100, nap=10, n_days=70)
