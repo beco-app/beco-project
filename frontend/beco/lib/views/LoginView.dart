@@ -54,7 +54,7 @@ class _LoginViewState extends State<LoginView> {
                     // ),
                     const Spacer(),
                     Image.asset(
-                      "assets/images/logo.png",
+                      "assets/images/BECO_slogan-removebg.png",
                       width: MediaQuery.of(context).size.width,
                       fit: BoxFit.cover,
                     ),

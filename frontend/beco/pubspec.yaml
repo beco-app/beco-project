@@ -71,7 +71,7 @@ dev_dependencies:
 # following page: https://dart.dev/tools/pub/pubspec
 
 flutter_native_splash:
-  image: assets/images/logo.png
+  image: assets/images/BECO_splash.png
   color: "f9f9f9"
 
 # The following section is specific to Flutter.

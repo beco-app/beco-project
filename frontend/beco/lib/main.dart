@@ -57,7 +57,7 @@ void main() async {
           secondary: Colors.grey[500]!,
           onSecondary: Colors.white,
         ),
-        primarySwatch: colorCustom,
+        // primarySwatch: colorCustom,
         // primaryColor: Colors.white,
       ),
       home: const HomePage(), // Page shown when app is started.
