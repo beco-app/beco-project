@@ -11,6 +11,7 @@ import sys
 sys.path.append(os.getcwd())
 from backend.data_base.tools import *
 from backend.data_base.recommender import recommend
+import matplotlib.pyplot as plt
 
 """
 def show_shops_map(shops, day=0):
@@ -139,6 +140,16 @@ for topk in [1]:
     shops_df, shops_dict = preprocessDF("./backend/data_base/map/shops.csv")
     m = show_shops_map(shops_dict, day=0)
     make_screenshot(m, f"u100-top{topk:02d}/{0:03d}", driver)
+    shops_ratio = [0]
+    plt.figure()
+    plt.title(f"EVOLUTION OF RECOMMENDED SHOPS ({round(shops_ratio[-1], 2)}%)")
+    plt.xlabel("DAYS")
+    plt.ylabel("PERCENTAGE OF RECOMMENDED SHOPS")
+    plt.ylim(0,110)
+    plt.xlim(0,35)
+    plt.hlines(y=100, xmin=0, xmax=35, colors="gray", linestyles='--')
+    plt.plot(range(len(shops_ratio)), shops_ratio, color='b', marker='o')
+    plt.savefig(f"/Users/tomas.gadea/Desktop/beco_csvs/img/u100-top{topk:02d}/plt/000.png")
     total_days = 0
     for i in trange(ndays):
         total_days = i+1
@@ -159,8 +170,19 @@ for topk in [1]:
                 n_recommended += 1
             min_recom = min(min_recom, shop["n_recom"])
         print(f"{n_recommended}/{len(shops_dict)} shops recommended")
+        shops_ratio.append(n_recommended/len(shops_dict) * 100)
+        plt.figure()
+        plt.title(f"EVOLUTION OF RECOMMENDED SHOPS ({round(shops_ratio[-1], 2)}%)")
+        plt.xlabel("DAYS")
+        plt.ylabel("PERCENTAGE OF RECOMMENDED SHOPS")
+        plt.ylim(0, 110)
+        plt.xlim(0, 35)
+        plt.hlines(y=100, xmin=0, xmax=35, colors="gray", linestyles='--')
+        plt.plot(range(len(shops_ratio)), shops_ratio, color='b', marker='o')
+        plt.savefig(f"/Users/tomas.gadea/Desktop/beco_csvs/img/u100-top{topk:02d}/plt/{i+1:03d}.png")
         if min_recom > 0:
             break
     print(f"Total days top{topk:02d} = {total_days}")
-    os.system(f"ffmpeg -f image2 -r 4.1 -i /Users/tomas.gadea/Desktop/beco_csvs/img/u100-top{topk:02d}/%03d.png -vcodec mpeg4 -b 1000k -y /Users/tomas.gadea/Desktop/beco_csvs/img/videiko.mp4")
+    os.system(f"ffmpeg -f image2 -r 2.1 -i /Users/tomas.gadea/Desktop/beco_csvs/img/u100-top{topk:02d}/%03d.png -vcodec mpeg4 -b 1000k -y /Users/tomas.gadea/Desktop/beco_csvs/img/mapvid.mp4")
+    os.system(f"ffmpeg -f image2 -r 2.1 -i /Users/tomas.gadea/Desktop/beco_csvs/img/u100-top{topk:02d}/plt/%03d.png -vcodec mpeg4 -b 1000k -y /Users/tomas.gadea/Desktop/beco_csvs/img/pltvid.mp4")
 driver.quit()
