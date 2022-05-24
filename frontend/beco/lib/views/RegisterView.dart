@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:beco/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart' as intl;
 import 'package:multiselect/multiselect.dart';
@@ -343,12 +344,18 @@ class _RegisterViewState extends State<RegisterView> {
                               Uri.parse('http://34.252.26.132/register_user'),
                               body: user.toJson());
 
-                          print(r.body);
-
                           Navigator.of(context).pushNamedAndRemoveUntil(
                             '/login/',
                             (route) => false,
                           );
+                          Fluttertoast.showToast(
+                              msg: "Account succesfully created",
+                              toastLength: Toast.LENGTH_LONG,
+                              gravity: ToastGravity.BOTTOM,
+                              timeInSecForIosWeb: 2,
+                              backgroundColor: Colors.grey[350],
+                              textColor: Colors.black,
+                              fontSize: 14.0);
                         } on FirebaseAuthException catch (e) {
                           if (e.code == 'email-already-in-use') {
                             emailecode = 1;

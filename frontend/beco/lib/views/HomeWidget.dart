@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:beco/Stores.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:beco/Stores.dart';
@@ -128,6 +129,14 @@ class _HomeWidgetState extends State<HomeWidget> {
             '/home/',
             (route) => false,
           );
+          Fluttertoast.showToast(
+              msg: "The barcode was succesfully scanned",
+              toastLength: Toast.LENGTH_LONG,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIosWeb: 2,
+              backgroundColor: Colors.grey[350],
+              textColor: Colors.black,
+              fontSize: 14.0);
         }
       }
       print("<");

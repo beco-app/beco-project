@@ -88,8 +88,11 @@ class _DetailViewState extends State<DetailView> {
                             fontWeight: FontWeight.bold, fontSize: 14)),
                   ),
                   const SizedBox(height: 10),
-                  Text(
-                    args.description.replaceAll("<br />", ""),
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: Text(
+                      args.description.replaceAll("<br />", ""),
+                    ),
                   ),
                   const SizedBox(height: 20),
                   const Align(
