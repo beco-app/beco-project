@@ -26,9 +26,18 @@ def prom_gen(n):
     
     assert len(shops) > 0
 
+    descriptions = [
+        f"10% discount.",
+        f"50% discount at apples.",
+        f"15% discount if above 30€.",
+        f"10€ discount if above 50€.",
+        f"20% discount at vegetables.",
+        f"15% discount at fruits."
+    ]
+
     for shop in random.choices(shops, k=n):
         shop_id = shop['_id']
-        description = "This is a discount."
+        description = random.choice(descriptions)
         becoins = random.randint(100, 300)
         now  = time.mktime((date.today() - timedelta(days = random.randint(0,30))).timetuple()) # Generate a random date in the past
         till = time.mktime((date.today() + timedelta(weeks = random.randint(1,4))).timetuple())
