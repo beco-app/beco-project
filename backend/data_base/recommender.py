@@ -50,7 +50,16 @@ def recommend(user_id, plot=False, print_time=False):
     t0 = time()
     # Get necessary info
     u_info = getUser(['preferences', 'location'], _id=user_id)[0]
-    all_trans = getTransaction(['shop_id', 'user_id'])
+    users = getUser(['_id']) # all users
+    """
+    capar el nombre de users a 500:
+    """
+    if len(users) > 500:
+        users = random.sample(users, k=500)
+
+    print(users, type(users))
+
+    all_trans = getTransaction(['shop_id', 'user_id'], {"user_id":users})
     all_shops = getShop(['location', 'tags'])
     shop_ids = [s["_id"] for s in all_shops]
     u_shops = get_shop_count(user_id, all_trans)
@@ -63,13 +72,6 @@ def recommend(user_id, plot=False, print_time=False):
     #    return recommend_new_user(user_id)
 
     # Find similar users and shops where they buy
-    users = getUser(['_id'])
-    """
-    capar el nombre de users a 500:
-    """
-    if len(users) > 500:
-        users = random.sample(users, k=500)
-
     sims = []
     for v in users:
         v = v['_id']
