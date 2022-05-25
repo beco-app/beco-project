@@ -58,7 +58,7 @@ def recommend(user_id, plot=False, print_time=False):
 
     print(users, type(users))
 
-    all_trans = getTransaction(['shop_id', 'user_id'], {"user_id":users})
+    all_trans = getTransaction(['shop_id', 'user_id'], user_id=users)
     all_shops = getShop(['location', 'tags'])
     shop_ids = [s["_id"] for s in all_shops]
     u_shops = get_shop_count(user_id, all_trans)
