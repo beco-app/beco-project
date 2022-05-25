@@ -64,6 +64,12 @@ def recommend(user_id, plot=False, print_time=False):
 
     # Find similar users and shops where they buy
     users = getUser(['_id'])
+    """
+    capar el nombre de users a 500:
+    """
+    if len(users) > 500:
+        users = random.sample(users, k=500)
+
     sims = []
     for v in users:
         v = v['_id']
