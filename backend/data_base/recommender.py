@@ -56,9 +56,13 @@ def recommend(user_id, plot=False, print_time=False):
     if len(users) > 500:
         users = random.sample(users, k=500)
 
-    print(users, type(users))
+    print("the users: ", users, type(users))
+    capao_uids = [x["_id"] for x in users]
+    print("capao uids:", capao_uids)
 
-    all_trans = getTransaction(['shop_id', 'user_id'], user_id=users)
+    all_trans = getTransaction(['shop_id', 'user_id'], user_id={"$in":capao_uids})
+    print("the trans:", len(all_trans))
+
     all_shops = getShop(['location', 'tags'])
     shop_ids = [s["_id"] for s in all_shops]
     u_shops = get_shop_count(user_id, all_trans)
