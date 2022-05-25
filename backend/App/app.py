@@ -1,14 +1,15 @@
 import sys
+import threading
+
 print("Python version")
-print (sys.version)
+print(sys.version)
 print("Version info.")
-print (sys.version_info)
-
-
+print(sys.version_info)
 
 import sys
 import os
 from datetime import datetime, timedelta
+import pymongo
 from bson import json_util
 from bson.objectid import ObjectId
 
@@ -18,9 +19,9 @@ from backend.data_base import tools
 from backend.App.validate import validate_promotion, validate_user_exists, validate_unique_username
 from backend.data_base.recommender import recommend
 
-
 import json
 from flask import Flask, request
+from functools import wraps
 from time import time
 
 from backend.data_base.db_handler import queryFind
@@ -51,6 +52,7 @@ def login():
 
     return {"message": "success", "user_id": user["_id"]}, 200
 
+
 # Write user to database
 @app.route('/register_user', methods=['POST'])
 @validate_unique_username
@@ -60,14 +62,13 @@ def register_user():
     """
 
     req = request.form.to_dict()
-    becoins = 0 # Initial becoins
-
+    becoins = 0  # Initial becoins
 
     print("this is the mf request", req)
-    #req = json.loads(list(req.keys())[0])
+    # req = json.loads(list(req.keys())[0])
 
-    #fields = {"email", "password", "phone", "gender", "birthday", "zipcode", "preferences"}
-    #if fields != req.keys():
+    # fields = {"email", "password", "phone", "gender", "birthday", "zipcode", "preferences"}
+    # if fields != req.keys():
     #    return {"message": "Invalid data fields"}, 400
     print("this is the requests", type(req), req)
 
@@ -87,18 +88,19 @@ def register_user():
         'zip_code': req["zipcode"],
         'preferences': req["preferences"],
         'becoins': becoins,
-        'saved_prom' : None
+        'saved_prom': None
     }
-    #'preferences': data["preferences"],
+    # 'preferences': data["preferences"],
 
     if "user_id" in req.keys():
-        data["_id"] = req["user_id"] # firebase user_id
-    #try:
-        # Afegir 
+        data["_id"] = req["user_id"]  # firebase user_id
+    # try:
+    # Afegir
     tools.setUser(data)
     return {'message': 'Success'}, 200
-    #except:
+    # except:
     #    return {'message': 'Error in updating database'}, 400
+
 
 @app.route('/api/remove_user', methods=['POST'])
 @validate_user_exists
@@ -124,6 +126,7 @@ def get_user(username):
     else:
         return str(usr), 200
 
+
 # Get recommended shops
 @app.route('/recommended_shops/', methods=['POST'])
 def recommended_shops():
@@ -144,6 +147,7 @@ def recommended_shops():
     response = json.loads(json_util.dumps(shops_dict))
     return response, 200
 
+
 # Get nearest shops
 @app.route('/nearest_shops/<username>/<lat>/<long>/<distance>', methods=['POST'])
 def nearest_shops(username, lat, long, distance):
@@ -153,7 +157,7 @@ def nearest_shops(username, lat, long, distance):
     return 0
 
 
-# Add BECOINS
+#  Add BECOINS
 @app.route('/api/add_becoins', methods=["GET"])
 def add_becoins():
     """
@@ -181,18 +185,20 @@ def activate_promotion():
     user_id = request.form.get('user_id')
     promotion_id = request.form.get('promotion_id')
 
-    exp_date = (datetime.now() + timedelta(days=1)).timestamp() # Set expiration date to 24h from the activation
+    exp_date = (datetime.now() + timedelta(days=1)).timestamp()  # Set expiration date to 24h from the activation
 
-    # Subtract becoins
-    user = tools.getUser(_id = ObjectId(user_id))[0]
-    cost = tools.getPromotion('becoins', _id = ObjectId(promotion_id))[0]['becoins']
-    tools.updateUser(user['_id'], becoins = user['becoins'] - cost)
-    
-    # Write to db
-    res = tools.setActivePromotion({'prom_id': ObjectId(promotion_id), 'user_id': ObjectId(user_id), 'valid_until': exp_date})
+    #  Subtract becoins
+    user = tools.getUser(_id=ObjectId(user_id))[0]
+    cost = tools.getPromotion('becoins', _id=ObjectId(promotion_id))[0]['becoins']
+    tools.updateUser(user['_id'], becoins=user['becoins'] - cost)
+
+    #  Write to db
+    res = tools.setActivePromotion(
+        {'prom_id': ObjectId(promotion_id), 'user_id': ObjectId(user_id), 'valid_until': exp_date})
 
     # Debug:
     return str(tools.getActivePromotion(['valid_until'], user_id=user_id)[0]) + str(res), 200
+
 
 # Save promotion
 @app.route('/promotions/save', methods=['POST'])
@@ -205,19 +211,20 @@ def save_promotion():
     user_id = request.form.get('user_id')
     promotion_id = request.form.get('promotion_id')
 
-    # Append promotion_id to user's saved_prom
-    user_saved_prom = tools.getUser(['saved_prom'], _id = ObjectId(user_id))[0]['saved_prom']
+    #  Append promotion_id to user's saved_prom
+    user_saved_prom = tools.getUser(['saved_prom'], _id=ObjectId(user_id))[0]['saved_prom']
     if ObjectId(promotion_id) not in user_saved_prom:
         user_saved_prom.append(ObjectId(promotion_id))
         tools.updateUser(ObjectId(user_id), saved_prom=user_saved_prom)
-    
+
     # Debug:
     return (
         (
-            str(tools.getUser(['saved_prom'], _id = ObjectId(user_id))[0]['saved_prom']) +
-            '\n' + promotion_id),
+                str(tools.getUser(['saved_prom'], _id=ObjectId(user_id))[0]['saved_prom']) +
+                '\n' + promotion_id),
         200
     )
+
 
 # Unsave promotion
 @app.route('/promotions/unsave', methods=['POST'])
@@ -231,28 +238,30 @@ def unsave_promotion():
     promotion_id = request.form.get('promotion_id')
 
     # Deletes promotion_id from user's saved_prom
-    user_saved_prom = tools.getUser(['saved_prom'], _id = ObjectId(user_id))[0]['saved_prom']
+    user_saved_prom = tools.getUser(['saved_prom'], _id=ObjectId(user_id))[0]['saved_prom']
     if ObjectId(promotion_id) not in user_saved_prom:
         raise ValueError(f'Promotion {promotion_id} not saved for user {user_id}')
-    
+
     user_saved_prom.remove(ObjectId(promotion_id))
     tools.updateUser(ObjectId(user_id), saved_prom=user_saved_prom)
-    
+
     # Debug:
     return (
         (
-            str(tools.getUser(['saved_prom'], _id = ObjectId(user_id))[0]['saved_prom']) +
-            '\n' + promotion_id),
+                str(tools.getUser(['saved_prom'], _id=ObjectId(user_id))[0]['saved_prom']) +
+                '\n' + promotion_id),
         200
     )
+
 
 def add_shop_name_in_proms_list(proms_list):
     """
     Adds the shop name to the list of promotions
     """
     for prom in proms_list:
-        prom['shopname'] = tools.getShop(['shopname'], _id = ObjectId(prom['shop_id']))[0]
+        prom['shopname'] = tools.getShop(['shopname'], _id=ObjectId(prom['shop_id']))[0]
     return proms_list
+
 
 # Get saved promotions
 @app.route('/promotions/saved', methods=['POST'])
@@ -264,23 +273,25 @@ def saved_promotions():
     user_id = request.form.get('user_id')
 
     # Itererate over user's saved_prom and checks if it's still valid
-    saved_prom = tools.getUser(['saved_prom'], _id = ObjectId(user_id))[0]['saved_prom']
+    saved_prom = tools.getUser(['saved_prom'], _id=ObjectId(user_id))[0]['saved_prom']
     now = time()
     saved_prom = [
         prom_id
         for prom_id in saved_prom
-        if tools.getPromotion(['valid_interval'], _id = prom_id)[0]['valid_interval']['from'] < now < tools.getPromotion(['valid_interval'], _id = prom_id)[0]['valid_interval']['to']
-        
+        if tools.getPromotion(['valid_interval'], _id=prom_id)[0]['valid_interval']['from'] < now <
+           tools.getPromotion(['valid_interval'], _id=prom_id)[0]['valid_interval']['to']
+
     ]
     tools.updateUser(ObjectId(user_id), saved_prom=saved_prom)
-    
+
     # user_saved_prom.remove(ObjectId(promotion_id))
-    
+
     # Debug:
-    promotions = [tools.getPromotion(_id = prom_id)[0] for prom_id in saved_prom]
+    promotions = [tools.getPromotion(_id=prom_id)[0] for prom_id in saved_prom]
     promotions = add_shop_name_in_proms_list(promotions)
     response = json.loads(json_util.dumps({"promotions": promotions}))
     return response, 200
+
 
 # Get activated promotions
 @app.route('/promotions/activated', methods=['GET'])
@@ -292,17 +303,18 @@ def activated_promotions():
     user_id = request.form.get('user_id')
 
     user_active_proms = queryFind(
-        'beco_db', 'active_promotions', {'user_id' : ObjectId(user_id)}
+        'beco_db', 'active_promotions', {'user_id': ObjectId(user_id)}
     )
     user_active_proms = [
-        tools.getPromotion(_id = prom['prom_id'])[0]
+        tools.getPromotion(_id=prom['prom_id'])[0]
         for prom in user_active_proms
     ]
     user_active_proms = add_shop_name_in_proms_list(user_active_proms)
     response = json.loads(
         json_util.dumps({'user_active_proms': user_active_proms})
     )
-    return response, 200   
+    return response, 200
+
 
 # Get recent promotions
 @app.route('/promotions/recent', methods=['GET'])
@@ -315,14 +327,15 @@ def recent_promotions():
     most_recent = queryFind(
         'beco_db', 'promotions',
         {
-            'valid_interval.to' : {'$gte': now},
-            'valid_interval.from' : {'$lte': now}
+            'valid_interval.to': {'$gte': now},
+            'valid_interval.from': {'$lte': now}
         }
     ).sort('valid_interval.from', -1).limit(10)
-    
+
     most_recent = add_shop_name_in_proms_list(list(most_recent))
     response = json.loads(json_util.dumps({'recent_proms': list(most_recent)}))
-    return response, 200    
+    return response, 200
+
 
 # @app.route('/promotions/use', method=['POST'])
 # @validate_user_exists
@@ -334,7 +347,8 @@ def recent_promotions():
 @app.route("/homepage", methods=["GET"])
 def homepage():
     data = request.form.to_dict()
-    shops = tools.getShop(["_id", "address", "location", "shopname", "neighbourhood", "description", "photo", "type", "tags", "web"])
+    shops = tools.getShop(
+        ["_id", "address", "location", "shopname", "neighbourhood", "description", "photo", "type", "tags", "web"])
     shops_dict = {"shops": shops}
     response = json.loads(json_util.dumps(shops_dict))
 
@@ -345,11 +359,13 @@ def homepage():
 @app.route("/load_map", methods=["GET"])
 def load_map():
     data = request.form.to_dict()
-    shops = tools.getShop(["_id","address", "location", "shopname", "neighbourhood", "description", "photo",  "type", "tags", "web"])
+    shops = tools.getShop(
+        ["_id", "address", "location", "shopname", "neighbourhood", "description", "photo", "type", "tags", "web"])
     shops_dict = {"shops": shops}
     response = json.loads(json_util.dumps(shops_dict))
 
     return response, 200
+
 
 # Get info from username
 @app.route('/user_update/<username>/<parameter>/<value>')
@@ -373,23 +389,24 @@ def update_user(username, parameter, value):
         tags = [
             'Restaurant', 'Bar', 'Supermarket', 'Bakery', 'Vegan food',
             'Beverages', 'Local products', 'Green space', 'Plastic free',
-            'Herbalist', 'Second hand', 'Cosmetics', 'Pharmacy', 'Fruits & vegetables', 
+            'Herbalist', 'Second hand', 'Cosmetics', 'Pharmacy', 'Fruits & vegetables',
             'Recycled material', 'Accessible', 'For children', 'Allows pets'
         ]
-        
+
         value = value.split(',')
         if any(v for v in value not in tags):
             return {'message': 'Tag not defined'}, 404
-        
+
     elif parameter == 'gender':
         value = 'F' if value == 'Female' else 'M'
-    
+
     elif parameter == 'birthday':
         from time import mktime
         year, month, day = value.split('-')
         value = mktime(datetime(int(year), int(month), int(day)).timetuple())
-    
-    return str(tools.updateUser(userid, **{parameter:value}))
+
+    return str(tools.updateUser(userid, **{parameter: value}))
+
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, threading=True)
