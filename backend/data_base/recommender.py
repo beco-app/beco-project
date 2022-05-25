@@ -8,7 +8,6 @@ import numpy as np
 from bson.objectid import ObjectId
 from time import time
 import random
-import matplotlib.pyplot as plt
 
 
 def get_shop_count(uid, all_trans):
@@ -67,8 +66,10 @@ def recommend(user_id, plot=False, print_time=False):
     """
     capar el nombre de users a 500:
     """
-    if len(users) > 500:
+    print(f"len(users) = {len(users)}")
+    if len(users) >= 500:
         users = random.sample(users, k=500)
+        print(f"len(users) after = {len(users)}")
 
     sims = []
     for v in users:
@@ -88,10 +89,6 @@ def recommend(user_id, plot=False, print_time=False):
     
     #return sorted(shops.items(), key=lambda x: -x[1])[:20]
 
-    if plot:
-        plt.plot(sorted(shops.values())[::-1])
-        plt.title('user to user')
-        plt.show()
 
     t2 = time()
     if print_time: print(t2-t1)
@@ -112,13 +109,6 @@ def recommend(user_id, plot=False, print_time=False):
     dist_scores = {s_id: np.pi / 2 - np.arctan(s_dist) for s_id, s_dist in dists.items()}  # hyperparameter
     shops = {sh: sc * dist_scores[sh] for sh, sc in shops.items()}
 
-    if plot:
-        plt.plot(sorted(dist_scores.values())[::-1])
-        plt.title("dist scores")
-        plt.show()
-        plt.plot(sorted(shops.values())[::-1])
-        plt.title("dist ponderated")
-        plt.show()
 
     # Sum if user interested in shop tags or bought in similar shops
     preferences = {}
@@ -143,10 +133,6 @@ def recommend(user_id, plot=False, print_time=False):
     t3 = time()
     if print_time: print(t3 - t2)
 
-    if plot:
-        plt.plot(sorted(shops.values())[::-1])
-        plt.title("tag ponderated")
-        plt.show()
 
     shops = sorted(shops.items(), key=lambda x: -x[1])[:30]  # Hyperparameter
     #return shops
