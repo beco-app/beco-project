@@ -16,7 +16,7 @@ The issue associated will be closed and the task on the kanban will automaticall
 (Alternatively you can do this through github GUI)
 
 
-count lines of code: (crec)
+count lines of code:
 ```
 git ls-files | xargs wc -l
 ```
