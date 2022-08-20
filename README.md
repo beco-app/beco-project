@@ -1,7 +1,17 @@
 # beco-project
-main repo of the project, we will try to keep it as a monorepo and work by branches
+## For visitors
+BECO (Be Eco) is a technological tool that serves to link eco-friendly businesses with  environmentally conscious consumers. This benefits both users and establishments. Users will find a way to discover new stores and products that fit their diets and preferences without harming the environment, and these small companies will acquire online presence and will be offered data analytics describing the profile of their customers, the success of their promotions, among others.
 
-## Workflow
+Go to `slides/BECO_pitch_and_presentation.pdf` for further information about the project.
+
+
+
+
+
+## For the team:
+we will try to keep it as a monorepo and work by branches
+
+### Workflow
 
 Create a new branch where `<new_branch>` is the `<issue_number>` + `-<issue_name>` , e.g. `1-define-repo-structure`:
 ```
